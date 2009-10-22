@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE document PUBLIC "-//APACHE//DTD Documentation V2.0//EN" "http://forrest.apache.org/dtd/document-v20.dtd">
+<document>
+  <header>
+    <title>jcgm -- Version history</title>
+  </header>
+  <body>
+	 <section id="core">
+		<title>
+			Core Package
+		</title>
+    <section id="core-0.1.0">
+      <title>Version 0.1.0</title>
+      <p>
+		  Initial version.
+      </p>
+    </section>
+    </section>
+	 <section id="image">
+		<title>
+			Image Package
+		</title>
+    <section id="image-0.1.0">
+      <title>Version 0.1.0</title>
+      <p>
+		  Initial version.
+      </p>
+    </section>
+    </section>
+  </body>
+</document>

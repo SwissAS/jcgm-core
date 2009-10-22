@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed to the Apache Software Foundation (ASF) under one or more
+  contributor license agreements.  See the NOTICE file distributed with
+  this work for additional information regarding copyright ownership.
+  The ASF licenses this file to You under the Apache License, Version 2.0
+  (the "License"); you may not use this file except in compliance with
+  the License.  You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+-->
+<!DOCTYPE howto PUBLIC "-//APACHE//DTD How-to V2.0//EN"
+"http://forrest.apache.org/dtd/howto-v20.dtd">
+<howto>
+  <header>
+    <title>jcgm -- Developer How-To</title>
+    <version>$Revision$</version>
+    <abstract>
+    </abstract>
+    <last-modified-content-date date="$Date: $" />
+  </header>
+  <!--
+  <audience title="Intended Audience">
+  </audience>
+  <purpose title="Purpose">
+  </purpose>
+  <prerequisites title="Prerequisites">
+  </prerequisites>
+  -->
+  <steps title="Examples">
+    <p>
+		The examples presented here are part of the distribution in the
+		<code>net.sf.jcgm.example</code> package.
+    </p>
+    <section id="read-display">
+      <title>Reading and Displaying a CGM File</title>
+      <source>
+try {
+	File cgmFile = new File("test.cgm");
+	// create an input stream for the CGM file
+	DataInputStream in = new DataInputStream(new FileInputStream(cgmFile));
+	
+	// read the CGM file
+	CGM cgm = new CGM();
+	cgm.read(in);
+	in.close();
+	
+	// display the CGM file
+	CGMDisplay display = new CGMDisplay(cgm);
+	final CGMPanel cgmPanel = new CGMPanel(display);
+}
+catch (IOException e) {
+	...
+}
+      </source>
+    </section>
+    <section id="convert">
+      <title>Converting a CGM File to Another Graphic Format</title>
+      <p>
+		  Since the jcgm library implements an ImageIO plugin, it makes it easy
+		  to convert from CGM to any format supported by Java.
+      </p>
+	  <source>
+try {
+	File cgmFile = new File("samples/allelm01.cgm");
+	File outFile = new File("samples/allelm01.png");
+	BufferedImage image = ImageIO.read(cgmFile);
+	ImageIO.write(image, "PNG", outFile);
+}
+catch (IOException e) {
+	...
+}
+
+	  </source>
+    </section>
+  </steps>
+  <!--
+  <extension title="Extension">
+  </extension>
+  <faqs id="faqs">
+    <title>Frequently Asked Questions</title>
+    <faqsection id="faq-general">
+      <title>General issues</title>
+      <faq id="faq-difference">
+        <question>What is the difference between a How-To and a
+        tutorial?</question>
+        <answer>
+          <p>
+            The goal of a How-To is to help the reader to accomplish a specific
+            task with clear and consise instructions. While tutorials may
+            contain How-To-like instructions and content, they also include
+            additional background and conceptual content to help teach their
+            readers higher order concepts along the way. How-Tos are concerned
+            about filling an immediate, short-term need. Tutorials often provide
+            long-term knowledge which can be applied across a range of needs.
+          </p>
+        </answer>
+      </faq>
+    </faqsection>
+  </faqs>
+  <tips title="Tips">
+    <section id="tip-dtd">
+      <title>How-To dtd</title>
+      <p>
+        The document structure is likely to change at some time. Please note
+        that this HOWTO page is likely to change as well.
+      </p>
+    </section>
+  </tips>
+  <references title="References">
+    <p>
+      This is not the first, nor will it be the last, How-To on writing How-Tos.
+      For other ideas and opinions on the matter, check out the following
+      sources.
+    </p>
+    <ul>
+      <li>Joel D. Canfield's <a
+      href="http://www.evolt.org/article/How_To_Write_A_How_To/9741/18250/index.html">How
+      to Write a How-To</a> on evolt.org.</li>
+      <li>The Linux Documentation Project's <a
+      href="http://www.tldp.org/HOWTO/HOWTO-INDEX/index.html">HOWTO</a>
+      index page provides many excellent How-To documents to inspire your
+      efforts.</li>
+    </ul>
+  </references>
+  -->
+</howto>

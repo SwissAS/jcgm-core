@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+     Main Build file for the jcgm project
+     
+     $Id: $
+-->
+<project name="jcgm" default="jar">
+	
+	<!-- The core package -->
+	<property name="version-core" value="0.1.0"/>
+	<property name="package-name-core" value="jcgm-core-${version-core}"/>
+	<property name="jar-name-core" value="${package-name-core}.jar"/>
+	<property name="package-name-core-bin" value="${package-name-core}-bin"/>
+
+	<!-- Source code only distributed in one package -->
+	<property name="package-name-src" value="jcgm-src"/>
+	
+    <description>
+    	Main Build file for the jcgm project
+    </description>
+
+	<!-- Building -->
+	<target name="jar" depends="jar-core"/>
+
+    <target name="jar-core" depends="compile">
+		<jar destfile="build/${jar-name-core}" basedir="build/classes"
+			includes="net/sf/jcgm/core/**"
+		/>
+    </target>
+	
+	<target name="compile" description="Compiles all java source files">
+		<mkdir dir="build/classes"/>
+		<javac srcdir="src" destdir="build/classes" />
+	</target>
+	
+	<target name="clean">
+		<delete dir="build"/>
+	</target>
+
+	<!-- Javadoc -->
+	<target name="javadoc">
+		<javadoc destdir="build/site/en/api" 
+			encoding="utf8" docencoding="utf8"
+			author="true" version="true"
+			classpath="../../image/trunk/lib/commons-logging-1.1.jar:../../image/trunk/lib/xmlgraphics-commons-1.3.1.jar"
+			>
+			<packageset dir="src">
+				<include name="net/sf/jcgm/**"/>
+			</packageset>
+			<packageset dir="../../image/trunk/src">
+				<include name="net/sf/jcgm/**"/>
+			</packageset>
+
+			<bottom><![CDATA[Part of the jcgm library <a href="http://jcgm.sourceforge.net" target="_top">http://jcgm.sourceforge.net/</a>]]></bottom>
+			<link href="http://java.sun.com/j2se/1.6.0/docs/api/"/>
+			<link href="http://developer.java.sun.com/developer/products/xml/docs/api/"/>
+		</javadoc>
+	</target>
+
+	<!-- Distribution -->
+	<target name="dist" depends="dist-core-bin"/>
+
+	<target name="dist-core-bin" depends="jar-core"> <!-- depends: site -->
+    	<zip destfile="${package-name-core-bin}.zip">
+			<!-- <zipfileset dir="build/site" prefix="${package-name-core-bin}/build/site"/> -->
+			<zipfileset file="build/${jar-name-core}" prefix="${package-name-core-bin}/build"/>
+			<zipfileset file="LICENSE.txt" prefix="${package-name-core-bin}"/>
+			<zipfileset file="README.txt" prefix="${package-name-core-bin}"/>
+    		<zipfileset dir="samples" prefix="${package-name-core-bin}/samples"/>
+		</zip>
+	</target>
+	
+	<target name="distclean" depends="clean">
+		<delete file="${package-name-src}.zip"/>
+		<delete file="${package-name-core-bin}.zip"/>
+	</target>
+
+	<!-- Web site -->
+	<!-- FORREST_HOME must be set as an environment variable -->
+	<property environment="env"/>
+	<property name="forrest.home" value="${env.FORREST_HOME}"/>
+	<!-- This will import a "site" task -->
+	<import file="${env.FORREST_HOME}/main/forrest.build.xml"/>
+
+</project>

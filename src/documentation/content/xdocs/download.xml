@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE document PUBLIC "-//APACHE//DTD Documentation V2.0//EN" "http://forrest.apache.org/dtd/document-v20.dtd">
+<document>
+	<header>
+		<title>jcgm -- Download</title>
+	</header>
+	<body>
+		<p>
+			All distribution files are available on the <a
+				href="http://sourceforge.net/projects/jcgm/files">Sourceforge
+				project page</a>.
+		</p>
+		<section id="source">
+			<title>Source Code</title>
+			<p>
+				Go to the <a
+					href="http://jcgm.svn.sourceforge.net/viewvc/jcgm/">
+					Sourceforge Project Page</a> to download the source code.
+			</p>
+		</section>
+		<section id="binary">
+			<title>Binary Distribution</title>
+			<p>
+				The binary distribution is divided into two packages:
+			</p>
+			<section id="latest-version-core">
+				<title>Core Package</title>
+				<p>
+					The <strong>core</strong> package that contains the base
+					functionality of interpreting and rendering CGM graphics.
+				</p>
+				<p>
+					<a href="https://sourceforge.net/projects/jcgm/files/jcgm-core-0.1.0-bin.zip/download">jcgm-core-0.1.0-bin.zip</a>
+				</p>
+				<p>
+					The core package has no dependencies.
+				</p>
+			</section>
+			<section id="latest-version-image">
+				<title>Image Package</title>
+				<p>
+					The <strong>image</strong> package that provides an <a
+							href="http://java.sun.com/javase/6/docs/technotes/guides/imageio/">ImageIO</a> plugin for reading CGM files and
+						an <a href="http://xmlgraphics.apache.org/">XML Graphics</a> loader for displaying CGM
+						graphics in a PDF file by using <a href="http://xmlgraphics.apache.org/fop/">FOP</a>.
+				</p>
+				<p>
+					<a href="https://sourceforge.net/projects/jcgm/files/jcgm-image-0.1.0-bin.zip/download">jcgm-image-0.1-0-bin.zip</a>
+				</p>
+				<p>
+					The image package depends on
+				</p>
+					<ul>
+						<li>the core package</li>
+						<li>the <a href="http://commons.apache.org/logging/">Apache Commons Logging package</a></li>
+						<li>the <a href="http://xmlgraphics.apache.org/commons">Apache XML Graphics Commons</a> package</li>
+					</ul>
+			</section>
+		</section>
+	</body>
+</document>
+<!--
+	vim:ts=2:sw=2
+	-->

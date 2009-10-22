@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE document PUBLIC "-//APACHE//DTD Documentation V2.0//EN" "http://forrest.apache.org/dtd/document-v20.dtd">
+<document>
+  <header>
+    <title>jcgm -- Links</title>
+  </header>
+  <body>
+    <section id="testing">
+      <title>Testing</title>
+	  <ul>
+		  <li><a href="http://www.cgmopen.org/resources/test/index.html">WebCGM 1.0 Conformance Test Suite</a></li>
+		  <li><a href="http://docs.oasis-open.org/webcgm/test-materials/webcgm20ts/webcgm20-ts-index.html">WebCGM 2.0 Test Suite</a></li>
+		  <li><a href="http://docs.oasis-open.org/webcgm/test-materials/webcgm21ts/webcgm21-ts-index.html">WebCGM 2.1 Test Suite</a></li>
+      </ul>
+    </section>
+  </body>
+</document>
