@@ -37,6 +37,8 @@ import net.sf.jcgm.core.ScalingMode.Mode;
 public class CGM implements Cloneable {
     private Vector<Command> commands;
     
+    private List<ICommandListener> commandListeners = new ArrayList<ICommandListener>();
+    
     public CGM() {
     	// empty constructor. XXX: Remove?
     }
@@ -54,10 +56,23 @@ public class CGM implements Cloneable {
             Command c = Command.read(in);
             if (c == null)
                 break;
+            
+            for (ICommandListener listener : commandListeners) {
+				listener.commandProcessed(c.getElementClass(), c.getElementCode(), c.toString());
+			}
+            
             // get rid of all arguments after we read them
             c.cleanUpArguments();
             this.commands.addElement(c);
         }
+    }
+
+    /**
+     * Adds the given listener to the list of command listeners
+     * @param listener The listener to add
+     */
+    public void addCommandListener(ICommandListener listener) {
+    	this.commandListeners.add(listener);
     }
 
     /**
@@ -194,6 +209,7 @@ public class CGM implements Cloneable {
         for (int i = 0; i < this.commands.size(); i++)
             stream.println("Command: " + this.commands.elementAt(i));
 	}
+
 }
 
 /*

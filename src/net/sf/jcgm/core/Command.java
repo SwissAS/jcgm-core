@@ -46,173 +46,6 @@ import net.sf.jcgm.core.VDCRealPrecision.Type;
  * @version $Id$
  */
 class Command implements Cloneable {
-	// Element classes
-	private static final int DELIMITER_ELEMENTS = 0;
-	private static final int METAFILE_DESCRIPTOR_ELEMENTS = 1;
-	private static final int PICTURE_DESCRIPTOR_ELEMENTS = 2;
-	private static final int CONTROL_ELEMENTS = 3;
-	private static final int GRAPHICAL_PRIMITIVE_ELEMENTS = 4;
-	private static final int ATTRIBUTE_ELEMENTS = 5;
-	private static final int ESCAPE_ELEMENTS = 6;
-	private static final int EXTERNAL_ELEMENTS = 7;
-	private static final int SEGMENT_ELEMENTS = 8;
-	private static final int APPLICATION_STRUCTURE_ELEMENTS = 9;
-	
-	// Element class 0: Delimiter Elements
-	private static final int NO_OP = 0;
-	private static final int BEGIN_METAFILE = 1;
-	private static final int END_METAFILE = 2;
-	private static final int BEGIN_PICTURE = 3;
-	private static final int BEGIN_PICTURE_BODY = 4;
-	private static final int END_PICTURE = 5;
-	private static final int BEGIN_SEGMENT = 6;
-	private static final int END_SEGMENT = 7;
-	private static final int BEGIN_FIGURE = 8;
-	private static final int END_FIGURE = 9;
-	private static final int BEGIN_PROTECTION_REGION = 13;
-	private static final int END_PROTECTION_REGION = 14;
-	private static final int BEGIN_COMPOUND_LINE = 15;
-	private static final int END_COMPOUND_LINE = 16;
-	private static final int BEGIN_COMPOUND_TEXT_PATH = 17;
-	private static final int END_COMPOUND_TEXT_PATH = 18;
-	private static final int BEGIN_TILE_ARRAY = 19;
-	private static final int END_TILE_ARRAY = 20;
-	private static final int BEGIN_APPLICATION_STRUCTURE = 21;
-	private static final int BEGIN_APPLICATION_STRUCTURE_BODY = 22;
-	private static final int END_APPLICATION_STRUCTURE = 23;
-	
-	// Element class 1: Metafile Descriptor Elements
-	private static final int METAFILE_VERSION = 1;
-	private static final int METAFILE_DESCRIPTION = 2;
-	private static final int VDC_TYPE = 3;
-	private static final int INTEGER_PRECISION = 4;
-	private static final int REAL_PRECISION = 5;
-	private static final int INDEX_PRECISION = 6;
-	private static final int COLOUR_PRECISION = 7;
-	private static final int COLOUR_INDEX_PRECISION = 8;
-	private static final int MAXIMUM_COLOUR_INDEX = 9;
-	private static final int COLOUR_VALUE_EXTENT = 10;
-	private static final int METAFILE_ELEMENT_LIST = 11;
-	private static final int METAFILE_DEFAULTS_REPLACEMENT = 12;
-	private static final int FONT_LIST = 13;
-	private static final int CHARACTER_SET_LIST = 14;
-	private static final int CHARACTER_CODING_ANNOUNCER = 15;
-	private static final int NAME_PRECISION = 16;
-	private static final int MAXIMUM_VDC_EXTENT = 17;
-	private static final int SEGMENT_PRIORITY_EXTENT = 18;
-	private static final int COLOUR_MODEL = 19;
-	private static final int COLOUR_CALIBRATION = 20;
-	private static final int FONT_PROPERTIES = 21;
-	private static final int GLYPH_MAPPING = 22;
-	private static final int SYMBOL_LIBRARY_LIST = 23;
-	private static final int PICTURE_DIRECTORY = 24;
-
-	// Element class 2: Picture Descriptor Elements
-	private static final int SCALING_MODE = 1;
-	private static final int COLOUR_SELECTION_MODE = 2;
-	private static final int LINE_WIDTH_SPECIFICATION_MODE = 3;
-	private static final int MARKER_SIZE_SPECIFICATION_MODE = 4;
-	private static final int EDGE_WIDTH_SPECIFICATION_MODE = 5;
-	private static final int VDC_EXTENT = 6;
-	private static final int BACKGROUND_COLOUR = 7;
-	private static final int DEVICE_VIEWPORT = 8;
-	private static final int DEVICE_VIEWPORT_SPECIFICATION_MODE = 9;
-	private static final int DEVICE_VIEWPORT_MAPPING = 10;
-	private static final int LINE_REPRESENTATION = 11;
-	private static final int MARKER_REPRESENTATION = 12;
-	private static final int TEXT_REPRESENTATION = 13;
-	private static final int FILL_REPRESENTATION = 14;
-	private static final int EDGE_REPRESENTATION = 15;
-	private static final int INTERIOR_STYLE_SPECIFICATION_MODE = 16;
-	private static final int LINE_AND_EDGE_TYPE_DEFINITION = 17;
-	private static final int HATCH_STYLE_DEFINITION = 18;
-	private static final int GEOMETRIC_PATTERN_DEFINITION = 19;
-	private static final int APPLICATION_STRUCTURE_DIRECTORY = 20;
-
-	// Element class 4: Graphical Primitive Elements
-	private static final int POLYLINE = 1;
-	private static final int DISJOINT_POLYLINE = 2;
-	private static final int POLYMARKER = 3;
-	private static final int TEXT = 4;
-	private static final int RESTRICTED_TEXT = 5;
-	private static final int APPEND_TEXT = 6;
-	private static final int POLYGON = 7;
-	private static final int POLYGON_SET = 8;
-	private static final int CELL_ARRAY = 9;
-	private static final int GENERALIZED_DRAWING_PRIMITIVE = 10;
-	private static final int RECTANGLE = 11;
-	private static final int CIRCLE = 12;
-	private static final int CIRCULAR_ARC_3_POINT = 13;
-	private static final int CIRCULAR_ARC_3_POINT_CLOSE = 14;
-	private static final int CIRCULAR_ARC_CENTRE = 15;
-	private static final int CIRCULAR_ARC_CENTRE_CLOSE = 16;
-	private static final int ELLIPSE = 17;
-	private static final int ELLIPTICAL_ARC = 18;
-	private static final int ELLIPTICAL_ARC_CLOSE = 19;
-	private static final int CIRCULAR_ARC_CENTRE_REVERSED = 20;
-	private static final int CONNECTING_EDGE = 21;
-	private static final int HYPERBOLIC_ARC = 22;
-	private static final int PARABOLIC_ARC = 23;
-	private static final int NON_UNIFORM_B_SPLINE = 24;
-	private static final int NON_UNIFORM_RATIONAL_B_SPLINE = 25;
-	private static final int POLYBEZIER = 26;
-	private static final int POLYSYMBOL = 27;
-	private static final int BITONAL_TILE = 28;
-	private static final int TILE = 29;
-
-	// Element class 5: Attribute Elements
-	private static final int LINE_BUNDLE_INDEX = 1;
-	private static final int LINE_TYPE = 2;
-	private static final int LINE_WIDTH = 3;
-	private static final int LINE_COLOUR = 4;
-	private static final int MARKER_BUNDLE_INDEX = 5;
-	private static final int MARKER_TYPE = 6;
-	private static final int MARKER_SIZE = 7;
-	private static final int MARKER_COLOUR = 8;
-	private static final int TEXT_BUNDLE_INDEX = 9;
-	private static final int TEXT_FONT_INDEX = 10;
-	private static final int TEXT_PRECISION = 11;
-	private static final int CHARACTER_EXPANSION_FACTOR = 12;
-	private static final int CHARACTER_SPACING = 13;
-	private static final int TEXT_COLOUR = 14;
-	private static final int CHARACTER_HEIGHT = 15;
-	private static final int CHARACTER_ORIENTATION = 16;
-	private static final int TEXT_PATH = 17;
-	private static final int TEXT_ALIGNMENT = 18;
-	private static final int CHARACTER_SET_INDEX = 19;
-	private static final int ALTERNATE_CHARACTER_SET_INDEX = 20;
-	private static final int FILL_BUNDLE_INDEX = 21;
-	private static final int INTERIOR_STYLE = 22;
-	private static final int FILL_COLOUR = 23;
-	private static final int HATCH_INDEX = 24;
-	private static final int PATTERN_INDEX = 25;
-	private static final int EDGE_BUNDLE_INDEX = 26;
-	private static final int EDGE_TYPE = 27;
-	private static final int EDGE_WIDTH = 28;
-	private static final int EDGE_COLOUR = 29;
-	private static final int EDGE_VISIBILITY = 30;
-	private static final int FILL_REFERENCE_POINT = 31;
-	private static final int PATTERN_TABLE = 32;
-	private static final int PATTERN_SIZE = 33;
-	private static final int COLOUR_TABLE = 34;
-	private static final int ASPECT_SOURCE_FLAGS = 35;
-	private static final int PICK_IDENTIFIER = 36;
-	private static final int LINE_CAP = 37;
-	private static final int LINE_JOIN = 38;
-	private static final int LINE_TYPE_CONTINUATION = 39;
-	private static final int LINE_TYPE_INITIAL_OFFSET = 40;
-	private static final int TEXT_SCORE_TYPE = 41;
-	private static final int RESTRICTED_TEXT_TYPE = 42;
-	private static final int INTERPOLATED_INTERIOR = 43;
-	private static final int EDGE_CAP = 44;
-	private static final int EDGE_JOIN = 45;
-	private static final int EDGE_TYPE_CONTINUATION = 46;
-	private static final int EDGE_TYPE_INITIAL_OFFSET = 47;
-	private static final int SYMBOL_LIBRARY_INDEX = 48;
-	private static final int SYMBOL_COLOUR = 49;
-	private static final int SYMBOL_SIZE = 50;
-	private static final int SYMBOL_ORIENTATION = 51;
-
 	/** All the command parameters */
     protected int args[];
     
@@ -222,8 +55,8 @@ class Command implements Cloneable {
     /** The current bit in the current argument we're reading */
     private int posInArg = 0;
     
-    private int ElementClass;
-    private int ElementId;
+    private int elementClass;
+    private int elementCode;
     
     /**
      * The base class for all commands.
@@ -236,8 +69,8 @@ class Command implements Cloneable {
     public Command(int ec, int eid, int l, DataInput in)
             throws IOException {
 
-        this.ElementClass = ec;
-        this.ElementId = eid;
+        this.elementClass = ec;
+        this.elementCode = eid;
         if (l != 31) {
             this.args = new int[l];
             for (int i = 0; i < l; i++)
@@ -303,7 +136,7 @@ class Command implements Cloneable {
 
     @Override
 	public String toString() {
-        return "Unsupported " + this.ElementClass + "," + this.ElementId + " (" + (this.args != null ? this.args.length : "arguments cleared") + ")";
+        return "Unsupported " + this.elementClass + "," + this.elementCode + " (" + (this.args != null ? this.args.length : "arguments cleared") + ")";
     }
     
     final protected String makeFixedString() {
@@ -822,7 +655,7 @@ class Command implements Cloneable {
     }
 
 	protected static Command readCommand(DataInput in, int ec, int eid, int l) throws IOException {
-		switch (ec) {
+		switch (ElementClass.getElementClass(ec)) {
         
         case DELIMITER_ELEMENTS: // 0
         	return readDelimiterElements(in, ec, eid, l);
@@ -867,7 +700,7 @@ class Command implements Cloneable {
 	private static Command readDelimiterElements(DataInput in, int ec, int eid, int l)
 			throws IOException {
 		// Delimiter elements
-		switch (eid) {
+		switch (DelimiterElement.getElement(eid)) {
 
 		// 0, 0
 		case NO_OP:
@@ -938,7 +771,7 @@ class Command implements Cloneable {
 	}
 
 	private static Command readMetaFileDescriptorElements(DataInput in, int ec, int eid, int l) throws IOException {
-		switch (eid) {
+		switch (MetafileDescriptorElement.getElement(eid)) {
 		
 		case METAFILE_VERSION: // 1
 		    return new MetafileVersion(ec, eid, l, in);
@@ -1014,7 +847,7 @@ class Command implements Cloneable {
 	}
 
 	private static Command readPictureDescriptorElements(DataInput in, int ec, int eid, int l) throws IOException {
-		switch (eid) {
+		switch (PictureDescriptorElement.getElement(eid)) {
 		// 2, 1
 		case SCALING_MODE:
 		    return new ScalingMode(ec, eid, l, in);
@@ -1086,14 +919,14 @@ class Command implements Cloneable {
 	}
 
 	private static Command readControlElements(DataInput in, int ec, int eid, int l) throws IOException {
-		switch (eid) {
-		case 1:
+		switch (ControlElement.getElement(eid)) {
+		case VDC_INTEGER_PRECISION:
 			return new VDCIntegerPrecision(ec, eid, l, in);
-		case 2:
+		case VDC_REAL_PRECISION:
 			return new VDCRealPrecision(ec, eid, l, in);
-		case 5:
+		case CLIP_RECTANGLE:
 			return new ClipRectangle(ec, eid, l, in);
-		case 6:
+		case CLIP_INDICATOR:
 			return new ClipIndicator(ec, eid, l, in);
 		default:
 			unsupported(ec, eid);
@@ -1102,7 +935,7 @@ class Command implements Cloneable {
 	}
 
 	private static Command readGraphicalPrimitiveElements(DataInput in, int ec, int eid, int l) throws IOException {
-		switch (eid) {
+		switch (GraphicalPrimitiveElements.getElement(eid)) {
 		
 		case POLYLINE: // 1
 		    return new Polyline(ec, eid, l, in);
@@ -1188,7 +1021,7 @@ class Command implements Cloneable {
 	}
 
 	private static Command readAttributeElements(DataInput in, int ec, int eid, int l) throws IOException {
-		switch (eid) {
+		switch (AttributeElement.getElement(eid)) {
 		case LINE_BUNDLE_INDEX: // 1
 			unsupported(ec, eid);
 			return new Command(ec, eid, l, in);
@@ -1333,30 +1166,31 @@ class Command implements Cloneable {
 		}
 	}
 
-    private static void unsupported(int ec, int eid) {
+	private static void unsupported(int ec, int eid) {
 		if (ec == 0 && eid == 0)
 			// 0, 0 is NO-OP
 			return;
 
 		Messages.getInstance().add(
-			new Message(Message.Severity.UNIMPLEMENTED, ec, eid, "unsupported", null));
+				new Message(Message.Severity.UNIMPLEMENTED, ec, eid, "unsupported", null));
 	}
 
 	protected final void info(String message) {
 		Messages.getInstance().add(
-			new Message(Message.Severity.INFO, this.ElementClass, this.ElementId, message, toString()));
+				new Message(Message.Severity.INFO, this.elementClass, this.elementCode,
+						message, toString()));
 	}
 
 	protected final void unsupported(String message) {
 		Messages.getInstance().add(
-			new Message(Message.Severity.UNSUPPORTED, this.ElementClass, this.ElementId, message, toString()));
+				new Message(Message.Severity.UNSUPPORTED, this.elementClass, this.elementCode,
+						message, toString()));
 	}
 
 	protected final void unimplemented(String message) {
-		Messages.getInstance()
-				.add(
-					new Message(Message.Severity.UNIMPLEMENTED, this.ElementClass, this.ElementId,
-							message, toString()));
+		Messages.getInstance().add(
+				new Message(Message.Severity.UNIMPLEMENTED, this.elementClass, this.elementCode,
+						message, toString()));
 	}
 
 	@Override
@@ -1367,6 +1201,23 @@ class Command implements Cloneable {
             return null;
         }
     }
+
+	/**
+	 * Returns the element class for this command
+	 * @return An integer representing the class
+	 */
+	public int getElementClass() {
+		return elementClass;
+	}
+
+
+	/**
+	 * Returns the element ID for this command
+	 * @return An integer representing the identifier
+	 */
+	public int getElementCode() {
+		return elementCode;
+	}
 
 }
 

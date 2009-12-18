@@ -29,6 +29,9 @@ import java.util.ArrayList;
  * @version $Id$
  */
 class Messages extends ArrayList<Message> {
+	
+	private static final long serialVersionUID = -4560757564453237861L;
+	
 	static private Messages instance;
 	
 	static {

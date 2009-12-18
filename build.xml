@@ -2,7 +2,7 @@
 <!-- 
      Main Build file for the jcgm project
      
-     $Id: $
+     $Id$
 -->
 <project name="jcgm" default="jar">
 	
@@ -55,6 +55,23 @@
 			<link href="http://java.sun.com/j2se/1.6.0/docs/api/"/>
 			<link href="http://developer.java.sun.com/developer/products/xml/docs/api/"/>
 		</javadoc>
+	</target>
+
+	<!-- Testing -->
+	<!-- Path to the Web CGM Test suite -->
+	<property name="webcgm-ts" value="../../software/webcgm21-ts"/>
+	<!-- Path where to put the test results -->
+	<property name="test-out" value="build/test-results"/>
+
+	<target name="test" depends="compile">
+		<mkdir dir="${test-out}"/>
+		<java classname="net.sf.jcgm.examples.Analyzer">
+			<arg value="${webcgm-ts}/static10"/>
+			<arg value="${test-out}"/>
+			<classpath>
+				<pathelement location="build/classes"/>
+			</classpath>
+		</java>
 	</target>
 
 	<!-- Distribution -->

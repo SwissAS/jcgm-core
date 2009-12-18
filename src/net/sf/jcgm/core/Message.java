@@ -42,7 +42,7 @@ public class Message {
 	 *            The severity of the message
 	 * @param elementClass
 	 *            The corresponding element class
-	 * @param elementId
+	 * @param elementCode
 	 *            The corresponding element ID
 	 * @param message
 	 *            A message
@@ -50,18 +50,27 @@ public class Message {
 	 *            The command description (optional), typically the output of
 	 *            the <code>toString()</code> method for the command
 	 */
-	public Message(Severity severity, int elementClass, int elementId, String message, String commandDescription) {
+	public Message(Severity severity, int elementClass, int elementCode, String message, String commandDescription) {
 		this.severity = severity;
 		this.elementClass = elementClass;
-		this.elementId = elementId;
+		this.elementId = elementCode;
 		this.message = message;
 		this.commandDescription = commandDescription;
+	}
+	
+	public final int getElementClass() {
+		return elementClass;
+	}
+	
+	public final int getElementCode() {
+		return elementId;
 	}
 	
 	@Override
 	public String toString() {
 		StringBuilder sb = new StringBuilder();
-		sb.append(this.elementClass).append(" ").append(this.elementId).append(" ");
+		sb.append(ElementClass.getElementClass(this.elementClass)).append(" ");
+		sb.append(ElementClass.getElement(elementClass, elementId)).append(" ");
 		sb.append(this.severity).append(" ").append(this.message);
 		if (this.commandDescription != null) {
 			sb.append(" {").append(this.commandDescription).append("}");
