@@ -214,11 +214,11 @@
 						</tr>
 						<tr> <td>5</td> <td>1</td> <td>LINE BUNDLE INDEX</td>								<td class="unsupported">X</td> <td></td> </tr>
 						<tr> <td>5</td> <td>2</td> <td>LINE TYPE</td>												<td class="supported">	O</td> <td></td> </tr>
-						<tr> <td>5</td> <td>3</td> <td>LINE WIDTH</td>											<td class="partial">		~</td> <td>Only for LINE WIDTH SPECIFICATION MODE ABSOLUTE</td> </tr>
+						<tr> <td>5</td> <td>3</td> <td>LINE WIDTH</td>											<td class="partial">		~</td> <td>Only for LINE WIDTH SPECIFICATION MODE ABSOLUTE and SCALED</td> </tr>
 						<tr> <td>5</td> <td>4</td> <td>LINE COLOUR</td>											<td class="supported">	O</td> <td></td> </tr>
 						<tr> <td>5</td> <td>5</td> <td>MARKER BUNDLE INDEX</td>							<td class="unsupported">X</td> <td></td> </tr>
 						<tr> <td>5</td> <td>6</td> <td>MARKER TYPE</td>											<td class="supported">	O</td> <td></td> </tr>
-						<tr> <td>5</td> <td>7</td> <td>MARKER SIZE</td>											<td class="partial">		~</td> <td>Only for MARKER SIZE SPECIFICATION MODE ABSOLUTE</td> </tr>
+						<tr> <td>5</td> <td>7</td> <td>MARKER SIZE</td>											<td class="partial">		~</td> <td>Only for MARKER SIZE SPECIFICATION MODE ABSOLUTE and SCALED</td> </tr>
 						<tr> <td>5</td> <td>8</td> <td>MARKER COLOUR</td>										<td class="supported">	O</td> <td></td> </tr>
 						<tr> <td>5</td> <td>9</td> <td>TEXT BUNDLE INDEX</td>								<td class="unsupported">X</td> <td></td> </tr>
 						<tr> <td>5</td> <td>10</td> <td>TEXT FONT INDEX</td>								<td class="unsupported">X</td> <td></td> </tr>
@@ -239,7 +239,7 @@
 						<tr> <td>5</td> <td>25</td> <td>PATTERN INDEX</td>									<td class="unsupported">X</td> <td></td> </tr>
 						<tr> <td>5</td> <td>26</td> <td>EDGE BUNDLE INDEX</td>							<td class="unsupported">X</td> <td></td> </tr>
 						<tr> <td>5</td> <td>27</td> <td>EDGE TYPE</td>											<td class="supported">	O</td> <td></td> </tr>
-						<tr> <td>5</td> <td>28</td> <td>EDGE WIDTH</td>											<td class="supported">	O</td> <td></td> </tr>
+						<tr> <td>5</td> <td>28</td> <td>EDGE WIDTH</td>											<td class="partial">		~</td> <td>Only for EDGE WIDTH SPECIFICATION MODE ABSOLUTE and SCALED</td> </tr>
 						<tr> <td>5</td> <td>29</td> <td>EDGE COLOUR</td>										<td class="supported">	O</td> <td></td> </tr>
 						<tr> <td>5</td> <td>30</td> <td>EDGE VISIBILITY</td>								<td class="supported">	O</td> <td></td> </tr>
 						<tr> <td>5</td> <td>31</td> <td>FILL REFERENCE POINT</td>						<td class="unsupported">X</td> <td></td> </tr>

@@ -21,11 +21,14 @@
  */
 package net.sf.jcgm.core;
 
-import java.awt.*;
+import java.awt.Dimension;
+import java.awt.Graphics;
 import java.io.DataInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.util.zip.GZIPInputStream;
 
 import javax.swing.JPanel;
 
@@ -54,7 +57,18 @@ public class CGMPanel extends JPanel {
     }
     
     public void open(File cgmFile) throws IOException {
-		DataInputStream in = new DataInputStream(new FileInputStream(cgmFile));
+    	if (cgmFile == null)
+    		throw new NullPointerException("unexpected null parameter");
+    	
+    	InputStream inputStream;
+    	String cgmFileName = cgmFile.getName();
+		if (cgmFileName.endsWith(".cgm.gz") || cgmFileName.endsWith(".cgmz")) {
+    		inputStream = new GZIPInputStream(new FileInputStream(cgmFile));
+    	}
+    	else {
+    		inputStream = new FileInputStream(cgmFile);
+    	}
+		DataInputStream in = new DataInputStream(inputStream);
 		CGM cgm = new CGM();
 		cgm.read(in);
 		in.close();

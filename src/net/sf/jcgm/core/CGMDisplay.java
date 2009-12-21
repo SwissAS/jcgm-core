@@ -67,7 +67,7 @@ public class CGMDisplay {
     private Color textColor = null;
     private int textColorIndex = 1; 
     private Color markerColor = null;
-    private int markerColorIndex = 1;
+    private final int markerColorIndex = 1;
     
     private boolean isFilled = false;
     /** True if the edge should be drawn */
@@ -100,7 +100,7 @@ public class CGMDisplay {
 
 	private VerticalAlignment verticalTextAlignment = VerticalAlignment.NORMAL_VERTICAL;
 
-	private Map<Integer, float[]> lineDashes;
+	private final Map<Integer, float[]> lineDashes;
 
 	/** The color table */
 	private Color[] colorTable;
@@ -137,6 +137,8 @@ public class CGMDisplay {
 	private HatchType hatchType = HatchType.HORIZONTAL_LINES;
 
 	private boolean clipFlag = true;
+	
+	private AffineTransform scaleTransform;
 
     public CGMDisplay(CGM cgm) {
         reset();
@@ -205,8 +207,8 @@ public class CGMDisplay {
     		m12 = this.canvasHeight+s*maxY;
     	}
 		
-    	// scale to the available view port
-		AffineTransform scaleTransform = new AffineTransform(m00, 0, 0, m11, m02, m12);
+		// scale to the available view port
+    	scaleTransform = new AffineTransform(m00, 0, 0, m11, m02, m12);
 		
 		// invert the Y axis since (0, 0) is at top left for AWT
 		AffineTransform invertY = new AffineTransform(1, 0, 0, -1, 0, this.canvasHeight);
@@ -723,9 +725,29 @@ public class CGMDisplay {
 		return this.baselineVector;
 	}
 
+	private double scaleWidth(double width, SpecificationMode mode) {
+		double scaledWidth;
+		if (SpecificationMode.ABSOLUTE.equals(mode)) {
+			scaledWidth = width;
+		}
+		else if (SpecificationMode.SCALED.equals(mode)) {
+			double scaleX = scaleTransform.getScaleX();
+			if (scaleX != 0) {
+				scaledWidth = width / scaleX;
+			}
+			else {
+				scaledWidth = width;
+			}
+		}
+		else {
+			scaledWidth = width;
+		}
+		return scaledWidth;
+	}
+
 	public void setLineWidth(double width) {
-		// TODO: scaling?
-		this.lineStroke = new BasicStroke((float) width, 
+		SpecificationMode mode = LineWidthSpecificationMode.getMode();
+		this.lineStroke = new BasicStroke((float) scaleWidth(width, mode), 
 			this.lineStroke.getEndCap(), 
 			this.lineStroke.getLineJoin(),
 			this.lineStroke.getMiterLimit(),
@@ -734,8 +756,8 @@ public class CGMDisplay {
 	}
 
 	public void setEdgeWidth(double width) {
-		// TODO: scaling?
-		this.edgeStroke = new BasicStroke((float) width, 
+		SpecificationMode mode = EdgeWidthSpecificationMode.getMode();
+		this.edgeStroke = new BasicStroke((float) scaleWidth(width, mode), 
 			this.edgeStroke.getEndCap(), 
 			this.edgeStroke.getLineJoin(),
 			this.edgeStroke.getMiterLimit(),
@@ -788,7 +810,7 @@ public class CGMDisplay {
 	}
 
 	public void setMarkerSize(double width) {
-		this.markerSize = width;
+		this.markerSize = scaleWidth(width, MarkerSizeSpecificationMode.getMode());
 	}
 	
 	public double getMarkerSize() {

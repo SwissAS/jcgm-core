@@ -21,10 +21,20 @@
  */
 package net.sf.jcgm.core;
 
-import java.io.*;
-import java.util.*;
 import java.awt.Dimension;
 import java.awt.geom.Point2D;
+import java.io.DataInput;
+import java.io.DataInputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.PrintStream;
+import java.util.ArrayList;
+import java.util.Enumeration;
+import java.util.List;
+import java.util.Vector;
+import java.util.zip.GZIPInputStream;
 
 import net.sf.jcgm.core.ScalingMode.Mode;
 
@@ -37,14 +47,25 @@ import net.sf.jcgm.core.ScalingMode.Mode;
 public class CGM implements Cloneable {
     private Vector<Command> commands;
     
-    private List<ICommandListener> commandListeners = new ArrayList<ICommandListener>();
+    private final List<ICommandListener> commandListeners = new ArrayList<ICommandListener>();
     
     public CGM() {
     	// empty constructor. XXX: Remove?
     }
     
 	public CGM(File cgmFile) throws IOException {
-        DataInputStream in = new DataInputStream(new FileInputStream(cgmFile));
+		if (cgmFile == null)
+			throw new NullPointerException("unexpected null parameter");
+		
+		InputStream inputStream;
+		String cgmFilename = cgmFile.getName();
+		if (cgmFilename.endsWith(".cgm.gz") || cgmFilename.endsWith(".cgmz")) {
+			inputStream = new GZIPInputStream(new FileInputStream(cgmFile));
+		}
+		else {
+			inputStream = new FileInputStream(cgmFile);
+		}
+        DataInputStream in = new DataInputStream(inputStream);
         read(in);
         in.close();
     }
