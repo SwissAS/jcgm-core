@@ -21,7 +21,8 @@
  */
 package net.sf.jcgm.core;
 
-import java.io.*;
+import java.io.DataInput;
+import java.io.IOException;
 
 
 /**
@@ -39,8 +40,8 @@ class LineWidth extends Command {
         SpecificationMode mode = LineWidthSpecificationMode.getMode();
 		this.width = makeSizeSpecification(mode);
         
-		if (!SpecificationMode.ABSOLUTE.equals(mode)) {
-			unimplemented("LineWidth only ABSOLUTE implemented");
+		if (!SpecificationMode.ABSOLUTE.equals(mode) || !SpecificationMode.SCALED.equals(mode)) {
+			unimplemented("LineWidth specification mode "+mode+" not implemented");
 		}
     }
 
