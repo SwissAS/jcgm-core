@@ -22,9 +22,11 @@
 package net.sf.jcgm.core;
 
 import java.awt.Color;
-import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.awt.geom.Point2D;
-import java.io.*;
+import java.awt.geom.Rectangle2D;
+import java.io.DataInput;
+import java.io.IOException;
 
 
 /**
@@ -34,8 +36,8 @@ import java.io.*;
  * @version $Id$
  */
 class ColourTable extends Command {
-    private int startIndex;
-	private Color[] colors;
+    private final int startIndex;
+	private final Color[] colors;
 
 	public ColourTable(int ec, int eid, int l, DataInput in)
             throws IOException {
@@ -65,14 +67,11 @@ class ColourTable extends Command {
     	
     	if (d.isBeforeBeginPictureBody()) {
     		// the background is set to color index 0 in this case
-    		Graphics g = d.getGraphics2D();
+    		Graphics2D g2d = d.getGraphics2D();
     		Point2D.Double[] extent = d.getExtent();
-    		int x = d.x(extent[0].x);
-    		int y = d.y(extent[1].y);
-    		int w = d.x(extent[1].x) - d.x(extent[0].x);
-    		int h = d.y(extent[0].y) - d.y(extent[1].y);
-    		g.setColor(d.getIndexedColor(0));
-    		g.fillRect(x, y, w, h);
+    		g2d.setColor(d.getIndexedColor(0));
+			g2d.fill(new Rectangle2D.Double(extent[0].x, extent[1].y,
+					extent[1].x - extent[0].x, extent[0].y - extent[1].y));
     	}
 	}
 

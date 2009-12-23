@@ -2,11 +2,11 @@
  * <copyright> Copyright 1997-2003 BBNT Solutions, LLC under sponsorship of the
  * Defense Advanced Research Projects Agency (DARPA).
  * Copyright 2009 Swiss AviationSoftware Ltd.
- * 
+ *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of the Cougaar Open Source License as published by DARPA on
  * the Cougaar Open Source Website (www.cougaar.org).
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -46,17 +46,17 @@ import net.sf.jcgm.core.ScalingMode.Mode;
  */
 public class CGM implements Cloneable {
     private Vector<Command> commands;
-    
+
     private final List<ICommandListener> commandListeners = new ArrayList<ICommandListener>();
-    
+
     public CGM() {
     	// empty constructor. XXX: Remove?
     }
-    
+
 	public CGM(File cgmFile) throws IOException {
 		if (cgmFile == null)
 			throw new NullPointerException("unexpected null parameter");
-		
+
 		InputStream inputStream;
 		String cgmFilename = cgmFile.getName();
 		if (cgmFilename.endsWith(".cgm.gz") || cgmFilename.endsWith(".cgmz")) {
@@ -77,11 +77,11 @@ public class CGM implements Cloneable {
             Command c = Command.read(in);
             if (c == null)
                 break;
-            
-            for (ICommandListener listener : commandListeners) {
+
+            for (ICommandListener listener : this.commandListeners) {
 				listener.commandProcessed(c.getElementClass(), c.getElementCode(), c.toString());
 			}
-            
+
             // get rid of all arguments after we read them
             c.cleanUpArguments();
             this.commands.addElement(c);
@@ -115,10 +115,10 @@ public class CGM implements Cloneable {
 		VDCIntegerPrecision.reset();
 		VDCRealPrecision.reset();
 		VDCType.reset();
-		
+
 		Messages.getInstance().reset();
 	}
-	
+
 	public List<Message> getMessages() {
 		return Messages.getInstance();
 	}
@@ -165,9 +165,9 @@ public class CGM implements Cloneable {
     	Point2D.Double[] extent = extent();
     	if (extent == null)
     		return null;
-    	
+
     	double factor = 1;
-    	
+
     	ScalingMode scalingMode = getScalingMode();
     	if (scalingMode != null) {
     		Mode mode = scalingMode.getMode();
@@ -179,10 +179,10 @@ public class CGM implements Cloneable {
     			}
     		}
     	}
-    	
+
     	int width = (int)(Math.abs(extent[1].x - extent[0].x) * factor);
     	int height = (int)(Math.abs(extent[1].y - extent[0].y) * factor);
-    	
+
     	return new Dimension(width, height);
     }
 
@@ -197,7 +197,7 @@ public class CGM implements Cloneable {
         }
         return null;
     }
-    
+
     private ScalingMode getScalingMode() {
         Enumeration<Command> e = this.commands.elements();
         while (e.hasMoreElements()) {
@@ -208,7 +208,7 @@ public class CGM implements Cloneable {
         }
         return null;
     }
-    
+
     @Override
 	public Object clone() {
         CGM newOne = new CGM();

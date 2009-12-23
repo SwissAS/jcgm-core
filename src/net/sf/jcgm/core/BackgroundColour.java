@@ -2,11 +2,11 @@
  * <copyright> Copyright 1997-2003 BBNT Solutions, LLC under sponsorship of the
  * Defense Advanced Research Projects Agency (DARPA).
  * Copyright 2009 Swiss AviationSoftware Ltd.
- * 
+ *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of the Cougaar Open Source License as published by DARPA on
  * the Cougaar Open Source Website (www.cougaar.org).
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -22,9 +22,11 @@
 package net.sf.jcgm.core;
 
 import java.awt.Color;
-import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.awt.geom.Point2D;
-import java.io.*;
+import java.awt.geom.Rectangle2D;
+import java.io.DataInput;
+import java.io.IOException;
 
 
 /**
@@ -34,29 +36,25 @@ import java.io.*;
  * @version $Id$
  */
 class BackgroundColour extends Command {
-    private Color backgroundColor;
+    private final Color backgroundColor;
 
 	public BackgroundColour(int ec, int eid, int l, DataInput in)
             throws IOException {
         super(ec, eid, l, in);
-        
+
         this.backgroundColor = makeDirectColor();
-        
+
         // make sure all the arguments were read
         assert (this.currentArg == this.args.length);
     }
 
 	@Override
 	public void paint(CGMDisplay d) {
-		Graphics g = d.getGraphics2D();
+		Graphics2D g = d.getGraphics2D();
 		g.setColor(this.backgroundColor);
 
 		Point2D.Double[] extent = d.getExtent();
-		int botLeftX = (int)(extent[0].x);
-		int botLeftY = (int)(extent[0].y);
-		int topRightX = (int)(extent[1].x);
-		int topRightY = (int)(extent[1].y);
-		g.fillRect(botLeftX, topRightY, topRightX - botLeftX, botLeftY - topRightY);
+		g.fill(new Rectangle2D.Double(extent[0].x, extent[1].y, extent[1].x - extent[0].x, extent[0].y - extent[1].y));
 	}
 
 	@Override

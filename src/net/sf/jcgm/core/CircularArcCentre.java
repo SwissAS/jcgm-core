@@ -2,11 +2,11 @@
  * <copyright> Copyright 1997-2003 BBNT Solutions, LLC under sponsorship of the
  * Defense Advanced Research Projects Agency (DARPA).
  * Copyright 2009 Swiss AviationSoftware Ltd.
- * 
+ *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of the Cougaar Open Source License as published by DARPA on
  * the Cougaar Open Source Website (www.cougaar.org).
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -21,11 +21,11 @@
  */
 package net.sf.jcgm.core;
 
-import java.awt.Dimension;
 import java.awt.Graphics2D;
 import java.awt.geom.Arc2D;
 import java.awt.geom.Point2D;
-import java.io.*;
+import java.io.DataInput;
+import java.io.IOException;
 
 
 /**
@@ -53,8 +53,7 @@ class CircularArcCentre extends Command {
 		this.endDeltaY = makeVdc();
 		this.radius = makeVdc();
 
-		Dimension size = new Dimension();
-		size.setSize(2 * this.radius, 2 * this.radius);
+		DimensionDouble size = new DimensionDouble(2 * this.radius, 2 * this.radius);
 
 		this.shape = new Arc2D.Double();
 		this.shape.setFrame(new Point2D.Double(this.center.x - this.radius, this.center.y -

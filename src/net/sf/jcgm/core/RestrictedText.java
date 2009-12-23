@@ -32,7 +32,8 @@ import java.awt.font.GlyphVector;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
-import java.io.*;
+import java.io.DataInput;
+import java.io.IOException;
 
 import net.sf.jcgm.core.TextAlignment.HorizontalAlignment;
 import net.sf.jcgm.core.TextAlignment.VerticalAlignment;
@@ -44,12 +45,10 @@ import net.sf.jcgm.core.TextAlignment.VerticalAlignment;
  * @author BBNT Solutions
  * @version $Id$
  */
-class RestrictedText extends Command {
-    private String string;
-	private double deltaWidth;
-	private double deltaHeight;
-	private Point2D.Double textPosition;
-	private RestrictedTextType.Type type;
+class RestrictedText extends TextCommand {
+    private final double deltaWidth;
+	private final double deltaHeight;
+	private final RestrictedTextType.Type type;
 
 	private Shape shape;
 
@@ -59,7 +58,7 @@ class RestrictedText extends Command {
 
         this.deltaWidth = makeVdc();
         this.deltaHeight = makeVdc();
-        this.textPosition = makePoint();
+        this.position = makePoint();
         
         int finalNotFinal = makeEnum();
         
@@ -74,12 +73,13 @@ class RestrictedText extends Command {
     @Override
 	public String toString() {
         return "RestrictedText \"" + this.string + "\" deltaWidth=" + this.deltaWidth +
-        " deltaHeight=" + this.deltaHeight + " textPosition.x=" + this.textPosition.x + 
-        " textPosition.y=" + this.textPosition.y;
+        " deltaHeight=" + this.deltaHeight + " textPosition.x=" + this.position.x + 
+        " textPosition.y=" + this.position.y;
         
     }
 
-	private Point2D.Double getTextPosition(CGMDisplay d) {
+	@Override
+	protected Point2D.Double getTextOffset(CGMDisplay d) {
         // the location of the bounding box depends on the alignment and the text path
 		TextPath.Type textPath = d.getTextPath();
 		
@@ -244,40 +244,8 @@ class RestrictedText extends Command {
         return new Point2D.Double(xPos, yPos);
 	}
 
-	/**
-	 * @param glyphVector
-	 */
-	private void applyTextPath(CGMDisplay d, GlyphVector glyphVector) {
-		double height = glyphVector.getLogicalBounds().getHeight();
-		
-		if (TextPath.Type.DOWN.equals(d.getTextPath())) {
-			float[] glyphPositions = glyphVector.getGlyphPositions(0, glyphVector.getNumGlyphs(), null);
-			
-			int glyphIndex = 0;
-			for (int i = 0; i < (glyphPositions.length / 2); i++) {
-				Point2D.Float newPos = new Point2D.Float(glyphPositions[0], (float)(i*height));
-				glyphVector.setGlyphPosition(glyphIndex++, newPos);
-			}
-		}
-		else if (TextPath.Type.DOWN.equals(d.getTextPath())) {
-			
-		}
-	}
-
-	/**
-	 * Flip the given string for left text path
-	 * @param s
-	 * @return
-	 */
-	private String flipString(String s) {
-		StringBuilder sb = new StringBuilder();
-		for (int i = s.length() - 1; i >= 0; i--) {
-			sb.append(s.charAt(i));
-		}
-		return sb.toString();
-	}
-	
-	private void scaleText(CGMDisplay d, FontMetrics fontMetrics, GlyphVector glyphVector, double width, double height) {
+	@Override
+	protected void scaleText(CGMDisplay d, FontMetrics fontMetrics, GlyphVector glyphVector, double width, double height) {
 		Graphics2D g2d = d.getGraphics2D();
 		
 		double scaleX = 1;
@@ -335,7 +303,7 @@ class RestrictedText extends Command {
         AffineTransform savedTransform = g2d.getTransform();
         
         AffineTransform coordinateSystemTransformation = d.getCoordinateSystemTransformation(
-        	this.textPosition,
+        	this.position,
         	d.getCharacterOrientationBaselineVector(), d.getCharacterOrientationUpVector());
         
         AffineTransform textTransform = d.getTextTransform();
@@ -343,7 +311,7 @@ class RestrictedText extends Command {
 
         g2d.transform(coordinateSystemTransformation);
         
-        Point2D.Double textOrigin = getTextPosition(d);
+        Point2D.Double textOrigin = getTextOffset(d);
         g2d.translate(textOrigin.x, textOrigin.y);
 
         // DEBUG: draw the outline

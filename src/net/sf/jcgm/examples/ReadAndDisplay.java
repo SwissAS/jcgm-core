@@ -18,6 +18,7 @@ import net.sf.jcgm.core.CGMPanel;
 /**
  * Example on how to read and display a CGM file.
  * @version $Id: $
+ * @author Philippe Cadé
  * @since Oct 15, 2009
  */
 public class ReadAndDisplay {
@@ -29,12 +30,12 @@ public class ReadAndDisplay {
 			// create an input stream for the CGM file
 			DataInputStream in = new DataInputStream(new FileInputStream(
 					cgmFile));
-			
+
 			// read the CGM file
 			CGM cgm = new CGM();
 			cgm.read(in);
 			in.close();
-			
+
 			// display the CGM file
 			CGMDisplay display = new CGMDisplay(cgm);
 			final CGMPanel cgmPanel = new CGMPanel(display);
@@ -50,7 +51,7 @@ public class ReadAndDisplay {
 					cgmPanel.revalidate();
 				}
 			});
-			
+
 			JScrollPane scrollPane = new JScrollPane(cgmPanel);
 			frame.getContentPane().add(scrollPane);
 			frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);

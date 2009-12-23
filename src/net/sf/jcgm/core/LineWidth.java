@@ -40,7 +40,7 @@ class LineWidth extends Command {
         SpecificationMode mode = LineWidthSpecificationMode.getMode();
 		this.width = makeSizeSpecification(mode);
         
-		if (!SpecificationMode.ABSOLUTE.equals(mode) || !SpecificationMode.SCALED.equals(mode)) {
+		if (!SpecificationMode.ABSOLUTE.equals(mode) && !SpecificationMode.SCALED.equals(mode)) {
 			unimplemented("LineWidth specification mode "+mode+" not implemented");
 		}
     }

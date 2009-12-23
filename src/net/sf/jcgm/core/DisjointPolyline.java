@@ -2,11 +2,11 @@
  * <copyright> Copyright 1997-2003 BBNT Solutions, LLC under sponsorship of the
  * Defense Advanced Research Projects Agency (DARPA).
  * Copyright 2009 Swiss AviationSoftware Ltd.
- * 
+ *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of the Cougaar Open Source License as published by DARPA on
  * the Cougaar Open Source Website (www.cougaar.org).
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -22,8 +22,10 @@
 package net.sf.jcgm.core;
 
 import java.awt.Graphics2D;
+import java.awt.geom.Line2D;
 import java.awt.geom.Point2D;
-import java.io.*;
+import java.io.DataInput;
+import java.io.IOException;
 
 
 /**
@@ -33,20 +35,20 @@ import java.io.*;
  * @version $Id$
  */
 class DisjointPolyline extends Command {
-	private int[] x;
-	private int[] y;
-	private Point2D.Double[] points;
+	private final Line2D.Double[] lines;
 
     public DisjointPolyline(int ec, int eid, int l, DataInput in)
             throws IOException {
         super(ec, eid, l, in);
-        
+
         int n = this.args.length / sizeOfPoint();
         assert (n % 2 == 0);
-        
-        this.points = new Point2D.Double[n];
-        for (int i = 0; i < n; i++) {
-        	this.points[i] = makePoint();
+
+        this.lines = new Line2D.Double[n / 2];
+        for (int i = 0; i < (n/2); i++) {
+        	Point2D.Double p1 = makePoint();
+        	Point2D.Double p2 = makePoint();
+        	this.lines[i] = new Line2D.Double(p1.x, p1.y, p2.x, p2.y);
         }
     }
 
@@ -54,36 +56,26 @@ class DisjointPolyline extends Command {
 	public String toString() {
     	StringBuilder sb = new StringBuilder();
     	sb.append("DisjointPolyline [");
-        for (int i = 0; i < this.points.length; i++) {
+        for (int i = 0; i < this.lines.length; i++) {
         	sb.append("(");
-        	sb.append(this.points[i].x).append(",");
-        	sb.append(this.points[i].y);
+        	sb.append(this.lines[i].x1).append(",");
+        	sb.append(this.lines[i].y1).append(",");
+        	sb.append(this.lines[i].x2).append(",");
+        	sb.append(this.lines[i].y2);
         	sb.append(")");
         }
         sb.append("]");
         return sb.toString();
     }
 
-	private void initPoints() {
-        this.x = new int[this.points.length];
-        this.y = new int[this.points.length];
-        for (int i = 0; i < this.points.length; i++) {
-            this.x[i] = (int)(this.points[i].x);
-            this.y[i] = (int)(this.points[i].y);
-        }
-    }
-
     @Override
 	public void paint(CGMDisplay d) {
-    	if (this.x == null || this.y == null)
-    		initPoints();
-    	
         Graphics2D g2d = d.getGraphics2D();
 		g2d.setColor(d.getLineColor());
 		g2d.setStroke(d.getLineStroke());
 
-        for (int i = 0; i < this.points.length/2; i++) {
-        	g2d.drawLine(this.x[2*i], this.y[2*i], this.x[2*i+1], this.y[2*i+1]);
+        for (int i = 0; i < this.lines.length; i++) {
+        	g2d.draw(this.lines[i]);
         }
     }
 }

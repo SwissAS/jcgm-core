@@ -2,11 +2,11 @@
  * <copyright> Copyright 1997-2003 BBNT Solutions, LLC under sponsorship of the
  * Defense Advanced Research Projects Agency (DARPA).
  * Copyright 2009 Swiss AviationSoftware Ltd.
- * 
+ *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of the Cougaar Open Source License as published by DARPA on
  * the Cougaar Open Source Website (www.cougaar.org).
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -22,6 +22,9 @@
 package net.sf.jcgm.core;
 
 import java.awt.Color;
+import java.awt.Shape;
+import java.awt.geom.AffineTransform;
+import java.awt.geom.PathIterator;
 import java.awt.geom.Point2D;
 import java.io.DataInput;
 import java.io.EOFException;
@@ -40,7 +43,7 @@ import net.sf.jcgm.core.VDCRealPrecision.Type;
  * int, and long, whose values are 8-bit, 16-bit, 32-bit and 64-bit signed
  * two's-complement integers, respectively, and char, whose values are 16-bit
  * unsigned integers representing Unicode characters.
- * 
+ *
  * @author xphc (Philippe Cadé)
  * @author BBNT Solutions
  * @version $Id$
@@ -48,16 +51,16 @@ import net.sf.jcgm.core.VDCRealPrecision.Type;
 class Command implements Cloneable {
 	/** All the command parameters */
     protected int args[];
-    
+
     /** The current command parameter we're reading */
     protected int currentArg = 0;
-    
+
     /** The current bit in the current argument we're reading */
     private int posInArg = 0;
-    
-    private int elementClass;
-    private int elementCode;
-    
+
+    private final int elementClass;
+    private final int elementCode;
+
     /**
      * The base class for all commands.
      * @param ec The element class
@@ -111,7 +114,7 @@ class Command implements Cloneable {
             	}
                 for (int i = 0; i < l; i++)
                     this.args[a++] = in.readUnsignedByte();
-                
+
                 // align on a word if necessary
                 if (l % 2 == 1) {
                     int skip = in.readUnsignedByte();
@@ -138,7 +141,7 @@ class Command implements Cloneable {
 	public String toString() {
         return "Unsupported " + this.elementClass + "," + this.elementCode + " (" + (this.args != null ? this.args.length : "arguments cleared") + ")";
     }
-    
+
     final protected String makeFixedString() {
     	int length = makeUInt8();
     	if (length == 255) {
@@ -151,10 +154,10 @@ class Command implements Cloneable {
     	for (int i = 0; i < length; i++) {
     		c[i] = makeChar();
     	}
-    	
+
     	return new String(c);
     }
-    
+
     final protected String makeString() {
     	int length = makeUInt8();
     	if (length == 255) {
@@ -167,7 +170,7 @@ class Command implements Cloneable {
     	for (int i = 0; i < length; i++) {
     		c[i] = makeByte();
     	}
-    	
+
 		try {
 			return new String(c, "ISO8859-1");
 		}
@@ -175,13 +178,13 @@ class Command implements Cloneable {
 			return new String(c);
 		}
     }
-    
+
     final protected byte makeByte() {
     	skipBits();
     	assert (this.currentArg < this.args.length);
     	return (byte)this.args[this.currentArg++];
     }
-    
+
     final protected char makeChar() {
     	skipBits();
     	assert (this.currentArg < this.args.length);
@@ -193,13 +196,13 @@ class Command implements Cloneable {
     	assert(this.currentArg < this.args.length);
     	return (byte) this.args[this.currentArg++];
     }
-    
+
     final protected int makeSignedInt16() {
     	skipBits();
     	assert(this.currentArg+1 < this.args.length);
         return ((short) (this.args[this.currentArg++] << 8) + this.args[this.currentArg++]);
     }
-    
+
     final protected int makeSignedInt24() {
     	skipBits();
     	assert(this.currentArg+2 < this.args.length);
@@ -216,17 +219,17 @@ class Command implements Cloneable {
     	int precision = IntegerPrecision.getPrecision();
     	return makeInt(precision);
     }
-    
+
     final protected int sizeOfInt() {
     	int precision = IntegerPrecision.getPrecision();
     	return precision / 8;
     }
-    
+
     final protected int makeIndex() {
     	int precision = IndexPrecision.getPrecision();
     	return makeInt(precision);
     }
-    
+
     private int makeInt(int precision) {
     	skipBits();
     	if (precision == 8) {
@@ -241,12 +244,12 @@ class Command implements Cloneable {
     	if (precision == 32) {
     		makeSignedInt32();
     	}
-    	
+
     	unsupported("unsupported integer precision "+precision);
     	// return default
     	return makeSignedInt16();
     }
-    
+
     final protected int makeUInt(int precision) {
     	if (precision == 1) {
     		return makeUInt1();
@@ -269,7 +272,7 @@ class Command implements Cloneable {
     	if (precision == 32) {
     		return makeUInt32();
     	}
-    	
+
     	unsupported("unsupported uint precision "+precision);
     	// return default
     	return makeUInt8();
@@ -298,22 +301,22 @@ class Command implements Cloneable {
 		assert this.currentArg < this.args.length;
 		return (char)this.args[this.currentArg++];
 	}
-	
+
 	private int makeUInt4() {
 		return makeUIntBit(4);
 	}
-	
+
 	private int makeUInt2() {
 		return makeUIntBit(2);
 	}
-	
+
 	private int makeUInt1() {
 		return makeUIntBit(1);
 	}
-	
+
 	private int makeUIntBit(int numBits) {
 		assert (this.currentArg < this.args.length);
-		
+
 		int bitsPosition = 8 - numBits - this.posInArg;
 		int mask = ((1 << numBits)-1) << bitsPosition;
 		int ret = (char)((this.args[this.currentArg] & mask) >> bitsPosition);
@@ -325,7 +328,7 @@ class Command implements Cloneable {
 		}
 		return ret;
 	}
-	
+
 	private void skipBits() {
 		if (this.posInArg % 8 != 0) {
 			// we read some bits from the current arg but aren't done, skip the rest
@@ -333,7 +336,7 @@ class Command implements Cloneable {
 			this.currentArg++;
 		}
 	}
-    
+
     final protected double makeVdc() {
 		if (VDCType.getType().equals(VDCType.Type.REAL)) {
 			Type precision = VDCRealPrecision.getPrecision();
@@ -349,11 +352,11 @@ class Command implements Cloneable {
 			if (precision.equals(Type.FLOATING_POINT_64BIT)) {
 				return makeFloatingPoint64();
 			}
-			
+
 			unsupported("unsupported precision "+precision);
 			return makeFixedPoint32();
 		}
-		
+
 		// defaults to integer
 		// if (VDCType.getType().equals(VDCType.Type.INTEGER)) {
 			int precision = VDCIntegerPrecision.getPrecision();
@@ -371,7 +374,7 @@ class Command implements Cloneable {
 			return makeSignedInt16();
 		// }
 	}
-    
+
     final protected int sizeOfVdc() {
 		if (VDCType.getType().equals(VDCType.Type.INTEGER)) {
 			int precision = VDCIntegerPrecision.getPrecision();
@@ -395,7 +398,7 @@ class Command implements Cloneable {
 		}
 		return 1;
     }
-    
+
     final protected double makeReal() {
 		Precision precision = RealPrecision.getPrecision();
 		if (precision.equals(RealPrecision.Precision.FIXED_32)) {
@@ -410,12 +413,12 @@ class Command implements Cloneable {
 		if (precision.equals(RealPrecision.Precision.FLOATING_64)) {
 			return makeFloatingPoint64();
 		}
-		
+
 		unsupported("unsupported real precision "+precision);
 		// return default
 		return makeFixedPoint32();
     }
-    
+
     final protected double makeFixedPoint() {
 		Precision precision = RealPrecision.getPrecision();
 		if (precision.equals(RealPrecision.Precision.FIXED_32)) {
@@ -428,7 +431,7 @@ class Command implements Cloneable {
 		// return default
 		return makeFixedPoint32();
     }
-    
+
     final protected double makeFloatingPoint() {
 		Precision precision = RealPrecision.getPrecision();
 		if (precision.equals(RealPrecision.Precision.FLOATING_32)) {
@@ -439,14 +442,14 @@ class Command implements Cloneable {
 		}
 		return makeFloatingPoint32();
     }
-    
+
     private double makeFixedPoint32() {
 		double wholePart = makeSignedInt16();
 		double fractionPart = makeUInt16();
-		
+
 		return wholePart + (fractionPart / (2 << 15));
 	}
-    
+
     private int sizeOfFixedPoint32() {
     	return 2+2;
     }
@@ -454,7 +457,7 @@ class Command implements Cloneable {
     private double makeFixedPoint64() {
 		double wholePart = makeSignedInt32();
 		double fractionPart = makeUInt32();
-		
+
 		return wholePart + (fractionPart / (2 << 31));
 	}
 
@@ -470,7 +473,7 @@ class Command implements Cloneable {
     	}
     	return Float.intBitsToFloat(bits);
 	}
-    
+
     private int sizeOfFloatingPoint32() {
     	return 2*2;
     }
@@ -491,28 +494,28 @@ class Command implements Cloneable {
 	final protected int makeEnum() {
     	return makeSignedInt16();
     }
-	
+
 	final protected int sizeOfEnum() {
 		return 2;
 	}
-    
+
     final protected Point2D.Double makePoint() {
     	return new Point2D.Double(makeVdc(), makeVdc());
     }
-    
+
     final protected int sizeOfPoint() {
     	return 2 * sizeOfVdc();
     }
-    
+
     final protected int makeColorIndex() {
     	int precision = ColorIndexPrecision.getPrecision();
     	return makeUInt(precision);
     }
-    
+
     final protected int makeColorIndex(int precision) {
     	return makeUInt(precision);
     }
-    
+
     final protected Color makeDirectColor() {
 		int precision = ColorPrecision.getPrecision();
 		Model model = ColorModel.getModel();
@@ -521,7 +524,7 @@ class Command implements Cloneable {
 			int[] scaled = scaleColorValueRGB(makeUInt(precision), makeUInt(precision), makeUInt(precision));
 			return new Color(scaled[0], scaled[1], scaled[2]);
 		}
-		
+
 		if (model.equals(Model.CIELAB)) {
 			unimplemented("CIELAB");
 			makeUInt(precision);
@@ -529,7 +532,7 @@ class Command implements Cloneable {
 			makeUInt(precision);
 			return Color.CYAN;
 		}
-		
+
 		if (model.equals(Model.CIELUV)) {
 			unimplemented("CIELUV");
 			makeUInt(precision);
@@ -537,7 +540,7 @@ class Command implements Cloneable {
 			makeUInt(precision);
 			return Color.CYAN;
 		}
-		
+
 		if (model.equals(Model.CMYK)) {
 			float[] components = new float[4];
 			components[0] = makeUInt(precision);
@@ -547,7 +550,7 @@ class Command implements Cloneable {
 			CMYKColorSpace colorSpace = new CMYKColorSpace();
 			return new Color(colorSpace, components, 1.f);
 		}
-		
+
 		if (model.equals(Model.RGB_RELATED)) {
 			unimplemented("CIELUV");
 			makeUInt(precision);
@@ -559,36 +562,36 @@ class Command implements Cloneable {
 		assert false : "unsupported color mode";
 		return Color.CYAN;
 	}
-    
+
     final protected int sizeOfDirectColor() {
 		int precision = ColorPrecision.getPrecision();
 		Model model = ColorModel.getModel();
-		
+
     	if (model.equals(Model.RGB)) {
     		return 3 * precision / 8;
     	}
-    	
+
     	assert false;
     	return 0;
     }
-    
+
     private int[] scaleColorValueRGB(int r, int g, int b) {
 		int[] min = ColourValueExtent.getMinimumColorValueRGB();
 		int[] max = ColourValueExtent.getMaximumColorValueRGB();
-		
+
 		r = clamp(r, min[0], max[0]);
 		g = clamp(g, min[0], max[0]);
 		b = clamp(b, min[0], max[0]);
-		
+
 		assert (min[0] != max[0] && min[1] != max[1] && min[2] != max[2]);
-		
-		return new int[] { 
+
+		return new int[] {
 				255 * (r - min[0])/(max[0] - min[0]),
 				255 * (g - min[1])/(max[1] - min[1]),
 				255 * (b - min[2])/(max[2] - min[2])
 		};
     }
-    
+
     /**
      * Clamp the given value between the given minimum and maximum
      * @param r The value to clamp
@@ -609,14 +612,14 @@ class Command implements Cloneable {
     	// only base 10 supported
     	return Math.pow(1, sign) * fraction * Math.pow(10, exponent);
     }
-    
+
     final protected double makeSizeSpecification(SpecificationMode specificationMode) {
     	if (specificationMode.equals(SpecificationMode.ABSOLUTE)) {
     		return makeVdc();
     	}
     	return makeReal();
     }
-    
+
     /**
      * Align on a word boundary
      */
@@ -625,7 +628,7 @@ class Command implements Cloneable {
     		// we reached the end of the array, nothing to skip
     		return;
     	}
-    	
+
     	if (this.currentArg % 2 == 1) {
     		assert this.args[this.currentArg] == 0 : "skipping data";
     		this.currentArg++;
@@ -637,7 +640,7 @@ class Command implements Cloneable {
     }
 
     public static Command read(DataInput in) throws IOException {
-    	
+
         int k;
         try {
         	k = in.readUnsignedByte();
@@ -646,7 +649,7 @@ class Command implements Cloneable {
         catch (EOFException e) {
         	return null;
         }
-        
+
         // the element class
         int ec = k >> 12;
         int eid = (k >> 5) & 127;
@@ -656,40 +659,40 @@ class Command implements Cloneable {
 
 	protected static Command readCommand(DataInput in, int ec, int eid, int l) throws IOException {
 		switch (ElementClass.getElementClass(ec)) {
-        
+
         case DELIMITER_ELEMENTS: // 0
         	return readDelimiterElements(in, ec, eid, l);
-        	
+
         case METAFILE_DESCRIPTOR_ELEMENTS: // 1
             return readMetaFileDescriptorElements(in, ec, eid, l);
-            
+
         case PICTURE_DESCRIPTOR_ELEMENTS: // 2
             return readPictureDescriptorElements(in, ec, eid, l);
-            
+
         case CONTROL_ELEMENTS: // 3
         	return readControlElements(in, ec, eid, l);
-        	
+
         case GRAPHICAL_PRIMITIVE_ELEMENTS: // 4
             return readGraphicalPrimitiveElements(in, ec, eid, l);
-            
+
         case ATTRIBUTE_ELEMENTS: // 5
             return readAttributeElements(in, ec, eid, l);
-            
+
         case ESCAPE_ELEMENTS: // 6
             return new Escape(ec, eid, l, in);
-            
+
         case EXTERNAL_ELEMENTS: // 7
         	unsupported(ec, eid);
             return new Command(ec, eid, l, in);
-            
+
         case SEGMENT_ELEMENTS: // 8
         	unsupported(ec, eid);
             return new Command(ec, eid, l, in);
-            
+
         case APPLICATION_STRUCTURE_ELEMENTS: // 9
         	unsupported(ec, eid);
             return new Command(ec, eid, l, in);
-            
+
         default:
         	assert (10 <= ec && ec <= 15) : "unsupported element class";
         	unsupported(ec, eid);
@@ -763,7 +766,7 @@ class Command implements Cloneable {
 		case END_APPLICATION_STRUCTURE:
 			unsupported(ec, eid);
 			return new Command(ec, eid, l, in);
-			
+
 		default:
 			assert false : "unsupported element ID=" + eid;
 			return new Command(ec, eid, l, in);
@@ -772,66 +775,66 @@ class Command implements Cloneable {
 
 	private static Command readMetaFileDescriptorElements(DataInput in, int ec, int eid, int l) throws IOException {
 		switch (MetafileDescriptorElement.getElement(eid)) {
-		
+
 		case METAFILE_VERSION: // 1
 		    return new MetafileVersion(ec, eid, l, in);
-		    
+
 		case METAFILE_DESCRIPTION: // 2
 		    return new MetafileDescription(ec, eid, l, in);
-		    
+
 		case VDC_TYPE: // 3
 			return new VDCType(ec, eid, l, in);
-			
+
 		case INTEGER_PRECISION: // 4
 			return new IntegerPrecision(ec, eid, l, in);
-			
+
 		case REAL_PRECISION: // 5
 		    return new RealPrecision(ec, eid, l, in);
-		    
+
 		case INDEX_PRECISION: // 6
 			return new IndexPrecision(ec, eid, l, in);
-			
+
 		case COLOUR_PRECISION: // 7
 			return new ColorPrecision(ec, eid, l, in);
-			
+
 		case COLOUR_INDEX_PRECISION: // 8
 			return new ColorIndexPrecision(ec, eid, l, in);
-			
+
 		case MAXIMUM_COLOUR_INDEX: // 9
 		    return new MaximumColourIndex(ec, eid, l, in);
-		    
+
 		case COLOUR_VALUE_EXTENT: // 10
 		    return new ColourValueExtent(ec, eid, l, in);
-		    
+
 		case METAFILE_ELEMENT_LIST: // 11
 		    return new MetafileElementList(ec, eid, l, in);
-		    
+
 		case METAFILE_DEFAULTS_REPLACEMENT: // 12
 		    return new MetafileDefaultsReplacement(ec, eid, l, in);
-		    
+
 		case FONT_LIST: // 13
 		    return new FontList(ec, eid, l, in);
-		    
+
 		case CHARACTER_SET_LIST: // 14
 		    return new CharacterSetList(ec, eid, l, in);
-		    
+
 		case CHARACTER_CODING_ANNOUNCER: // 15
 			return new CharacterCodingAnnouncer(ec, eid, l, in);
-			
+
 		case NAME_PRECISION: // 16
 			unsupported(ec, eid);
 		    return new Command(ec, eid, l, in);
-		    
+
 		case MAXIMUM_VDC_EXTENT: // 17
 			return new MaximumVDCExtent(ec, eid, l, in);
-			
+
 		case SEGMENT_PRIORITY_EXTENT: // 18
 			unsupported(ec, eid);
 		    return new Command(ec, eid, l, in);
-		    
+
 		case COLOUR_MODEL: // 19
 			return new ColorModel(ec, eid, l, in);
-			
+
 		case COLOUR_CALIBRATION: // 20
 		case FONT_PROPERTIES: // 21
 		case GLYPH_MAPPING: // 22
@@ -839,7 +842,7 @@ class Command implements Cloneable {
 		case PICTURE_DIRECTORY: // 24
 			unsupported(ec, eid);
 		    return new Command(ec, eid, l, in);
-		    
+
 		default:
 			assert false : "unsupported element ID="+eid;
 		    return new Command(ec, eid, l, in);
@@ -851,31 +854,31 @@ class Command implements Cloneable {
 		// 2, 1
 		case SCALING_MODE:
 		    return new ScalingMode(ec, eid, l, in);
-			
+
 		// 2, 2
 		case COLOUR_SELECTION_MODE:
 		    return new ColorSelectionMode(ec, eid, l, in);
-		    
+
 		    // 2, 3
 		case LINE_WIDTH_SPECIFICATION_MODE:
 		    return new LineWidthSpecificationMode(ec, eid, l, in);
-		    
+
 		    // 2, 4
 		case MARKER_SIZE_SPECIFICATION_MODE:
 		    return new MarkerSizeSpecificationMode(ec, eid, l, in);
-		    
+
 		    // 2, 5
 		case EDGE_WIDTH_SPECIFICATION_MODE:
 		    return new EdgeWidthSpecificationMode(ec, eid, l, in);
-		    
+
 		    // 2, 6
 		case VDC_EXTENT:
 		    return new VDCExtent(ec, eid, l, in);
-		    
+
 		    // 2, 7
 		case BACKGROUND_COLOUR:
 			return new BackgroundColour(ec, eid, l, in);
-			
+
 			// 2, 8
 		case DEVICE_VIEWPORT:
 			// 2, 9
@@ -894,15 +897,15 @@ class Command implements Cloneable {
 		case EDGE_REPRESENTATION:
 			unsupported(ec, eid);
 		    return new Command(ec, eid, l, in);
-			
+
 			// 2, 16
 		case INTERIOR_STYLE_SPECIFICATION_MODE:
 			return new InteriorStyleSpecificationMode(ec, eid, l, in);
-			
+
 			// 2, 17
 		case LINE_AND_EDGE_TYPE_DEFINITION:
 			return new LineAndEdgeTypeDefinition(ec, eid, l, in);
-			
+
 			// 2, 18
 		case HATCH_STYLE_DEFINITION:
 			// 2, 19
@@ -911,7 +914,7 @@ class Command implements Cloneable {
 		case APPLICATION_STRUCTURE_DIRECTORY:
 			unsupported(ec, eid);
 		    return new Command(ec, eid, l, in);
-			
+
 		default:
 			unsupported(ec, eid);
 		    return new Command(ec, eid, l, in);
@@ -936,66 +939,66 @@ class Command implements Cloneable {
 
 	private static Command readGraphicalPrimitiveElements(DataInput in, int ec, int eid, int l) throws IOException {
 		switch (GraphicalPrimitiveElements.getElement(eid)) {
-		
+
 		case POLYLINE: // 1
 		    return new Polyline(ec, eid, l, in);
-		    
+
 		case DISJOINT_POLYLINE: // 2
 		    return new DisjointPolyline(ec, eid, l, in);
-		    
+
 		case POLYMARKER: // 3
 		    return new PolyMarker(ec, eid, l, in);
-		    
+
 		case TEXT: // 4
 		    return new Text(ec, eid, l, in);
-		    
+
 		case RESTRICTED_TEXT: // 5
 		   return new RestrictedText(ec, eid, l, in);
-		   
+
 		case APPEND_TEXT: // 6
 			unsupported(ec, eid);
 		    return new Command(ec, eid, l, in);
-		    
+
 		case POLYGON: // 7
 		    return new PolygonElement(ec, eid, l, in);
-		    
+
 		case POLYGON_SET: // 8
 		    return new PolygonSet(ec, eid, l, in);
-		    
+
 		case CELL_ARRAY: // 9
 			return new CellArray(ec, eid, l, in);
-			
+
 		case GENERALIZED_DRAWING_PRIMITIVE: // 10
 			unsupported(ec, eid);
 		    return new Command(ec, eid, l, in);
-		    
+
 		case RECTANGLE: // 11
 		    return new RectangleElement(ec, eid, l, in);
-		    
+
 		case CIRCLE: // 12
 		    return new CircleElement(ec, eid, l, in);
-		    
+
 		case CIRCULAR_ARC_3_POINT: // 13
 		    return new CircularArc3Point(ec, eid, l, in);
-		    
+
 		case CIRCULAR_ARC_3_POINT_CLOSE: // 14
 		    return new CircularArc3PointClose(ec, eid, l, in);
-		    
+
 		case CIRCULAR_ARC_CENTRE: // 15
 		    return new CircularArcCentre(ec, eid, l, in);
-		    
+
 		case CIRCULAR_ARC_CENTRE_CLOSE: // 16
 		   return new CircularArcCentreClose(ec, eid, l, in);
-		   
+
 		case ELLIPSE: // 17
 		    return new EllipseElement(ec, eid, l, in);
-		    
+
 		case ELLIPTICAL_ARC: // 18
 		    return new EllipticalArc(ec, eid, l, in);
-		    
+
 		case ELLIPTICAL_ARC_CLOSE: // 19
 		    return new EllipticalArcClose(ec, eid, l, in);
-		    
+
 		case CIRCULAR_ARC_CENTRE_REVERSED: // 20
 		case CONNECTING_EDGE: // 21
 		case HYPERBOLIC_ARC: // 22
@@ -1004,16 +1007,16 @@ class Command implements Cloneable {
 		case NON_UNIFORM_RATIONAL_B_SPLINE: // 25
 			unsupported(ec, eid);
 		    return new Command(ec, eid, l, in);
-		    
+
 		case POLYBEZIER: // 26
 			return new PolyBezier(ec, eid, l, in);
-			
+
 		case POLYSYMBOL: // 27
 		case BITONAL_TILE: // 28
 		case TILE: // 29
 			unsupported(ec, eid);
 		    return new Command(ec, eid, l, in);
-		    
+
 		default:
 			unsupported(ec, eid);
 		    return new Command(ec, eid, l, in);
@@ -1025,135 +1028,135 @@ class Command implements Cloneable {
 		case LINE_BUNDLE_INDEX: // 1
 			unsupported(ec, eid);
 			return new Command(ec, eid, l, in);
-			
+
 		case LINE_TYPE: // 2
 		    return new LineType(ec, eid, l, in);
-		    
+
 		case LINE_WIDTH: // 3
 		    return new LineWidth(ec, eid, l, in);
-		    
+
 		case LINE_COLOUR: // 4
 		    return new LineColor(ec, eid, l, in);
-		    
+
 		case MARKER_BUNDLE_INDEX: // 5
 			unsupported(ec, eid);
 			return new Command(ec, eid, l, in);
-			
+
 		case MARKER_TYPE: // 6
 			return new MarkerType(ec, eid, l, in);
-			
+
 		case MARKER_SIZE: // 7
 			return new MarkerSize(ec, eid, l, in);
-			
+
 		case MARKER_COLOUR: // 8
 			return new MarkerColor(ec, eid, l, in);
-			
+
 		case TEXT_BUNDLE_INDEX: // 9:
 			unsupported(ec, eid);
 			return new Command(ec, eid, l, in);
-			
+
 		case TEXT_FONT_INDEX: // 10
 		    return new TextFontIndex(ec, eid, l, in);
-		    
+
 		case TEXT_PRECISION: // 11
 			return new TextPrecision(ec, eid, l, in);
-			
+
 		case CHARACTER_EXPANSION_FACTOR: // 12
 			return new CharacterExpansionFactor(ec, eid, l, in);
-			
+
 		case CHARACTER_SPACING: // 13
 			return new CharacterSpacing(ec, eid, l, in);
-			
+
 		case TEXT_COLOUR: // 14
 		    return new TextColor(ec, eid, l, in);
-		    
+
 		case CHARACTER_HEIGHT: // 15
 		    return new CharacterHeight(ec, eid, l, in);
-		    
+
 		case CHARACTER_ORIENTATION: // 16
 			return new CharacterOrientation(ec, eid, l, in);
-			
+
 		case TEXT_PATH: // 17
 			return new TextPath(ec, eid, l, in);
-			
+
 		case TEXT_ALIGNMENT: // 18
 			return new TextAlignment(ec, eid, l, in);
-			
+
 		case CHARACTER_SET_INDEX: // 19
 			return new CharacterSetIndex(ec, eid, l, in);
-			
+
 		case ALTERNATE_CHARACTER_SET_INDEX: // 20
 			return new AlternateCharacterSetIndex(ec, eid, l, in);
-			
+
 		case FILL_BUNDLE_INDEX: // 21
 			unsupported(ec, eid);
 			return new Command(ec, eid, l, in);
-			
+
 		case INTERIOR_STYLE: // 22
 		    return new InteriorStyle(ec, eid, l, in);
-		    
+
 		case FILL_COLOUR: // 23
 		    return new FillColor(ec, eid, l, in);
-		    
+
 		case HATCH_INDEX: // 24
 			return new HatchIndex(ec, eid, l, in);
-			
+
 		case PATTERN_INDEX: // 25
 		case EDGE_BUNDLE_INDEX: // 26
 			unsupported(ec, eid);
 			return new Command(ec, eid, l, in);
-		    
+
 		case EDGE_TYPE: // 27
 		    return new EdgeType(ec, eid, l, in);
-		    
+
 		case EDGE_WIDTH: // 28
 		    return new EdgeWidth(ec, eid, l, in);
-		    
+
 		case EDGE_COLOUR: // 29
 		    return new EdgeColor(ec, eid, l, in);
-		    
+
 		case EDGE_VISIBILITY: // 30
 		    return new EdgeVisibility(ec, eid, l, in);
-		    
+
 		case FILL_REFERENCE_POINT: // 31
 		case PATTERN_TABLE: // 32
 		case PATTERN_SIZE: // 33
 			unsupported(ec, eid);
 			return new Command(ec, eid, l, in);
-		    
+
 		case COLOUR_TABLE: // 34
 			return new ColourTable(ec, eid, l, in);
-			
+
 		case ASPECT_SOURCE_FLAGS: // 35
 		case PICK_IDENTIFIER: // 36
 			unsupported(ec, eid);
 			return new Command(ec, eid, l, in);
-			
+
 		case LINE_CAP: // 37
 			return new LineCap(ec, eid, l, in);
-			
+
 		case LINE_JOIN: // 38
 			return new LineJoin(ec, eid, l, in);
-			
+
 		case LINE_TYPE_CONTINUATION: // 39
 		case LINE_TYPE_INITIAL_OFFSET: // 40
 		case TEXT_SCORE_TYPE: // 41
 			unsupported(ec, eid);
 			return new Command(ec, eid, l, in);
-			
+
 		case RESTRICTED_TEXT_TYPE: // 42
 			return new RestrictedTextType(ec, eid, l, in);
-			
+
 		case INTERPOLATED_INTERIOR: // 43
 			unsupported(ec, eid);
 			return new Command(ec, eid, l, in);
-			
+
 		case EDGE_CAP: // 44
 			return new EdgeCap(ec, eid, l, in);
-			
+
 		case EDGE_JOIN: // 45
 			return new EdgeJoin(ec, eid, l, in);
-			
+
 		case EDGE_TYPE_CONTINUATION: // 46
 		case EDGE_TYPE_INITIAL_OFFSET: // 47
 		case SYMBOL_LIBRARY_INDEX: // 48
@@ -1207,7 +1210,7 @@ class Command implements Cloneable {
 	 * @return An integer representing the class
 	 */
 	public int getElementClass() {
-		return elementClass;
+		return this.elementClass;
 	}
 
 
@@ -1216,7 +1219,48 @@ class Command implements Cloneable {
 	 * @return An integer representing the identifier
 	 */
 	public int getElementCode() {
-		return elementCode;
+		return this.elementCode;
+	}
+
+	/**
+	 * Returns a descriptive string of the given shape
+	 * @param s The shape to describe
+	 * @return A string containing the coordinates to make the shape
+	 */
+	protected String printShape(Shape s) {
+		StringBuilder sb = new StringBuilder();
+
+		PathIterator pathIterator = s.getPathIterator(new AffineTransform());
+		double[] coords = new double[6];
+		while (!pathIterator.isDone()) {
+			int currentSegment = pathIterator.currentSegment(coords);
+			switch (currentSegment) {
+			case PathIterator.SEG_MOVETO:
+				sb.append("MOVETO=");
+	    		sb.append(coords[0]).append(",").append(coords[1]).append(";");
+				break;
+			case PathIterator.SEG_LINETO:
+				sb.append("LINETO=");
+	    		sb.append(coords[0]).append(",").append(coords[1]).append(";");
+				break;
+			case PathIterator.SEG_QUADTO:
+				sb.append("QUADTO=");
+	    		sb.append(coords[0]).append(",").append(coords[1]).append(",");
+	    		sb.append(coords[2]).append(",").append(coords[3]).append(";");
+				break;
+			case PathIterator.SEG_CUBICTO:
+				sb.append("CUBICTO=");
+	    		sb.append(coords[0]).append(",").append(coords[1]).append(",");
+	    		sb.append(coords[2]).append(",").append(coords[3]).append(",");
+	    		sb.append(coords[4]).append(",").append(coords[5]).append(";");
+				break;
+			case PathIterator.SEG_CLOSE:
+				sb.append("CLOSE=");
+			}
+			pathIterator.next();
+		}
+
+		return sb.toString();
 	}
 
 }

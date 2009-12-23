@@ -40,7 +40,7 @@ class MarkerSize extends Command {
 		SpecificationMode mode = MarkerSizeSpecificationMode.getMode();
 		this.width = makeSizeSpecification(mode);
 		
-		if (!SpecificationMode.ABSOLUTE.equals(mode) || !SpecificationMode.SCALED.equals(mode)) {
+		if (!SpecificationMode.ABSOLUTE.equals(mode) && !SpecificationMode.SCALED.equals(mode)) {
 			unimplemented("MarkerSize specification mode "+mode+" not implemented");
 		}
 	}

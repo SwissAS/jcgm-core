@@ -2,11 +2,11 @@
  * <copyright> Copyright 1997-2003 BBNT Solutions, LLC under sponsorship of the
  * Defense Advanced Research Projects Agency (DARPA).
  * Copyright 2009 Swiss AviationSoftware Ltd.
- * 
+ *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of the Cougaar Open Source License as published by DARPA on
  * the Cougaar Open Source Website (www.cougaar.org).
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -21,12 +21,11 @@
  */
 package net.sf.jcgm.core;
 
-import java.awt.*;
-import java.awt.geom.AffineTransform;
+import java.awt.Graphics2D;
 import java.awt.geom.Path2D;
-import java.awt.geom.PathIterator;
 import java.awt.geom.Point2D;
-import java.io.*;
+import java.io.DataInput;
+import java.io.IOException;
 
 
 /**
@@ -36,28 +35,28 @@ import java.io.*;
  * @version $Id$
  */
 class PolygonElement extends Command {
-	private Path2D.Double polygon;
+	private final Path2D.Double polygon;
 
     public PolygonElement(int ec, int eid, int l, DataInput in)
             throws IOException {
 
         super(ec, eid, l, in);
-        
+
         assert (this.args.length - this.currentArg) % sizeOfPoint() == 0;
         int n = (this.args.length - this.currentArg) / sizeOfPoint();
-        
+
         this.polygon = new Path2D.Double(Path2D.WIND_EVEN_ODD);
-        
+
         Point2D.Double p = makePoint();
         this.polygon.moveTo(p.x, p.y);
-        
+
         for (int i = 1; i < n; i++) {
         	p = makePoint();
         	this.polygon.lineTo(p.x, p.y);
         }
-        
+
         this.polygon.closePath();
-        
+
         // make sure all the arguments were read
         assert (this.currentArg == this.args.length);
     }
@@ -66,40 +65,16 @@ class PolygonElement extends Command {
 	public String toString() {
     	StringBuilder sb = new StringBuilder();
     	sb.append("Polygon ");
-    	PathIterator pathIterator = this.polygon.getPathIterator(new AffineTransform());
-    	
-    	double[] coords = new double[2];
-    	
-    	while (!pathIterator.isDone()) {
-    		int currentSegment = pathIterator.currentSegment(coords);
-    		switch (currentSegment) {
-    		case PathIterator.SEG_MOVETO:
-    			sb.append("MOVETO=");
-    			break;
-    		case PathIterator.SEG_LINETO:
-    			sb.append("LINETO=");
-    			break;
-    		case PathIterator.SEG_QUADTO:
-    			sb.append("QUADTO=");
-    			break;
-    		case PathIterator.SEG_CUBICTO:
-    			sb.append("CUBICTO=");
-    			break;
-    		case PathIterator.SEG_CLOSE:
-    			sb.append("CLOSE=");
-    		}
-    		sb.append(coords[0]).append(",").append(coords[1]).append(";");
-    		pathIterator.next();
-    	}
+    	sb.append(printShape(this.polygon));
         return sb.toString();
     }
 
-    @Override
+	@Override
 	public void paint(CGMDisplay d) {
     	Graphics2D g2d = d.getGraphics2D();
-    	
+
     	d.fill(this.polygon);
-    	
+
     	if (d.drawEdge()) {
     		g2d.setColor(d.getEdgeColor());
     		g2d.setStroke(d.getEdgeStroke());

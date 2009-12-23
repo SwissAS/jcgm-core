@@ -28,13 +28,12 @@ import java.io.FileInputStream;
 import java.io.FileWriter;
 import java.io.FilenameFilter;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.PrintWriter;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
+import java.util.zip.GZIPInputStream;
 
 import net.sf.jcgm.core.CGM;
 import net.sf.jcgm.core.ElementClass;
@@ -60,13 +59,13 @@ public class Analyzer implements ICommandListener {
 	 * Map containing as key: the command class and element code; as value:
 	 * the number of occurrences of this command
 	 */
-	private Map<CommandHelper, Integer> commands = new TreeMap<CommandHelper, Integer>();
+	private final Map<CommandHelper, Integer> commands = new TreeMap<CommandHelper, Integer>();
 
 	/**
 	 * Map containing all commands that generated a message. Key: command class
 	 * and element code, value: number of occurrences of this command.
 	 */
-	private Map<CommandHelper, Integer> unsupportedCommands = new TreeMap<CommandHelper, Integer>();
+	private final Map<CommandHelper, Integer> unsupportedCommands = new TreeMap<CommandHelper, Integer>();
 	
 	private PrintWriter messagesFile = null;
 	
@@ -80,7 +79,8 @@ public class Analyzer implements ICommandListener {
 	 * @param cgmFilesPath
 	 *            Path to the folder where the CGM files to analyze are
 	 * @param outputPath
-	 *            Path where the result files should be stored
+	 *            Path where the result files should be stored or {@code null}
+	 *            to not store information
 	 * @param verbose
 	 *            If {@code true}, output command parameters for all commands
 	 */
@@ -88,20 +88,27 @@ public class Analyzer implements ICommandListener {
 		this.outputPath = outputPath;
 
 		try {
-			messagesFile = new PrintWriter(new BufferedWriter(new FileWriter(new
-					File(outputPath.getAbsolutePath()+File.separator+"messages.txt"))));
-			
-			if (verbose) {
-				commandFile = new PrintWriter(new BufferedWriter(
-						new FileWriter(new File(outputPath.getAbsolutePath()
-								+ File.separator + "commands.txt"))));
+			if (this.outputPath != null) {
+				messagesFile = new PrintWriter(new BufferedWriter(
+						new FileWriter(new File(this.outputPath
+								.getAbsolutePath()
+								+ File.separator + "messages.txt"))));
+
+				if (verbose) {
+					commandFile = new PrintWriter(new BufferedWriter(
+							new FileWriter(new File(this.outputPath
+									.getAbsolutePath()
+									+ File.separator + "commands.txt"))));
+				}
 			}
 			
 			if (cgmFilesPath.isDirectory()) {
 				File[] cgmFiles = cgmFilesPath.listFiles(new FilenameFilter() {
 					@Override
 					public boolean accept(File dir, String name) {
-						return name.endsWith(".cgm");
+						return name.endsWith(".cgm")
+								|| name.endsWith(".cgm.gz")
+								|| name.endsWith(".cgmz");
 					}
 				});
 
@@ -111,19 +118,22 @@ public class Analyzer implements ICommandListener {
 				long startTime = System.currentTimeMillis();
 				
 				for (File cgmFile : cgmFiles) {
+					System.out.print(cgmFile.getName());
+					System.out.print(", ");
 					analyze(cgmFile);
 					
 					int currentProgress = i * 100 / count;
-					long elapsedTime = System.currentTimeMillis() - startTime;
-					long totalTime = currentProgress != 0 ? elapsedTime * 100 / currentProgress : 0;
-					long remainingTime = totalTime - elapsedTime;
-					long remainingMinutes = (remainingTime / 1000) / 60;
-					long remainingSeconds = (remainingTime / 1000) % 60;
-					
 					if (currentProgress != progress) {
 						progress = currentProgress;
 						
+						long elapsedTime = System.currentTimeMillis() - startTime;
+						long totalTime = currentProgress != 0 ? elapsedTime * 100 / currentProgress : 0;
+						long remainingTime = totalTime - elapsedTime;
+						long remainingMinutes = (remainingTime / 1000) / 60;
+						long remainingSeconds = (remainingTime / 1000) % 60;
+						
 						StringBuilder sb = new StringBuilder();
+						sb.append('\n');
 						sb.append(progress).append("% ");
 						sb.append("Estimated Remaining Time ");
 						sb.append(remainingMinutes).append("min ");
@@ -156,25 +166,38 @@ public class Analyzer implements ICommandListener {
 		try {
 			CGM cgm = new CGM();
 			cgm.addCommandListener(this);
-	        DataInputStream in = new DataInputStream(new FileInputStream(cgmFile));
+			
+			InputStream inputStream;
+			if (cgmFile.getName().endsWith(".cgm.gz") || cgmFile.getName().endsWith(".cgmz")) {
+				inputStream = new GZIPInputStream(new FileInputStream(cgmFile));
+			}
+			else {
+				inputStream = new FileInputStream(cgmFile);
+			}
+			
+	        DataInputStream in = new DataInputStream(inputStream);
 	        cgm.read(in);
 	        in.close();
 
-			messagesFile.println(cgmFile.getName());
+	        if (messagesFile != null) {
+				messagesFile.println(cgmFile.getName());
 
-			for (Message message: cgm.getMessages()) {
-				messagesFile.print('\t');
-				messagesFile.println(String.valueOf(message));
-				
-				CommandHelper commandHelper = new CommandHelper(message.getElementClass(), message.getElementCode());
-				Integer count = unsupportedCommands.get(commandHelper);
-				if (count == null) {
-					unsupportedCommands.put(commandHelper, Integer.valueOf(1));
+				for (Message message : cgm.getMessages()) {
+					messagesFile.print('\t');
+					messagesFile.println(String.valueOf(message));
+
+					CommandHelper commandHelper = new CommandHelper(message
+							.getElementClass(), message.getElementCode());
+					Integer count = unsupportedCommands.get(commandHelper);
+					if (count == null) {
+						unsupportedCommands.put(commandHelper, Integer
+								.valueOf(1));
+					} else {
+						unsupportedCommands.put(commandHelper, Integer
+								.valueOf(count + 1));
+					}
 				}
-				else {
-					unsupportedCommands.put(commandHelper, Integer.valueOf(count+1));
-				}
-			}
+	        }
 		}
 		catch (IOException e) {
 			e.printStackTrace();
@@ -182,6 +205,9 @@ public class Analyzer implements ICommandListener {
 	}
 
 	private void saveResults() {
+		if (this.outputPath == null)
+			return;
+
 		FileWriter countFile = null;
 		FileWriter unsupportedCountFile = null;
 		FileWriter detailWriter = null;
@@ -189,13 +215,13 @@ public class Analyzer implements ICommandListener {
 		try {
 			// output the command count
 			countFile = new FileWriter(new
-					File(outputPath.getAbsolutePath()+File.separator+"count.csv"));
+					File(this.outputPath.getAbsolutePath()+File.separator+"count.csv"));
 		
 			Set<CommandHelper> helpers = commands.keySet();
 			saveHelpers(countFile, helpers);
 			
 			// output the unsupported command count
-			unsupportedCountFile = new FileWriter(new File(outputPath
+			unsupportedCountFile = new FileWriter(new File(this.outputPath
 					.getAbsolutePath()
 					+ File.separator + "unsupported-count.csv"));
 			
@@ -242,7 +268,7 @@ public class Analyzer implements ICommandListener {
 	 * Prints usage information and exits 
 	 */
 	private static void usage() {
-		System.out.println("java Analyzer path-to-cgm-files [path-for-result-files]");
+		System.out.println("java Analyzer path-to-cgm-files [path-for-result-files] -v");
 		System.exit(1);
 	}
 	
@@ -303,6 +329,9 @@ public class Analyzer implements ICommandListener {
 
 		if (args.length >= 2) {
 			outputDir = new File(args[1]);
+		}
+		else {
+			outputDir = null;
 		}
 		
 		boolean verbose = false;
