@@ -58,16 +58,21 @@
 	</target>
 
 	<!-- Testing -->
-	<!-- Path to the Web CGM Test suite -->
-	<property name="webcgm-ts" value="../../software/webcgm21-ts"/>
 	<!-- Path where to put the test results -->
 	<property name="test-out" value="build/test-results"/>
 
 	<target name="test" depends="compile">
+		<foreach target="test-single" param="test-folder">
+			<!-- Path to the Web CGM Test suite -->
+			<path path="../../software/webcgm21-ts/static10"/>
+		</foreach>
+	</target>
+
+	<target name="test-single">
+		<echo message="${test-folder}"/>
 		<mkdir dir="${test-out}"/>
-		<java classname="net.sf.jcgm.examples.Analyzer">
-			<arg value="${webcgm-ts}/static10"/>
-			<arg value="${test-out}"/>
+		<java classname="net.sf.jcgm.examples.Analyzer" output="${test-out}/test.txt">
+			<arg value="${test-folder}"/>
 			<classpath>
 				<pathelement location="build/classes"/>
 			</classpath>
