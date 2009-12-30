@@ -11,8 +11,19 @@
 			</title>
 			<section id="trunk">
 				<title>Development Branch (Trunk)</title>
+				<p>
+					Changes in the core library:
+				</p>
 				<ul>
-					<li>Fixed a problem with MetafileDefaultsReplacement that didn't support long form commands.</li>
+					<li>Fixed a problem with Metafile Defaults Replacement that didn't support long form commands.</li>
+					<li>Fixed a problem with Circular Arc Centre, Polygon and Polyline which didn't respect the parameter precision correctly.</li>
+					<li>The Text and Restricted Text commands are now using common code</li>
+				</ul>
+				<p>
+					Other changes
+				</p>
+				<ul>
+					<li>New viewer application in the examples to view and compare CGM files to a reference image</li>
 				</ul>
 			</section>
 			<section id="core-0.1.0">

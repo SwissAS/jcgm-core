@@ -5,6 +5,7 @@
   <header>
     <title>jcgm -- Computer Graphics Metafile interpreter and
     renderer</title>
+	<meta name="keywords">CGM, Java, SDK, computer graphics metafile, open source</meta>
   </header>
   <body>
     <section id="intro">
