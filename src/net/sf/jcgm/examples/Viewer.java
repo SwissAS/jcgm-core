@@ -48,8 +48,8 @@ public class Viewer extends JFrame {
 	private JButton nextButton;
 
 	public Viewer() {
-		this.testDir = new File("/home/pcade/software/webcgm21-ts/static10");
-		this.referenceDir = new File("/home/pcade/software/webcgm21-ts/static10/images");
+		this.testDir = new File("d:/software/webcgm21-ts/static10");
+		this.referenceDir = new File("d:/software/webcgm21-ts/static10/images");
 		this.currentIndex = 0;
 
 		initCgmFiles();
@@ -140,6 +140,7 @@ public class Viewer extends JFrame {
 	private void buildUI() {
 		JPanel mainPanel = new JPanel(new GridBagLayout());
 		GridBagConstraints gb = new GridBagConstraints();
+		gb.weightx = 1; gb.weighty = 1;
 		gb.gridx = 0; gb.gridy = 0;
 		gb.fill = GridBagConstraints.BOTH;
 
@@ -148,9 +149,11 @@ public class Viewer extends JFrame {
 		this.testDirField = new JTextField(50);
 		topPanel.add(new JLabel("Test Folder"), gb);
 
+		gb.weightx = 100;
 		gb.gridx++;
 		topPanel.add(this.testDirField, gb);
 
+		gb.weightx = 1;
 		gb.gridx++;
 		JButton dumpCommands = new JButton("Dump Commands to File");
 		dumpCommands.addActionListener(new ActionListener() {
@@ -161,21 +164,26 @@ public class Viewer extends JFrame {
 		});
 		topPanel.add(dumpCommands, gb);
 
+		gb.weightx = 100;
 		gb.gridx++;
 		this.dumpCommandFileField = new JTextField(50);
 		this.dumpCommandFileField.setText("c:\\Documents and Settings\\xphc\\Desktop\\ammcommands.txt");
 		topPanel.add(this.dumpCommandFileField, gb);
 
+		gb.weightx = 1;
 		gb.gridx = 0; gb.gridy++;
 		topPanel.add(new JLabel("Current File"), gb);
 
+		gb.weightx = 100;
 		gb.gridx++;
 		this.currentFileField = new JTextField(50);
 		topPanel.add(this.currentFileField, gb);
 
+		gb.weightx = 1;
 		gb.gridx = 0; gb.gridy++;
 		topPanel.add(new JLabel("Reference Folder"), gb);
 
+		gb.weightx = 100;
 		this.referenceDirField = new JTextField(50);
 		gb.gridx++;
 		topPanel.add(this.referenceDirField, gb);
