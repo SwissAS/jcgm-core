@@ -37,40 +37,40 @@ import java.io.IOException;
  * @version $Id$
  */
 class Text extends TextCommand {
-    public Text(int ec, int eid, int l, DataInput in)
-            throws IOException {
-        super(ec, eid, l, in);
-        this.position = makePoint();
+	public Text(int ec, int eid, int l, DataInput in) throws IOException {
+		super(ec, eid, l, in);
+		this.position = makePoint();
 
-        int finalNotFinal = makeEnum();
+		int finalNotFinal = makeEnum();
 
-        this.string = makeString();
+		this.string = makeString();
 
-        // make sure all the arguments were read
-        assert (this.currentArg == this.args.length);
-   }
-
+		// make sure all the arguments were read
+		assert (this.currentArg == this.args.length);
+	}
+	
 	@Override
 	Double getTextOffset(CGMDisplay d) {
 		return new Point2D.Double(0, 0);
 	}
 
-    @Override
+	@Override
 	protected void scaleText(CGMDisplay d, FontMetrics fontMetrics,
 			GlyphVector glyphVector, double width, double height) {
-    	Graphics2D g2d = d.getGraphics2D();
-    	double characterHeight = d.getCharacterHeight();
-    	g2d.scale(characterHeight, characterHeight);
+		Graphics2D g2d = d.getGraphics2D();
+		
+		double characterHeight = d.getCharacterHeight() / height;
+		g2d.scale(characterHeight, characterHeight);
 	}
 
 	@Override
 	public String toString() {
-    	StringBuilder sb = new StringBuilder();
-    	sb.append("Text position=");
-    	sb.append(this.position);
-    	sb.append(" string=").append(this.string);
-        return sb.toString();
-    }
+		StringBuilder sb = new StringBuilder();
+		sb.append("Text position=");
+		sb.append(this.position);
+		sb.append(" string=").append(this.string);
+		return sb.toString();
+	}
 }
 
 /*
