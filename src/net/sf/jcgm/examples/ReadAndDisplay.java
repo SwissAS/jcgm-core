@@ -2,11 +2,14 @@ package net.sf.jcgm.examples;
 
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.io.BufferedInputStream;
 import java.io.DataInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStream;
+import java.util.zip.GZIPInputStream;
 
 import javax.swing.JFrame;
 import javax.swing.JScrollPane;
@@ -27,9 +30,16 @@ public class ReadAndDisplay {
 			JFrame frame = new JFrame("CGM Read And Display");
 			File cgmFile = new File("samples/allelm01.cgm");
 
+			InputStream inputStream;
+			if (cgmFile.getName().endsWith(".cgmz") || cgmFile.getName().endsWith(".cgm.gz")) {
+				inputStream = new GZIPInputStream(new FileInputStream(cgmFile));
+			}
+			else {
+				inputStream = new FileInputStream(cgmFile);
+			}
+			
 			// create an input stream for the CGM file
-			DataInputStream in = new DataInputStream(new FileInputStream(
-					cgmFile));
+			DataInputStream in = new DataInputStream(new BufferedInputStream(inputStream));
 
 			// read the CGM file
 			CGM cgm = new CGM();

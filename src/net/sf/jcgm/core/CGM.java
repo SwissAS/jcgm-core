@@ -23,6 +23,7 @@ package net.sf.jcgm.core;
 
 import java.awt.Dimension;
 import java.awt.geom.Point2D;
+import java.io.BufferedInputStream;
 import java.io.DataInput;
 import java.io.DataInputStream;
 import java.io.File;
@@ -31,9 +32,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintStream;
 import java.util.ArrayList;
-import java.util.Enumeration;
 import java.util.List;
-import java.util.Vector;
 import java.util.zip.GZIPInputStream;
 
 import net.sf.jcgm.core.ScalingMode.Mode;
@@ -45,9 +44,11 @@ import net.sf.jcgm.core.ScalingMode.Mode;
  * @version $Id$
  */
 public class CGM implements Cloneable {
-    private Vector<Command> commands;
+    private List<Command> commands;
 
     private final List<ICommandListener> commandListeners = new ArrayList<ICommandListener>();
+    
+    private final static int INITIAL_NUM_COMMANDS = 500;
 
     public CGM() {
     	// empty constructor. XXX: Remove?
@@ -65,14 +66,14 @@ public class CGM implements Cloneable {
 		else {
 			inputStream = new FileInputStream(cgmFile);
 		}
-        DataInputStream in = new DataInputStream(inputStream);
+        DataInputStream in = new DataInputStream(new BufferedInputStream(inputStream));
         read(in);
         in.close();
     }
 
     public void read(DataInput in) throws IOException {
     	reset();
-        this.commands = new Vector<Command>();
+        this.commands = new ArrayList<Command>(INITIAL_NUM_COMMANDS);
         while (true) {
             Command c = Command.read(in);
             if (c == null)
@@ -84,7 +85,7 @@ public class CGM implements Cloneable {
 
             // get rid of all arguments after we read them
             c.cleanUpArguments();
-            this.commands.addElement(c);
+            this.commands.add(c);
         }
     }
 
@@ -124,27 +125,26 @@ public class CGM implements Cloneable {
 	}
 
 	public void paint(CGMDisplay d) {
-        Enumeration<Command> e = this.commands.elements();
-        while (e.hasMoreElements()) {
-            Command c = e.nextElement();
-            if (filter(c)) {
-            	c.paint(d);
-            }
-        }
+		for (Command c : this.commands) {
+			if (filter(c)) {
+				c.paint(d);
+			}
+		}
     }
 
 	private boolean filter(Command c) {
 		return true;
 //		List<Class<?>> classes = new ArrayList<Class<?>>();
 //		//classes.add(PolygonElement.class);
-//		classes.add(RestrictedText.class);
+//		classes.add(Text.class);
+//		//classes.add(CircleElement.class);
 //		
 //		for (Class<?> clazz: classes) {
 //			if (clazz.isInstance(c))
-//				return true;
+//				return false;
 //		}
 //		
-//		return false;
+//		return true;
 	}
 
     /**
@@ -187,39 +187,22 @@ public class CGM implements Cloneable {
     }
 
     public Point2D.Double[] extent() {
-        Enumeration<Command> e = this.commands.elements();
-        while (e.hasMoreElements()) {
-            Command c = e.nextElement();
+    	for (Command c : this.commands) {
             if (c instanceof VDCExtent) {
                 Point2D.Double[] extent = ((VDCExtent) c).extent();
                 return extent;
             }
-        }
+    	}
         return null;
     }
 
     private ScalingMode getScalingMode() {
-        Enumeration<Command> e = this.commands.elements();
-        while (e.hasMoreElements()) {
-            Command c = e.nextElement();
+    	for (Command c : this.commands) {
             if (c instanceof ScalingMode) {
                 return (ScalingMode)c;
             }
-        }
+    	}
         return null;
-    }
-
-    @Override
-	public Object clone() {
-        CGM newOne = new CGM();
-        //System.out.println("in cgm.clone");
-        newOne.commands = new Vector<Command>();
-        for (int i = 0; i < this.commands.size(); i++) {
-            newOne.commands.addElement((Command)(this.commands.elementAt(i)).clone());
-            //System.out.println("Command: " +
-            // (Command)newOne.V.elementAt(i));
-        }
-        return newOne;
     }
 
     public void showCGMCommands() {
@@ -227,8 +210,9 @@ public class CGM implements Cloneable {
     }
 
 	public void showCGMCommands(PrintStream stream) {
-        for (int i = 0; i < this.commands.size(); i++)
-            stream.println("Command: " + this.commands.elementAt(i));
+		for (Command c : this.commands) {
+            stream.println("Command: " + c);
+		}
 	}
 
 }

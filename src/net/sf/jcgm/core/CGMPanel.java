@@ -23,6 +23,7 @@ package net.sf.jcgm.core;
 
 import java.awt.Dimension;
 import java.awt.Graphics;
+import java.io.BufferedInputStream;
 import java.io.DataInputStream;
 import java.io.File;
 import java.io.FileInputStream;
@@ -68,7 +69,7 @@ public class CGMPanel extends JPanel {
     	else {
     		inputStream = new FileInputStream(cgmFile);
     	}
-		DataInputStream in = new DataInputStream(inputStream);
+		DataInputStream in = new DataInputStream(new BufferedInputStream(inputStream));
 		CGM cgm = new CGM();
 		cgm.read(in);
 		in.close();

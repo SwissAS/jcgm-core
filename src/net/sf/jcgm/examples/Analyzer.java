@@ -21,6 +21,7 @@
  */
 package net.sf.jcgm.examples;
 
+import java.io.BufferedInputStream;
 import java.io.BufferedWriter;
 import java.io.DataInputStream;
 import java.io.File;
@@ -72,7 +73,7 @@ public class Analyzer implements ICommandListener {
 	private PrintWriter commandFile = null;
 
 	private final File outputPath;
-
+	
 	/**
 	 * Builds an analyzer
 	 * 
@@ -175,7 +176,7 @@ public class Analyzer implements ICommandListener {
 				inputStream = new FileInputStream(cgmFile);
 			}
 			
-	        DataInputStream in = new DataInputStream(inputStream);
+	        DataInputStream in = new DataInputStream(new BufferedInputStream(inputStream));
 	        cgm.read(in);
 	        in.close();
 
@@ -339,7 +340,12 @@ public class Analyzer implements ICommandListener {
 			verbose = true;
 		}
 
+		long start = System.currentTimeMillis();
+		
 		new Analyzer(cgmDir, outputDir, verbose);
+		
+		long elapsed = System.currentTimeMillis() - start;
+		System.out.println("\nAnalyzing took "+elapsed+" ms.");
 	}
 
 }
