@@ -28,9 +28,14 @@ import java.io.DataInput;
 import java.io.DataInputStream;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintStream;
+import java.io.RandomAccessFile;
+import java.nio.ByteBuffer;
+import java.nio.MappedByteBuffer;
+import java.nio.channels.FileChannel;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.zip.GZIPInputStream;
@@ -88,6 +93,100 @@ public class CGM implements Cloneable {
             this.commands.add(c);
         }
     }
+
+	/**
+	 * Splits a CGM file containing several CGM files into pieces. Each single
+	 * CGM file will be extracted to an own file. The name of that file is
+	 * provided by the given {@code extractor}.
+	 * 
+	 * @param cgmFile
+	 *            The CGM file to split
+	 * @param outputDir
+	 *            The output directory to use. Must exist and be writable.
+	 * @param extractor
+	 *            The extractor in charge of naming the split CGM files
+	 * @throws IOException
+	 *             If the given CGM file could not be read or there was an error
+	 *             splitting the file
+	 */
+	public static void split(File cgmFile, File outputDir,
+			IBeginMetafileNameExtractor extractor) throws IOException {
+		if (cgmFile == null || outputDir == null)
+			throw new NullPointerException("unexpected null argument");
+
+		if (!outputDir.isDirectory())
+			throw new IllegalArgumentException("outputDir must be a directory");
+
+		if (!outputDir.canWrite())
+			throw new IllegalArgumentException("outputDir must be writable");
+
+		RandomAccessFile randomAccessFile = null;
+		try {
+			randomAccessFile = new RandomAccessFile(cgmFile, "r");
+			FileChannel channel = randomAccessFile.getChannel();
+
+			Command c;
+			long startPosition = 0;
+			long currentPosition = 0;
+			String currentFileName = null;
+
+			while ((c = Command.read(randomAccessFile)) != null) {
+				if (c instanceof BeginMetafile) {
+					// the CGM files will be cut at the begin meta file command
+					if (currentFileName != null) {
+						// dump the CGM file
+						MappedByteBuffer byteBuffer = channel.map(
+								FileChannel.MapMode.READ_ONLY, startPosition,
+								currentPosition - startPosition);
+						writeFile(byteBuffer, outputDir, extractor
+								.extractFileName(currentFileName));
+						// don't forget to regularly clear the messages that
+						// we're not really using here
+						Messages.getInstance().reset();
+					}
+					startPosition = currentPosition;
+					BeginMetafile beginMetafile = (BeginMetafile) c;
+					currentFileName = beginMetafile.getFileName();
+				}
+				currentPosition = randomAccessFile.getFilePointer();
+			}
+		}
+		finally {
+			if (randomAccessFile != null) {
+				randomAccessFile.close();
+			}
+		}
+	}
+
+	/**
+	 * Writes the given bytes to a file
+	 * 
+	 * @param byteBuffer
+	 *            The bytes to write to the file
+	 * @param outputDir
+	 *            The output directory to use, assumed to be existing and
+	 *            writable
+	 * @param fileName
+	 *            The file name to use
+	 * @throws IOException
+	 *             On I/O error
+	 */
+	private static void writeFile(ByteBuffer byteBuffer, File outputDir,
+			String fileName) throws IOException {
+		File outputFile = new File(outputDir, fileName);
+		FileOutputStream out = null;
+		try {
+			out = new FileOutputStream(outputFile);
+			FileChannel channel = out.getChannel();
+			channel.write(byteBuffer);
+			out.close();
+		}
+		finally {
+			if (out != null) {
+				out.close();
+			}
+		}
+	}
 
     /**
      * Adds the given listener to the list of command listeners

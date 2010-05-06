@@ -639,8 +639,13 @@ class Command implements Cloneable {
     	// default empty implementation
     }
 
+    /**
+     * Reads one command from the given input stream.
+     * @param in Where to read the command from
+     * @return The command or {@code null} if the end of stream was found
+     * @throws IOException On I/O error
+     */
     public static Command read(DataInput in) throws IOException {
-
         int k;
         try {
         	k = in.readUnsignedByte();

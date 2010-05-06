@@ -11,6 +11,9 @@
 			</title>
 			<section id="trunk">
 				<title>Development Branch (Trunk)</title>
+			</section>
+			<section id="core-0.1.1">
+				<title>Version 0.1.1</title>
 				<p>
 					Changes in the core library:
 				</p>
@@ -18,6 +21,8 @@
 					<li>Fixed a problem with Metafile Defaults Replacement that didn't support long form commands.</li>
 					<li>Fixed a problem with Circular Arc Centre, Polygon and Polyline which didn't respect the parameter precision correctly.</li>
 					<li>The Text and Restricted Text commands are now using common code</li>
+					<li>Fixed a problem with scaling for the Text element (rev. 21)</li>
+					<li>New method <code>CGM.split</code> to split CGM files containing several CGM files into pieces</li>
 				</ul>
 				<p>
 					Other changes

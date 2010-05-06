@@ -7,7 +7,7 @@
 <project name="jcgm" default="jar">
 	
 	<!-- The core package -->
-	<property name="version-core" value="0.1.0"/>
+	<property name="version-core" value="0.1.1"/>
 	<property name="package-name-core" value="jcgm-core-${version-core}"/>
 	<property name="jar-name-core" value="${package-name-core}.jar"/>
 	<property name="package-name-core-bin" value="${package-name-core}-bin"/>
@@ -20,7 +20,8 @@
     </description>
 
 	<!-- Building -->
-	<target name="jar" depends="jar-core"/>
+	<target name="jar" depends="jar-core"
+		description="Builds a JAR file the library"/>
 
     <target name="jar-core" depends="compile">
 		<jar destfile="build/${jar-name-core}" basedir="build/classes"
@@ -30,7 +31,7 @@
 	
 	<target name="compile" description="Compiles all java source files">
 		<mkdir dir="build/classes"/>
-		<javac srcdir="src" destdir="build/classes" />
+		<javac srcdir="src" destdir="build/classes" debug="true"/>
 	</target>
 	
 	<target name="clean">

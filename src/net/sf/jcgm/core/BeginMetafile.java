@@ -21,7 +21,8 @@
  */
 package net.sf.jcgm.core;
 
-import java.io.*;
+import java.io.DataInput;
+import java.io.IOException;
 
 
 /**
@@ -31,20 +32,24 @@ import java.io.*;
  * @version $Id$
  */
 class BeginMetafile extends Command {
-    String S;
+    private final String fileName;
 
     public BeginMetafile(int ec, int eid, int l, DataInput in)
             throws IOException {
         super(ec, eid, l, in);
-        this.S = makeString();
+        this.fileName = makeString();
         
         // make sure all the arguments were read
         assert (this.currentArg == this.args.length);
     }
+    
+    public String getFileName() {
+    	return this.fileName;
+    }
 
     @Override
 	public String toString() {
-        return "BeginMetafile " + this.S;
+        return "BeginMetafile " + this.fileName;
     }
 }
 
