@@ -42,13 +42,14 @@
 	<target name="javadoc">
 		<javadoc destdir="build/site/en/api" 
 			encoding="utf8" docencoding="utf8"
+			charset="utf-8"
 			author="true" version="true"
-			classpath="../../image/trunk/lib/commons-logging-1.1.jar:../../image/trunk/lib/xmlgraphics-commons-1.3.1.jar"
+			classpath="../jcgm-image/lib/commons-logging-1.1.jar:../jcgm-image/lib/xmlgraphics-commons-1.3.1.jar"
 			>
 			<packageset dir="src">
 				<include name="net/sf/jcgm/**"/>
 			</packageset>
-			<packageset dir="../../image/trunk/src">
+			<packageset dir="../jcgm-image/src">
 				<include name="net/sf/jcgm/**"/>
 			</packageset>
 
