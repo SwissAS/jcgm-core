@@ -24,6 +24,7 @@ package net.sf.jcgm.core;
 import java.awt.Dimension;
 import java.awt.geom.Point2D;
 import java.io.BufferedInputStream;
+import java.io.ByteArrayInputStream;
 import java.io.DataInput;
 import java.io.DataInputStream;
 import java.io.File;
@@ -111,7 +112,7 @@ public class CGM implements Cloneable {
 	 */
 	public static void split(File cgmFile, File outputDir,
 			IBeginMetafileNameExtractor extractor) throws IOException {
-		if (cgmFile == null || outputDir == null)
+		if (cgmFile == null || outputDir == null || extractor == null)
 			throw new NullPointerException("unexpected null argument");
 
 		if (!outputDir.isDirectory())
@@ -134,21 +135,19 @@ public class CGM implements Cloneable {
 				if (c instanceof BeginMetafile) {
 					// the CGM files will be cut at the begin meta file command
 					if (currentFileName != null) {
-						// dump the CGM file
-						MappedByteBuffer byteBuffer = channel.map(
-								FileChannel.MapMode.READ_ONLY, startPosition,
-								currentPosition - startPosition);
-						writeFile(byteBuffer, outputDir, extractor
-								.extractFileName(currentFileName));
-						// don't forget to regularly clear the messages that
-						// we're not really using here
-						Messages.getInstance().reset();
+						dumpToFile(outputDir, extractor, channel, startPosition,
+								currentPosition, currentFileName);
 					}
 					startPosition = currentPosition;
 					BeginMetafile beginMetafile = (BeginMetafile) c;
 					currentFileName = beginMetafile.getFileName();
 				}
 				currentPosition = randomAccessFile.getFilePointer();
+			}
+			
+			if (currentFileName != null) {
+				dumpToFile(outputDir, extractor, channel, startPosition,
+						currentPosition, currentFileName);
 			}
 		}
 		finally {
@@ -158,6 +157,94 @@ public class CGM implements Cloneable {
 		}
 	}
 
+	private static void dumpToFile(File outputDir,
+			IBeginMetafileNameExtractor extractor, FileChannel channel,
+			long startPosition, long currentPosition, String currentFileName)
+			throws IOException {
+		// dump the CGM file
+		MappedByteBuffer byteBuffer = channel.map(
+				FileChannel.MapMode.READ_ONLY, startPosition,
+				currentPosition - startPosition);
+		writeFile(byteBuffer, outputDir, extractor
+				.extractFileName(currentFileName));
+		// don't forget to regularly clear the messages that
+		// we're not really using here
+		Messages.getInstance().reset();
+	}
+
+	/**
+	 * Splits a CGM file containing several CGM files into pieces. The given
+	 * extractor is in charge of dealing with the extracted CGM file.
+	 * 
+	 * @param cgmFile
+	 *            The CGM file to split
+	 * @param extractor
+	 *            An extractor that knows what to do with the extracted CGM file
+	 * @throws IOException
+	 *             If an error happened reading the CGM file
+	 * @throws CgmException
+	 *             If an error happened during the handling of the extracted CGM
+	 *             file
+	 */
+	public static void split(File cgmFile, ICgmExtractor extractor)
+			throws IOException, CgmException {
+		if (cgmFile == null || extractor == null)
+			throw new NullPointerException("unexpected null argument");
+
+		RandomAccessFile randomAccessFile = null;
+		try {
+			randomAccessFile = new RandomAccessFile(cgmFile, "r");
+			FileChannel channel = randomAccessFile.getChannel();
+
+			Command c;
+			long startPosition = 0;
+			long currentPosition = 0;
+			String currentFileName = null;
+
+			while ((c = Command.read(randomAccessFile)) != null) {
+				if (c instanceof BeginMetafile) {
+					// the CGM files will be cut at the begin meta file command
+					if (currentFileName != null) {
+						dumpToStream(extractor, channel, startPosition,
+								currentPosition, currentFileName);
+					}
+					startPosition = currentPosition;
+					BeginMetafile beginMetafile = (BeginMetafile) c;
+					currentFileName = beginMetafile.getFileName();
+				}
+				currentPosition = randomAccessFile.getFilePointer();
+			}
+
+			// don't forget to also dump the last file
+			if (currentFileName != null) {
+				dumpToStream(extractor, channel, startPosition,
+						currentPosition, currentFileName);
+			}
+		}
+		finally {
+			if (randomAccessFile != null) {
+				randomAccessFile.close();
+			}
+		}
+	}
+
+	private static void dumpToStream(ICgmExtractor extractor,
+			FileChannel channel, long startPosition, long currentPosition,
+			String currentFileName) throws IOException, CgmException {
+		// dump the CGM file
+		MappedByteBuffer byteBuffer = channel.map(
+				FileChannel.MapMode.READ_ONLY, startPosition, currentPosition
+						- startPosition);
+
+		byte[] byteArray = new byte[(int) (currentPosition - startPosition)];
+		byteBuffer.get(byteArray);
+		extractor.handleExtracted(extractor.extractFileName(currentFileName),
+				new ByteArrayInputStream(byteArray), byteArray.length);
+		// don't forget to regularly clear the messages that
+		// we're not really using here
+		Messages.getInstance().reset();
+	}
+	
 	/**
 	 * Writes the given bytes to a file
 	 * 
