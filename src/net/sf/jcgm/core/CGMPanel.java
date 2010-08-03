@@ -29,6 +29,8 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URL;
+import java.net.URLConnection;
 import java.util.zip.GZIPInputStream;
 
 import javax.swing.JPanel;
@@ -76,6 +78,22 @@ public class CGMPanel extends JPanel {
 		this.cgmDisplay = new CGMDisplay(cgm);
     }
     
+	public void open(URL cgmURL) throws IOException {
+		if (cgmURL == null) {
+			throw new NullPointerException("null cgm url");
+		}
+
+		URLConnection c = cgmURL.openConnection();
+
+		DataInputStream in = new DataInputStream(new BufferedInputStream(
+				c.getInputStream()));
+
+		CGM cgm = new CGM();
+		cgm.read(in);
+		in.close();
+		this.cgmDisplay = new CGMDisplay(cgm);
+	}
+
     @Override
     public Dimension getPreferredSize() {
     	if (this.cgmDisplay == null)
