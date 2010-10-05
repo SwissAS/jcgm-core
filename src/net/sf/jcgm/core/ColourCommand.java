@@ -21,38 +21,41 @@
  */
 package net.sf.jcgm.core;
 
+import java.awt.*;
 import java.io.*;
 
-
 /**
- * Class=5, Element=8
  * @author xphc (Philippe Cadé)
  * @author BBNT Solutions
  * @version $Id$
  */
-class MarkerColor extends ColorCommand {
-	public MarkerColor(int ec, int eid, int l, DataInput in)
+class ColourCommand extends Command {
+    protected Color color = null;
+	protected int colorIndex = -1;
+
+    public ColourCommand(int ec, int eid, int l, DataInput in)
             throws IOException {
         super(ec, eid, l, in);
+        
+        if (ColourSelectionMode.getType().equals(ColourSelectionMode.Type.DIRECT)) {
+        	this.color = makeDirectColor();
+        }
+        else if (ColourSelectionMode.getType().equals(ColourSelectionMode.Type.INDEXED)) {
+        	this.colorIndex = makeColorIndex();
+        }
     }
-
+    
     @Override
 	public String toString() {
     	StringBuilder sb = new StringBuilder();
-    	sb.append("MarkerColor");
-    	sb.append(super.toString());
+    	if (this.color != null) {
+    		sb.append(" directColor=").append(this.color);
+    	}
+    	else {
+    		sb.append(" colorIndex=").append(this.colorIndex);
+    	}
         return sb.toString();
     }
-
-    @Override
-	public void paint(CGMDisplay d) {
-		if (this.color != null) {
-			d.setMarkerColor(this.color);
-		}
-		else {
-			d.setMarkerColorIndex(this.colorIndex);
-		}
-	}
 }
 
 /*

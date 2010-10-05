@@ -32,7 +32,7 @@ import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.util.Arrays;
 
-import net.sf.jcgm.core.ColorModel.Model;
+import net.sf.jcgm.core.ColourModel.Model;
 import net.sf.jcgm.core.RealPrecision.Precision;
 import net.sf.jcgm.core.VDCRealPrecision.Type;
 
@@ -508,7 +508,7 @@ class Command implements Cloneable {
     }
 
     final protected int makeColorIndex() {
-    	int precision = ColorIndexPrecision.getPrecision();
+    	int precision = ColourIndexPrecision.getPrecision();
     	return makeUInt(precision);
     }
 
@@ -517,8 +517,8 @@ class Command implements Cloneable {
     }
 
     final protected Color makeDirectColor() {
-		int precision = ColorPrecision.getPrecision();
-		Model model = ColorModel.getModel();
+		int precision = ColourPrecision.getPrecision();
+		Model model = ColourModel.getModel();
 
 		if (model.equals(Model.RGB)) {
 			int[] scaled = scaleColorValueRGB(makeUInt(precision), makeUInt(precision), makeUInt(precision));
@@ -564,8 +564,8 @@ class Command implements Cloneable {
 	}
 
     final protected int sizeOfDirectColor() {
-		int precision = ColorPrecision.getPrecision();
-		Model model = ColorModel.getModel();
+		int precision = ColourPrecision.getPrecision();
+		Model model = ColourModel.getModel();
 
     	if (model.equals(Model.RGB)) {
     		return 3 * precision / 8;
@@ -800,10 +800,10 @@ class Command implements Cloneable {
 			return new IndexPrecision(ec, eid, l, in);
 
 		case COLOUR_PRECISION: // 7
-			return new ColorPrecision(ec, eid, l, in);
+			return new ColourPrecision(ec, eid, l, in);
 
 		case COLOUR_INDEX_PRECISION: // 8
-			return new ColorIndexPrecision(ec, eid, l, in);
+			return new ColourIndexPrecision(ec, eid, l, in);
 
 		case MAXIMUM_COLOUR_INDEX: // 9
 		    return new MaximumColourIndex(ec, eid, l, in);
@@ -838,7 +838,7 @@ class Command implements Cloneable {
 		    return new Command(ec, eid, l, in);
 
 		case COLOUR_MODEL: // 19
-			return new ColorModel(ec, eid, l, in);
+			return new ColourModel(ec, eid, l, in);
 
 		case COLOUR_CALIBRATION: // 20
 		case FONT_PROPERTIES: // 21
@@ -862,7 +862,7 @@ class Command implements Cloneable {
 
 		// 2, 2
 		case COLOUR_SELECTION_MODE:
-		    return new ColorSelectionMode(ec, eid, l, in);
+		    return new ColourSelectionMode(ec, eid, l, in);
 
 		    // 2, 3
 		case LINE_WIDTH_SPECIFICATION_MODE:
@@ -1041,7 +1041,7 @@ class Command implements Cloneable {
 		    return new LineWidth(ec, eid, l, in);
 
 		case LINE_COLOUR: // 4
-		    return new LineColor(ec, eid, l, in);
+		    return new LineColour(ec, eid, l, in);
 
 		case MARKER_BUNDLE_INDEX: // 5
 			unsupported(ec, eid);
@@ -1054,7 +1054,7 @@ class Command implements Cloneable {
 			return new MarkerSize(ec, eid, l, in);
 
 		case MARKER_COLOUR: // 8
-			return new MarkerColor(ec, eid, l, in);
+			return new MarkerColour(ec, eid, l, in);
 
 		case TEXT_BUNDLE_INDEX: // 9:
 			unsupported(ec, eid);
@@ -1073,7 +1073,7 @@ class Command implements Cloneable {
 			return new CharacterSpacing(ec, eid, l, in);
 
 		case TEXT_COLOUR: // 14
-		    return new TextColor(ec, eid, l, in);
+		    return new TextColour(ec, eid, l, in);
 
 		case CHARACTER_HEIGHT: // 15
 		    return new CharacterHeight(ec, eid, l, in);
@@ -1101,7 +1101,7 @@ class Command implements Cloneable {
 		    return new InteriorStyle(ec, eid, l, in);
 
 		case FILL_COLOUR: // 23
-		    return new FillColor(ec, eid, l, in);
+		    return new FillColour(ec, eid, l, in);
 
 		case HATCH_INDEX: // 24
 			return new HatchIndex(ec, eid, l, in);
@@ -1118,7 +1118,7 @@ class Command implements Cloneable {
 		    return new EdgeWidth(ec, eid, l, in);
 
 		case EDGE_COLOUR: // 29
-		    return new EdgeColor(ec, eid, l, in);
+		    return new EdgeColour(ec, eid, l, in);
 
 		case EDGE_VISIBILITY: // 30
 		    return new EdgeVisibility(ec, eid, l, in);

@@ -287,10 +287,10 @@ public class CGM implements Cloneable {
      * All the command classes with static data need to be reset here
      */
 	private void reset() {
-		ColorIndexPrecision.reset();
-		ColorModel.reset();
-		ColorPrecision.reset();
-		ColorSelectionMode.reset();
+		ColourIndexPrecision.reset();
+		ColourModel.reset();
+		ColourPrecision.reset();
+		ColourSelectionMode.reset();
 		ColourValueExtent.reset();
 		EdgeWidthSpecificationMode.reset();
 		IndexPrecision.reset();

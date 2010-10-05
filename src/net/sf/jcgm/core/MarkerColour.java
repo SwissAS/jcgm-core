@@ -25,13 +25,13 @@ import java.io.*;
 
 
 /**
- * Class=5, Element=29
+ * Class=5, Element=8
  * @author xphc (Philippe Cadé)
  * @author BBNT Solutions
  * @version $Id$
  */
-class EdgeColor extends ColorCommand {
-	public EdgeColor(int ec, int eid, int l, DataInput in)
+class MarkerColour extends ColourCommand {
+	public MarkerColour(int ec, int eid, int l, DataInput in)
             throws IOException {
         super(ec, eid, l, in);
     }
@@ -39,7 +39,7 @@ class EdgeColor extends ColorCommand {
     @Override
 	public String toString() {
     	StringBuilder sb = new StringBuilder();
-    	sb.append("EdgeColor");
+    	sb.append("MarkerColour");
     	sb.append(super.toString());
         return sb.toString();
     }
@@ -47,10 +47,10 @@ class EdgeColor extends ColorCommand {
     @Override
 	public void paint(CGMDisplay d) {
 		if (this.color != null) {
-			d.setEdgeColor(this.color);
+			d.setMarkerColor(this.color);
 		}
 		else {
-			d.setEdgeColorIndex(this.colorIndex);
+			d.setMarkerColorIndex(this.colorIndex);
 		}
 	}
 }

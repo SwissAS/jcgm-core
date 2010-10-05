@@ -24,40 +24,48 @@ package net.sf.jcgm.core;
 import java.io.*;
 
 /**
- * Class=1, Element=7
+ * Class=2, Element=2
  * @author xphc (Philippe Cadé)
  * @author BBNT Solutions
  * @version $Id$
  */
-class ColorPrecision extends Command {
-    static int precision;
-    
-    static {
-    	reset();
-    }
-    
-    public ColorPrecision(int ec, int eid, int l, DataInput in)
+class ColourSelectionMode extends Command {
+	enum Type { INDEXED, DIRECT }
+
+	static private Type type;
+	
+	static {
+		reset();
+	}
+
+    public ColourSelectionMode(int ec, int eid, int l, DataInput in)
             throws IOException {
-
         super(ec, eid, l, in);
-        ColorPrecision.precision = makeInt();
-
+        int e = makeEnum();
+        if (e == 0)
+        	ColourSelectionMode.type = Type.INDEXED;
+        else if (e == 1)
+        	ColourSelectionMode.type = Type.DIRECT;
+        else {
+        	ColourSelectionMode.type = Type.INDEXED;
+        	unsupported("color selection mode "+e);
+        }
+        
         // make sure all the arguments were read
         assert (this.currentArg == this.args.length);
     }
     
-    public static void reset() {
-		precision = 8;
+	public static void reset() {
+		type = Type.INDEXED;
 	}
 
-	static int getPrecision() {
-    	return precision;
+	public static Type getType() {
+    	return type;
     }
 
     @Override
 	public String toString() {
-        String s = "ColorPrecision " + String.valueOf(ColorPrecision.precision);
-        return s;
+        return "ColourSelectionMode " + type;
     }
 }
 

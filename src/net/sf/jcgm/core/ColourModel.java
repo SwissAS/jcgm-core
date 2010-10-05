@@ -24,48 +24,60 @@ package net.sf.jcgm.core;
 import java.io.*;
 
 /**
- * Class=2, Element=2
+ * Class=1, Element=19
  * @author xphc (Philippe Cadé)
  * @author BBNT Solutions
  * @version $Id$
  */
-class ColorSelectionMode extends Command {
-	enum Type { INDEXED, DIRECT }
-
-	static private Type type;
+class ColourModel extends Command {
+	enum Model { RGB, CIELAB, CIELUV, CMYK, RGB_RELATED }
+	private static Model model;
 	
 	static {
 		reset();
 	}
-
-    public ColorSelectionMode(int ec, int eid, int l, DataInput in)
+	
+    public ColourModel(int ec, int eid, int l, DataInput in)
             throws IOException {
         super(ec, eid, l, in);
-        int e = makeEnum();
-        if (e == 0)
-        	ColorSelectionMode.type = Type.INDEXED;
-        else if (e == 1)
-        	ColorSelectionMode.type = Type.DIRECT;
-        else {
-        	ColorSelectionMode.type = Type.INDEXED;
-        	unsupported("color selection mode "+e);
+        
+        int index = makeIndex();
+        switch (index) {
+        case 1:
+        	model = Model.RGB;
+        	break;
+        case 2:
+        	model = Model.CIELAB;
+        	break;
+        case 3:
+        	model = Model.CIELUV;
+        	break;
+        case 4:
+        	model = Model.CMYK;
+        	break;
+        case 5:
+        	model = Model.RGB_RELATED;
+        	break;
+        default:
+        	unsupported("unsupported color mode "+index);
+        	model = Model.RGB;
         }
         
         // make sure all the arguments were read
         assert (this.currentArg == this.args.length);
+   }
+    
+    public static Model getModel() {
+    	return model;
     }
     
-	public static void reset() {
-		type = Type.INDEXED;
-	}
-
-	public static Type getType() {
-    	return type;
+    public static void reset() {
+    	model = Model.RGB;
     }
 
     @Override
 	public String toString() {
-        return "ColorSelectionMode " + type;
+        return "ColourModel "+model;
     }
 }
 

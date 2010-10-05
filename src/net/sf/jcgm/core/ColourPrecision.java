@@ -24,60 +24,40 @@ package net.sf.jcgm.core;
 import java.io.*;
 
 /**
- * Class=1, Element=19
+ * Class=1, Element=7
  * @author xphc (Philippe Cadé)
  * @author BBNT Solutions
  * @version $Id$
  */
-class ColorModel extends Command {
-	enum Model { RGB, CIELAB, CIELUV, CMYK, RGB_RELATED }
-	private static Model model;
-	
-	static {
-		reset();
-	}
-	
-    public ColorModel(int ec, int eid, int l, DataInput in)
+class ColourPrecision extends Command {
+    static int precision;
+    
+    static {
+    	reset();
+    }
+    
+    public ColourPrecision(int ec, int eid, int l, DataInput in)
             throws IOException {
+
         super(ec, eid, l, in);
-        
-        int index = makeIndex();
-        switch (index) {
-        case 1:
-        	model = Model.RGB;
-        	break;
-        case 2:
-        	model = Model.CIELAB;
-        	break;
-        case 3:
-        	model = Model.CIELUV;
-        	break;
-        case 4:
-        	model = Model.CMYK;
-        	break;
-        case 5:
-        	model = Model.RGB_RELATED;
-        	break;
-        default:
-        	unsupported("unsupported color mode "+index);
-        	model = Model.RGB;
-        }
-        
+        ColourPrecision.precision = makeInt();
+
         // make sure all the arguments were read
         assert (this.currentArg == this.args.length);
-   }
-    
-    public static Model getModel() {
-    	return model;
     }
     
     public static void reset() {
-    	model = Model.RGB;
+		precision = 8;
+	}
+
+	static int getPrecision() {
+    	return precision;
     }
 
     @Override
 	public String toString() {
-        return "ColorModel "+model;
+        String s = "ColourPrecision " + String.valueOf(ColourPrecision.precision);
+        return s;
     }
 }
 

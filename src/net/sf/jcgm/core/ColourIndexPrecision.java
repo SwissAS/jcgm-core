@@ -23,36 +23,42 @@ package net.sf.jcgm.core;
 
 import java.io.*;
 
-
 /**
- * Class=5, Element=14
+ * Class=1, Element=8
  * @author xphc (Philippe Cadé)
  * @author BBNT Solutions
  * @version $Id$
  */
-class TextColor extends ColorCommand {
-	public TextColor(int ec, int eid, int l, DataInput in)
+class ColourIndexPrecision extends Command {
+    static int precision;
+    
+    static {
+    	reset();
+    }
+    
+    public ColourIndexPrecision(int ec, int eid, int l, DataInput in)
             throws IOException {
+
         super(ec, eid, l, in);
+        ColourIndexPrecision.precision = makeInt();
+
+        // make sure all the arguments were read
+        assert (this.currentArg == this.args.length);
+    }
+    
+    static int getPrecision() {
+    	return precision;
+    }
+    
+    static void reset() {
+    	precision = 8;
     }
 
     @Override
 	public String toString() {
-    	StringBuilder sb = new StringBuilder();
-    	sb.append("TextColor");
-    	sb.append(super.toString());
-        return sb.toString();
+        String s = "ColourIndexPrecision " + String.valueOf(ColourIndexPrecision.precision);
+        return s;
     }
-
-    @Override
-	public void paint(CGMDisplay d) {
-		if (this.color != null) {
-			d.setTextColor(this.color);
-		}
-		else {
-			d.setTextColorIndex(this.colorIndex);
-		}
-	}
 }
 
 /*

@@ -21,41 +21,39 @@
  */
 package net.sf.jcgm.core;
 
-import java.awt.*;
-import java.io.*;
+import java.io.DataInput;
+import java.io.IOException;
+
 
 /**
+ * Class=5, Element=29
  * @author xphc (Philippe Cadé)
  * @author BBNT Solutions
  * @version $Id$
  */
-class ColorCommand extends Command {
-    protected Color color = null;
-	protected int colorIndex = -1;
-
-    public ColorCommand(int ec, int eid, int l, DataInput in)
+class EdgeColour extends ColourCommand {
+	public EdgeColour(int ec, int eid, int l, DataInput in)
             throws IOException {
         super(ec, eid, l, in);
-        
-        if (ColorSelectionMode.getType().equals(ColorSelectionMode.Type.DIRECT)) {
-        	this.color = makeDirectColor();
-        }
-        else if (ColorSelectionMode.getType().equals(ColorSelectionMode.Type.INDEXED)) {
-        	this.colorIndex = makeColorIndex();
-        }
     }
-    
+
     @Override
 	public String toString() {
     	StringBuilder sb = new StringBuilder();
-    	if (this.color != null) {
-    		sb.append(" directColor=").append(this.color);
-    	}
-    	else {
-    		sb.append(" colorIndex=").append(this.colorIndex);
-    	}
+    	sb.append("EdgeColour");
+    	sb.append(super.toString());
         return sb.toString();
     }
+
+    @Override
+	public void paint(CGMDisplay d) {
+		if (this.color != null) {
+			d.setEdgeColor(this.color);
+		}
+		else {
+			d.setEdgeColorIndex(this.colorIndex);
+		}
+	}
 }
 
 /*

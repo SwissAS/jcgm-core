@@ -23,42 +23,36 @@ package net.sf.jcgm.core;
 
 import java.io.*;
 
+
 /**
- * Class=1, Element=8
+ * Class=5, Element=4
  * @author xphc (Philippe Cadé)
  * @author BBNT Solutions
  * @version $Id$
  */
-class ColorIndexPrecision extends Command {
-    static int precision;
-    
-    static {
-    	reset();
-    }
-    
-    public ColorIndexPrecision(int ec, int eid, int l, DataInput in)
+class LineColour extends ColourCommand {
+	public LineColour(int ec, int eid, int l, DataInput in)
             throws IOException {
-
         super(ec, eid, l, in);
-        ColorIndexPrecision.precision = makeInt();
-
-        // make sure all the arguments were read
-        assert (this.currentArg == this.args.length);
-    }
-    
-    static int getPrecision() {
-    	return precision;
-    }
-    
-    static void reset() {
-    	precision = 8;
     }
 
     @Override
 	public String toString() {
-        String s = "ColorIndexPrecision " + String.valueOf(ColorIndexPrecision.precision);
-        return s;
+    	StringBuilder sb = new StringBuilder();
+    	sb.append("LineColour");
+    	sb.append(super.toString());
+        return sb.toString();
     }
+
+    @Override
+	public void paint(CGMDisplay d) {
+		if (this.color != null) {
+			d.setLineColor(this.color);
+		}
+		else {
+			d.setLineColorIndex(this.colorIndex);
+		}
+	}
 }
 
 /*

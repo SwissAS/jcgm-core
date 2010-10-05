@@ -25,13 +25,13 @@ import java.io.*;
 
 
 /**
- * Class=5, Element=4
+ * Class=5, Element=23
  * @author xphc (Philippe Cadé)
  * @author BBNT Solutions
  * @version $Id$
  */
-class LineColor extends ColorCommand {
-	public LineColor(int ec, int eid, int l, DataInput in)
+class FillColour extends ColourCommand {
+	public FillColour(int ec, int eid, int l, DataInput in)
             throws IOException {
         super(ec, eid, l, in);
     }
@@ -39,7 +39,7 @@ class LineColor extends ColorCommand {
     @Override
 	public String toString() {
     	StringBuilder sb = new StringBuilder();
-    	sb.append("LineColor");
+    	sb.append("FillColour");
     	sb.append(super.toString());
         return sb.toString();
     }
@@ -47,10 +47,10 @@ class LineColor extends ColorCommand {
     @Override
 	public void paint(CGMDisplay d) {
 		if (this.color != null) {
-			d.setLineColor(this.color);
+			d.setFillColor(this.color);
 		}
 		else {
-			d.setLineColorIndex(this.colorIndex);
+			d.setFillColorIndex(this.colorIndex);
 		}
 	}
 }

@@ -23,7 +23,7 @@ package net.sf.jcgm.core;
 
 import java.io.*;
 
-import net.sf.jcgm.core.ColorModel.Model;
+import net.sf.jcgm.core.ColourModel.Model;
 
 
 /**
@@ -47,9 +47,9 @@ class ColourValueExtent extends Command {
             throws IOException {
         super(ec, eid, l, in);
         
-        Model colorModel = ColorModel.getModel();
-		if (colorModel.equals(ColorModel.Model.RGB) || colorModel.equals(ColorModel.Model.CMYK)) {
-        	int precision = ColorPrecision.getPrecision();
+        Model colorModel = ColourModel.getModel();
+		if (colorModel.equals(ColourModel.Model.RGB) || colorModel.equals(ColourModel.Model.CMYK)) {
+        	int precision = ColourPrecision.getPrecision();
         	
         	if (colorModel.equals(Model.RGB)) {
         		ColourValueExtent.minimumColorValueRGB = new int[] { makeUInt(precision), makeUInt(precision), makeUInt(precision) };
@@ -59,9 +59,9 @@ class ColourValueExtent extends Command {
         		unsupported("unsupported color model "+colorModel);
         	}
         }
-        else if (colorModel.equals(ColorModel.Model.CIELAB) || 
-        		colorModel.equals(ColorModel.Model.CIELUV) ||
-        		colorModel.equals(ColorModel.Model.RGB_RELATED)) {
+        else if (colorModel.equals(ColourModel.Model.CIELAB) || 
+        		colorModel.equals(ColourModel.Model.CIELUV) ||
+        		colorModel.equals(ColourModel.Model.RGB_RELATED)) {
         	this.firstComponentScale = makeReal();
         	this.secondComponentScale = makeReal();
         	this.thirdComponentScale = makeReal();
@@ -91,7 +91,7 @@ class ColourValueExtent extends Command {
 	public String toString() {
     	StringBuilder sb = new StringBuilder();
     	sb.append("ColourValueExtent");
-        if (ColorModel.getModel().equals(ColorModel.Model.RGB)) {
+        if (ColourModel.getModel().equals(ColourModel.Model.RGB)) {
         	sb.append(" min RGB=(").append(ColourValueExtent.minimumColorValueRGB[0]).append(",");
         	sb.append(minimumColorValueRGB[1]).append(",");
         	sb.append(minimumColorValueRGB[2]).append(")");
@@ -100,12 +100,12 @@ class ColourValueExtent extends Command {
         	sb.append(maximumColorValueRGB[1]).append(",");
         	sb.append(maximumColorValueRGB[2]).append(")");
         }
-        else if (ColorModel.getModel().equals(ColorModel.Model.CMYK)) {
+        else if (ColourModel.getModel().equals(ColourModel.Model.CMYK)) {
         	// unsupported
         }
-        else if (ColorModel.getModel().equals(ColorModel.Model.CIELAB) || 
-        		ColorModel.getModel().equals(ColorModel.Model.CIELUV) ||
-        		ColorModel.getModel().equals(ColorModel.Model.RGB_RELATED)) {
+        else if (ColourModel.getModel().equals(ColourModel.Model.CIELAB) || 
+        		ColourModel.getModel().equals(ColourModel.Model.CIELUV) ||
+        		ColourModel.getModel().equals(ColourModel.Model.RGB_RELATED)) {
         	sb.append(" first=").append(this.firstComponentScale);
         	sb.append(" second=").append(this.secondComponentScale);
         	sb.append(" third=").append(this.thirdComponentScale);
