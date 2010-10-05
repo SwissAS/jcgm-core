@@ -31,8 +31,8 @@ import java.awt.Stroke;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Line2D;
 import java.awt.geom.Point2D;
-import java.awt.geom.Rectangle2D;
 import java.awt.geom.Point2D.Double;
+import java.awt.geom.Rectangle2D;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -91,7 +91,7 @@ public class CGMDisplay {
 	 *   [0].x,[0].y
 	 *  </pre>
 	 */
-    protected Point2D.Double[] extent;
+    private Point2D.Double[] extent;
 
     /** The current font list */
 	private FontWrapper[] fonts;
@@ -358,6 +358,22 @@ public class CGMDisplay {
     	return this.isScaled;
     }
 
+	/**
+	 * Returns the extent of the drawing.
+	 * 
+	 * <pre>
+	 *       extent[1].x,[1].y
+	 *        ----------*
+	 *        |         |
+	 *        |         |
+	 *        * ---------
+	 *   [0].x,[0].y
+	 * </pre>
+	 * 
+	 * @return An array of 2 points, each with two coordinates (x, y). extent[0]
+	 *         always represents the lower left corner, extent[1] always
+	 *         represents the upper right corner
+	 */
     public Point2D.Double[] getExtent() {
     	return this.extent;
     }

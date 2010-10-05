@@ -70,8 +70,8 @@ class ColourTable extends Command {
     		Graphics2D g2d = d.getGraphics2D();
     		Point2D.Double[] extent = d.getExtent();
     		g2d.setColor(d.getIndexedColor(0));
-			g2d.fill(new Rectangle2D.Double(extent[0].x, extent[1].y,
-					extent[1].x - extent[0].x, extent[0].y - extent[1].y));
+			g2d.fill(new Rectangle2D.Double(extent[0].x, extent[0].y,
+					extent[1].x - extent[0].x, extent[1].y - extent[0].y));
     	}
 	}
 

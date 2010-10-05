@@ -50,11 +50,12 @@ class BackgroundColour extends Command {
 
 	@Override
 	public void paint(CGMDisplay d) {
-		Graphics2D g = d.getGraphics2D();
-		g.setColor(this.backgroundColor);
+		Graphics2D g2d = d.getGraphics2D();
+		g2d.setColor(this.backgroundColor);
 
 		Point2D.Double[] extent = d.getExtent();
-		g.fill(new Rectangle2D.Double(extent[0].x, extent[1].y, extent[1].x - extent[0].x, extent[0].y - extent[1].y));
+		g2d.fill(new Rectangle2D.Double(extent[0].x, extent[0].y,
+				extent[1].x	- extent[0].x, extent[1].y - extent[0].y));
 	}
 
 	@Override
