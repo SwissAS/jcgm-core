@@ -9,8 +9,18 @@
 			<title>
 				Core Package
 			</title>
-			<section id="trunk">
+			<section id="core-trunk">
 				<title>Development Branch (Trunk)</title>
+				<p>
+					Changes in the latest development version:
+				</p>
+				<ul>
+					<li>added another split method with an extractor that accepts input streams</li>
+					<li>added CgmException class</li>
+					<li>fixed an issue with background colors</li>
+					<li>added support for BeginTileArray, BitonalTile (partial), DeviceViewportSpecificationMode, EndTileArray, NamePrecision, Tile (partial)</li>
+					<li>added a method to be able to read structured data records</li>
+				</ul>
 			</section>
 			<section id="core-0.1.1">
 				<title>Version 0.1.1</title>
@@ -42,6 +52,21 @@
 			<title>
 				Image Package
 			</title>
+			<section id="image-trunk">
+				<title>Development Branch (Trunk)</title>
+				<p>
+					Changes in the latest development version:
+				</p>
+			</section>
+			<section id="image-0.1.1">
+				<title>Version 0.1.1</title>
+				<ul>
+					<li>The <code>CGMImageReaderSpi</code> now correctly checks
+						for the BEGIN METAFILE command and ignores the
+						parameter length, this prevented some CGM files to be
+						recognized correctly</li>
+				</ul>
+			</section>
 			<section id="image-0.1.0">
 				<title>Version 0.1.0</title>
 				<p>

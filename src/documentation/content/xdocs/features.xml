@@ -37,27 +37,27 @@
 							<th>Status</th>
 							<th>Remarks</th>
 						</tr>
-						<tr> <td>0</td> <td>0</td>	<td>no-op</td>					<td class="supported">	O</td> <td></td> </tr>
-						<tr> <td>0</td> <td>1</td>	<td>BEGIN METAFILE</td>			<td class="supported">	O</td> <td></td> </tr>
-						<tr> <td>0</td> <td>2</td>	<td>END METAFILE</td>			<td class="supported">	O</td> <td></td> </tr>
-						<tr> <td>0</td> <td>3</td>	<td>BEGIN PICTURE</td>			<td class="supported">	O</td> <td></td> </tr>
-						<tr> <td>0</td> <td>4</td>	<td>BEGIN PICTURE BODY</td>		<td class="supported">	O</td> <td></td> </tr>
-						<tr> <td>0</td> <td>5</td>	<td>END PICTURE</td>			<td class="supported">	O</td> <td></td> </tr>
-						<tr> <td>0</td> <td>6</td>	<td>BEGIN SEGMENT</td>			<td class="unsupported">X</td> <td></td> </tr>
-						<tr> <td>0</td> <td>7</td>	<td>END SEGMENT</td>			<td class="unsupported">X</td> <td></td> </tr>
-						<tr> <td>0</td> <td>8</td>	<td>BEGIN FIGURE</td>			<td class="unsupported">X</td> <td></td> </tr>
-						<tr> <td>0</td> <td>9</td>	<td>END FIGURE</td>				<td class="unsupported">X</td> <td></td> </tr>
-						<tr> <td>0</td> <td>13</td>	<td>BEGIN PROTECTION REGION</td><td class="unsupported">X</td> <td></td> </tr>
-						<tr> <td>0</td> <td>14</td>	<td>END PROTECTION REGION</td>	<td class="unsupported">X</td> <td></td> </tr>
-						<tr> <td>0</td> <td>15</td>	<td>BEGIN COMPOUND LINE</td>	<td class="unsupported">X</td> <td></td> </tr>
-						<tr> <td>0</td> <td>16</td>	<td>END COMPOUND LINE</td>		<td class="unsupported">X</td> <td></td> </tr>
-						<tr> <td>0</td> <td>17</td>	<td>BEGIN COMPOUND TEXT PATH</td>		<td class="unsupported">X</td> <td></td> </tr>
-						<tr> <td>0</td> <td>18</td>	<td>END COMPOUND TEXT PATH</td>			<td class="unsupported">X</td> <td></td> </tr>
-						<tr> <td>0</td> <td>19</td>	<td>BEGIN TILE ARRAY</td>				<td class="unsupported">X</td> <td></td> </tr>
-						<tr> <td>0</td> <td>20</td>	<td>END TILE ARRAY</td>					<td class="unsupported">X</td> <td></td> </tr>
-						<tr> <td>0</td> <td>21</td>	<td>BEGIN APPLICATION STRUCTURE</td>	<td class="unsupported">X</td> <td></td> </tr>
-						<tr> <td>0</td> <td>22</td>	<td>BEGIN APPLICATION STRUCTURE BODY</td>	<td class="unsupported">X</td> <td></td> </tr>
-						<tr> <td>0</td> <td>23</td>	<td>END APPLICATION STRUCTURE</td>			<td class="unsupported">X</td> <td></td> </tr>
+						<tr> <td>0</td> <td>0</td>	<td>no-op</td>															<td class="supported">	O</td> <td></td> </tr>
+						<tr> <td>0</td> <td>1</td>	<td>BEGIN METAFILE</td>											<td class="supported">	O</td> <td></td> </tr>
+						<tr> <td>0</td> <td>2</td>	<td>END METAFILE</td>												<td class="supported">	O</td> <td></td> </tr>
+						<tr> <td>0</td> <td>3</td>	<td>BEGIN PICTURE</td>											<td class="supported">	O</td> <td></td> </tr>
+						<tr> <td>0</td> <td>4</td>	<td>BEGIN PICTURE BODY</td>									<td class="supported">	O</td> <td></td> </tr>
+						<tr> <td>0</td> <td>5</td>	<td>END PICTURE</td>												<td class="supported">	O</td> <td></td> </tr>
+						<tr> <td>0</td> <td>6</td>	<td>BEGIN SEGMENT</td>											<td class="unsupported">X</td> <td></td> </tr>
+						<tr> <td>0</td> <td>7</td>	<td>END SEGMENT</td>												<td class="unsupported">X</td> <td></td> </tr>
+						<tr> <td>0</td> <td>8</td>	<td>BEGIN FIGURE</td>												<td class="unsupported">X</td> <td></td> </tr>
+						<tr> <td>0</td> <td>9</td>	<td>END FIGURE</td>													<td class="unsupported">X</td> <td></td> </tr>
+						<tr> <td>0</td> <td>13</td>	<td>BEGIN PROTECTION REGION</td>						<td class="unsupported">X</td> <td></td> </tr>
+						<tr> <td>0</td> <td>14</td>	<td>END PROTECTION REGION</td>							<td class="unsupported">X</td> <td></td> </tr>
+						<tr> <td>0</td> <td>15</td>	<td>BEGIN COMPOUND LINE</td>								<td class="unsupported">X</td> <td></td> </tr>
+						<tr> <td>0</td> <td>16</td>	<td>END COMPOUND LINE</td>									<td class="unsupported">X</td> <td></td> </tr>
+						<tr> <td>0</td> <td>17</td>	<td>BEGIN COMPOUND TEXT PATH</td>						<td class="unsupported">X</td> <td></td> </tr>
+						<tr> <td>0</td> <td>18</td>	<td>END COMPOUND TEXT PATH</td>							<td class="unsupported">X</td> <td></td> </tr>
+						<tr> <td>0</td> <td>19</td>	<td>BEGIN TILE ARRAY</td>										<td class="supported">	O</td> <td></td> </tr>
+						<tr> <td>0</td> <td>20</td>	<td>END TILE ARRAY</td>											<td class="supported">	O</td> <td></td> </tr>
+						<tr> <td>0</td> <td>21</td>	<td>BEGIN APPLICATION STRUCTURE</td>				<td class="unsupported">X</td> <td></td> </tr>
+						<tr> <td>0</td> <td>22</td>	<td>BEGIN APPLICATION STRUCTURE BODY</td>		<td class="unsupported">X</td> <td></td> </tr>
+						<tr> <td>0</td> <td>23</td>	<td>END APPLICATION STRUCTURE</td>					<td class="unsupported">X</td> <td></td> </tr>
 					</table>
 				</section>
 				<section id="class1">
@@ -86,7 +86,7 @@
 						<tr> <td>1</td> <td>13</td> <td>FONT LIST</td>							<td class="supported">	O</td> <td></td> </tr>
 						<tr> <td>1</td> <td>14</td> <td>CHARACTER SET LIST</td>					<td class="unsupported">X</td> <td></td> </tr>
 						<tr> <td>1</td> <td>15</td> <td>CHARACTER CODING ANNOUNCER</td>			<td class="unsupported">X</td> <td></td> </tr>
-						<tr> <td>1</td> <td>16</td> <td>NAME PRECISION</td>						<td class="unsupported">X</td> <td></td> </tr>
+						<tr> <td>1</td> <td>16</td> <td>NAME PRECISION</td>						<td class="supported">O</td> <td></td> </tr>
 						<tr> <td>1</td> <td>17</td> <td>MAXIMUM VDC EXTENT</td>					<td class="unsupported">X</td> <td></td> </tr>
 						<tr> <td>1</td> <td>18</td> <td>SEGMENT PRIORITY EXTENT</td>			<td class="unsupported">X</td> <td></td> </tr>
 						<tr> <td>1</td> <td>19</td> <td>COLOUR MODEL</td>						<td class="supported">	O</td> <td></td> </tr>
@@ -108,26 +108,26 @@
 							<th>Status</th>
 							<th>Remarks</th>
 						</tr>
-						<tr> <td>2</td> <td>1</td> <td>SCALING MODE</td>						<td class="supported">	O</td> <td></td> </tr>
-						<tr> <td>2</td> <td>2</td> <td>COLOUR SELECTION MODE</td>				<td class="supported">	O</td> <td></td> </tr>
-						<tr> <td>2</td> <td>3</td> <td>LINE WIDTH SPECIFICATION MODE</td>		<td class="supported">	O</td> <td></td> </tr>
-						<tr> <td>2</td> <td>4</td> <td>MARKER SIZE SPECIFICATION MODE</td>		<td class="supported">	O</td> <td></td> </tr>
-						<tr> <td>2</td> <td>5</td> <td>EDGE WIDTH SPECIFICATION MODE</td>		<td class="supported">	O</td> <td></td> </tr>
-						<tr> <td>2</td> <td>6</td> <td>VDC EXTENT</td>							<td class="supported">	O</td> <td></td> </tr>
-						<tr> <td>2</td> <td>7</td> <td>BACKGROUND COLOUR</td>					<td class="supported">	O</td> <td></td> </tr>
-						<tr> <td>2</td> <td>8</td> <td>DEVICE VIEWPORT</td>						<td class="unsupported">X</td> <td></td> </tr>
-						<tr> <td>2</td> <td>9</td> <td>DEVICE VIEWPORT SPECIFICATION MODE</td>	<td class="unsupported">X</td> <td></td> </tr>
-						<tr> <td>2</td> <td>10</td> <td>DEVICE VIEWPORT MAPPING</td>			<td class="unsupported">X</td> <td></td> </tr>
-						<tr> <td>2</td> <td>11</td> <td>LINE REPRESENTATION</td>				<td class="unsupported">X</td> <td></td> </tr>
-						<tr> <td>2</td> <td>12</td> <td>MARKER REPRESENTATION</td>				<td class="unsupported">X</td> <td></td> </tr>
-						<tr> <td>2</td> <td>13</td> <td>TEXT REPRESENTATION</td>				<td class="unsupported">X</td> <td></td> </tr>
-						<tr> <td>2</td> <td>14</td> <td>FILL REPRESENTATION</td>				<td class="unsupported">X</td> <td></td> </tr>
-						<tr> <td>2</td> <td>15</td> <td>EDGE REPRESENTATION</td>				<td class="unsupported">X</td> <td></td> </tr>
+						<tr> <td>2</td> <td>1</td> <td>SCALING MODE</td>												<td class="supported">	O</td> <td></td> </tr>
+						<tr> <td>2</td> <td>2</td> <td>COLOUR SELECTION MODE</td>								<td class="supported">	O</td> <td></td> </tr>
+						<tr> <td>2</td> <td>3</td> <td>LINE WIDTH SPECIFICATION MODE</td>				<td class="supported">	O</td> <td></td> </tr>
+						<tr> <td>2</td> <td>4</td> <td>MARKER SIZE SPECIFICATION MODE</td>			<td class="supported">	O</td> <td></td> </tr>
+						<tr> <td>2</td> <td>5</td> <td>EDGE WIDTH SPECIFICATION MODE</td>				<td class="supported">	O</td> <td></td> </tr>
+						<tr> <td>2</td> <td>6</td> <td>VDC EXTENT</td>													<td class="supported">	O</td> <td></td> </tr>
+						<tr> <td>2</td> <td>7</td> <td>BACKGROUND COLOUR</td>										<td class="supported">	O</td> <td></td> </tr>
+						<tr> <td>2</td> <td>8</td> <td>DEVICE VIEWPORT</td>											<td class="unsupported">X</td> <td></td> </tr>
+						<tr> <td>2</td> <td>9</td> <td>DEVICE VIEWPORT SPECIFICATION MODE</td>	<td class="supported">	O</td> <td></td> </tr>
+						<tr> <td>2</td> <td>10</td> <td>DEVICE VIEWPORT MAPPING</td>						<td class="unsupported">X</td> <td></td> </tr>
+						<tr> <td>2</td> <td>11</td> <td>LINE REPRESENTATION</td>								<td class="unsupported">X</td> <td></td> </tr>
+						<tr> <td>2</td> <td>12</td> <td>MARKER REPRESENTATION</td>							<td class="unsupported">X</td> <td></td> </tr>
+						<tr> <td>2</td> <td>13</td> <td>TEXT REPRESENTATION</td>								<td class="unsupported">X</td> <td></td> </tr>
+						<tr> <td>2</td> <td>14</td> <td>FILL REPRESENTATION</td>								<td class="unsupported">X</td> <td></td> </tr>
+						<tr> <td>2</td> <td>15</td> <td>EDGE REPRESENTATION</td>								<td class="unsupported">X</td> <td></td> </tr>
 						<tr> <td>2</td> <td>16</td> <td>INTERIOR STYLE SPECIFICATION MODE</td>	<td class="unsupported">X</td> <td></td> </tr>
-						<tr> <td>2</td> <td>17</td> <td>LINE AND EDGE TYPE DEFINITION</td>		<td class="supported">	O</td> <td></td> </tr>
-						<tr> <td>2</td> <td>18</td> <td>HATCH STYLE DEFINITION</td>				<td class="unsupported">X</td> <td></td> </tr>
-						<tr> <td>2</td> <td>19</td> <td>GEOMETRIC PATTERN DEFINITION</td>		<td class="supported">	O</td> <td></td> </tr>
-						<tr> <td>2</td> <td>20</td> <td>APPLICATION STRUCTURE DIRECTORY</td>	<td class="unsupported">X</td> <td></td> </tr>
+						<tr> <td>2</td> <td>17</td> <td>LINE AND EDGE TYPE DEFINITION</td>			<td class="supported">	O</td> <td></td> </tr>
+						<tr> <td>2</td> <td>18</td> <td>HATCH STYLE DEFINITION</td>							<td class="unsupported">X</td> <td></td> </tr>
+						<tr> <td>2</td> <td>19</td> <td>GEOMETRIC PATTERN DEFINITION</td>				<td class="supported">	O</td> <td></td> </tr>
+						<tr> <td>2</td> <td>20</td> <td>APPLICATION STRUCTURE DIRECTORY</td>		<td class="unsupported">X</td> <td></td> </tr>
 					</table>
 				</section>
 				<section id="class3">
@@ -170,35 +170,35 @@
 							<th>Status</th>
 							<th>Remarks</th>
 						</tr>
-						<tr> <td>4</td> <td>1</td> <td>POLYLINE</td>								<td class="supported">	O</td> <td></td> </tr>
-						<tr> <td>4</td> <td>2</td> <td>DISJOINT POLYLINE</td>				<td class="supported">	O</td> <td></td> </tr>
-						<tr> <td>4</td> <td>3</td> <td>POLYMARKER</td>							<td class="supported">	O</td> <td></td> </tr>
-						<tr> <td>4</td> <td>4</td> <td>TEXT</td>										<td class="supported">	O</td> <td>Append text is not supported</td> </tr>
-						<tr> <td>4</td> <td>5</td> <td>RESTRICTED TEXT</td>					<td class="supported">	O</td> <td></td> </tr>
-						<tr> <td>4</td> <td>6</td> <td>APPEND TEXT</td>							<td class="unsupported">X</td> <td></td> </tr>
-						<tr> <td>4</td> <td>7</td> <td>POLYGON</td>									<td class="supported">	O</td> <td></td> </tr>
-						<tr> <td>4</td> <td>8</td> <td>POLYGON SET</td>							<td class="supported">	O</td> <td></td> </tr>
-						<tr> <td>4</td> <td>9</td> <td>CELL ARRAY</td>							<td class="partial">		~</td> <td>Only cell arrays with orthogonal axis are supported</td> </tr>
+						<tr> <td>4</td> <td>1</td> <td>POLYLINE</td>												<td class="supported">	O</td> <td></td> </tr>
+						<tr> <td>4</td> <td>2</td> <td>DISJOINT POLYLINE</td>								<td class="supported">	O</td> <td></td> </tr>
+						<tr> <td>4</td> <td>3</td> <td>POLYMARKER</td>											<td class="supported">	O</td> <td></td> </tr>
+						<tr> <td>4</td> <td>4</td> <td>TEXT</td>														<td class="supported">	O</td> <td>Append text is not supported</td> </tr>
+						<tr> <td>4</td> <td>5</td> <td>RESTRICTED TEXT</td>									<td class="supported">	O</td> <td></td> </tr>
+						<tr> <td>4</td> <td>6</td> <td>APPEND TEXT</td>											<td class="unsupported">X</td> <td></td> </tr>
+						<tr> <td>4</td> <td>7</td> <td>POLYGON</td>													<td class="supported">	O</td> <td></td> </tr>
+						<tr> <td>4</td> <td>8</td> <td>POLYGON SET</td>											<td class="supported">	O</td> <td></td> </tr>
+						<tr> <td>4</td> <td>9</td> <td>CELL ARRAY</td>											<td class="partial">		~</td> <td>Only cell arrays with orthogonal axis are supported</td> </tr>
 						<tr> <td>4</td> <td>10</td> <td>GENERALIZED DRAWING PRIMITIVE</td>	<td class="unsupported">X</td> <td></td> </tr>
-						<tr> <td>4</td> <td>11</td> <td>RECTANGLE</td>							<td class="supported">	O</td> <td></td> </tr>
-						<tr> <td>4</td> <td>12</td> <td>CIRCLE</td>									<td class="supported">	O</td> <td></td> </tr>
-						<tr> <td>4</td> <td>13</td> <td>CIRCULAR ARC 3 POINT</td>		<td class="supported">	O</td> <td></td> </tr>
+						<tr> <td>4</td> <td>11</td> <td>RECTANGLE</td>											<td class="supported">	O</td> <td></td> </tr>
+						<tr> <td>4</td> <td>12</td> <td>CIRCLE</td>													<td class="supported">	O</td> <td></td> </tr>
+						<tr> <td>4</td> <td>13</td> <td>CIRCULAR ARC 3 POINT</td>						<td class="supported">	O</td> <td></td> </tr>
 						<tr> <td>4</td> <td>14</td> <td>CIRCULAR ARC 3 POINT CLOSE</td>			<td class="supported">	O</td> <td></td> </tr>
 						<tr> <td>4</td> <td>15</td> <td>CIRCULAR ARC CENTRE</td>						<td class="supported">	O</td> <td></td> </tr>
 						<tr> <td>4</td> <td>16</td> <td>CIRCULAR ARC CENTRE CLOSE</td>			<td class="supported">	O</td> <td></td> </tr>
-						<tr> <td>4</td> <td>17</td> <td>ELLIPSE</td>								<td class="supported">	O</td> <td></td> </tr>
-						<tr> <td>4</td> <td>18</td> <td>ELLIPTICAL ARC</td>					<td class="supported">	O</td> <td></td> </tr>
-						<tr> <td>4</td> <td>19</td> <td>ELLIPTICAL ARC CLOSE</td>		<td class="supported">	O</td> <td></td> </tr>
+						<tr> <td>4</td> <td>17</td> <td>ELLIPSE</td>												<td class="supported">	O</td> <td></td> </tr>
+						<tr> <td>4</td> <td>18</td> <td>ELLIPTICAL ARC</td>									<td class="supported">	O</td> <td></td> </tr>
+						<tr> <td>4</td> <td>19</td> <td>ELLIPTICAL ARC CLOSE</td>						<td class="supported">	O</td> <td></td> </tr>
 						<tr> <td>4</td> <td>20</td> <td>CIRCULAR ARC CENTRE REVERSED</td>		<td class="unsupported">X</td> <td></td> </tr>
-						<tr> <td>4</td> <td>21</td> <td>CONNECTING EDGE</td>				<td class="unsupported">X</td> <td></td> </tr>
-						<tr> <td>4</td> <td>22</td> <td>HYPERBOLIC ARC</td>					<td class="unsupported">X</td> <td></td> </tr>
-						<tr> <td>4</td> <td>23</td> <td>PARABOLIC ARC</td>					<td class="unsupported">X</td> <td></td> </tr>
-						<tr> <td>4</td> <td>24</td> <td>NON-UNIFORM B-SPLINE</td>		<td class="unsupported">X</td> <td></td> </tr>
+						<tr> <td>4</td> <td>21</td> <td>CONNECTING EDGE</td>								<td class="unsupported">X</td> <td></td> </tr>
+						<tr> <td>4</td> <td>22</td> <td>HYPERBOLIC ARC</td>									<td class="unsupported">X</td> <td></td> </tr>
+						<tr> <td>4</td> <td>23</td> <td>PARABOLIC ARC</td>									<td class="unsupported">X</td> <td></td> </tr>
+						<tr> <td>4</td> <td>24</td> <td>NON-UNIFORM B-SPLINE</td>						<td class="unsupported">X</td> <td></td> </tr>
 						<tr> <td>4</td> <td>25</td> <td>NON-UNIFORM RATIONAL B-SPLINE</td>	<td class="unsupported">X</td> <td></td> </tr>
-						<tr> <td>4</td> <td>26</td> <td>POLYBEZIER</td>							<td class="supported">	O</td> <td></td> </tr>
-						<tr> <td>4</td> <td>27</td> <td>POLYSYMBOL</td>							<td class="unsupported">X</td> <td></td> </tr>
-						<tr> <td>4</td> <td>28</td> <td>BITONAL TILE</td>						<td class="unsupported">X</td> <td></td> </tr>
-						<tr> <td>4</td> <td>29</td> <td>TILE</td>										<td class="unsupported">X</td> <td></td> </tr>
+						<tr> <td>4</td> <td>26</td> <td>POLYBEZIER</td>											<td class="supported">	O</td> <td></td> </tr>
+						<tr> <td>4</td> <td>27</td> <td>POLYSYMBOL</td>											<td class="unsupported">X</td> <td></td> </tr>
+						<tr> <td>4</td> <td>28</td> <td>BITONAL TILE</td>										<td class="partial">		~</td> <td>Only cell path direction 0 and line progression 90 supported; only compression type JPEG and PNG supported</td> </tr>
+						<tr> <td>4</td> <td>29</td> <td>TILE</td>														<td class="partial">		~</td> <td>See Bitonal Tile</td> </tr>
 					</table>
 				</section>
 				<section id="class5">

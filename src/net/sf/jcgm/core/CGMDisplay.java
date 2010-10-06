@@ -52,33 +52,33 @@ import net.sf.jcgm.core.TextAlignment.VerticalAlignment;
  * @version $Id$
  */
 public class CGMDisplay {
-    private Graphics2D g2d;
+	private Graphics2D g2d;
 
-    /** Size of the canvas */
+	/** Size of the canvas */
 	private int canvasWidth, canvasHeight;
 
-    protected CGM Cgm;
-    private Color fillColor = null;
-    private int fillColorIndex = 1;
-    private Color edgeColor = null;
-    private int edgeColorIndex = 1;
-    private Color lineColor = null;
-    private int lineColorIndex = 1;
-    private Color textColor = null;
-    private int textColorIndex = 1;
-    private Color markerColor = null;
-    private final int markerColorIndex = 1;
+	protected CGM Cgm;
+	private Color fillColor = null;
+	private int fillColorIndex = 1;
+	private Color edgeColor = null;
+	private int edgeColorIndex = 1;
+	private Color lineColor = null;
+	private int lineColorIndex = 1;
+	private Color textColor = null;
+	private int textColorIndex = 1;
+	private Color markerColor = null;
+	private final int markerColorIndex = 1;
 
-    private boolean isFilled = false;
-    /** True if the edge should be drawn */
-    private boolean drawEdge = false;
-    /**
+	private boolean isFilled = false;
+	/** True if the edge should be drawn */
+	private boolean drawEdge = false;
+	/**
 	 * Default is 1/100 of the length of the longest side of the rectangle
 	 * defined by default VDC extent, see chapter 8
 	 */
-    double characterHeight = 32;
+	double characterHeight = 32;
 
-    /**
+	/**
 	 * The extent of the drawing. An array of 2 points, each with two
 	 * coordinates (x, y). extent[0] always represents the lower left corner,
 	 * extent[1] always represents the upper right corner:
@@ -91,9 +91,9 @@ public class CGMDisplay {
 	 *   [0].x,[0].y
 	 *  </pre>
 	 */
-    private Point2D.Double[] extent;
+	private Point2D.Double[] extent;
 
-    /** The current font list */
+	/** The current font list */
 	private FontWrapper[] fonts;
 
 	private HorizontalAlignment horizontalTextAlignment = HorizontalAlignment.NORMAL_HORIZONTAL;
@@ -140,8 +140,10 @@ public class CGMDisplay {
 
 	private AffineTransform scaleTransform;
 
-    public CGMDisplay(CGM cgm) {
-        reset();
+	private TileArrayInfo tileArrayInfo;
+
+	public CGMDisplay(CGM cgm) {
+		reset();
 		this.lineDashes = new HashMap<Integer, float[]>();
 		// the values below are chosen so that they match the files of the test suite
 		this.lineDashes.put(DashType.SOLID,			new float[] { 100, 0 }); // solid
@@ -159,17 +161,17 @@ public class CGMDisplay {
 		else
 			assert(false);
 
-        Point2D.Double extent[] = cgm.extent();
-        if (extent != null)
-            this.extent = extent;
-        this.Cgm = cgm;
-    }
+		Point2D.Double extent[] = cgm.extent();
+		if (extent != null)
+			this.extent = extent;
+		this.Cgm = cgm;
+	}
 
-    public CGM getCGM() {
-    	return this.Cgm;
-    }
+	public CGM getCGM() {
+		return this.Cgm;
+	}
 
-    public void paint(Graphics g) {
+	public void paint(Graphics g) {
 		this.g2d = (Graphics2D)g;
 
 		// start with a white background color
@@ -179,36 +181,36 @@ public class CGMDisplay {
 		// force anti aliasing
 		this.g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 
-    	double minX = this.extent[0].x, maxX = this.extent[1].x;
-    	double minY = this.extent[0].y, maxY = this.extent[1].y;
+		double minX = this.extent[0].x, maxX = this.extent[1].x;
+		double minY = this.extent[0].y, maxY = this.extent[1].y;
 
-    	// we're scaling and respecting the proportions, check which scale to use
-    	double sx = this.canvasWidth/Math.abs(maxX-minX);
-    	double sy = this.canvasHeight/Math.abs(maxY-minY);
-    	double s = Math.min(sx, sy);
+		// we're scaling and respecting the proportions, check which scale to use
+		double sx = this.canvasWidth/Math.abs(maxX-minX);
+		double sy = this.canvasHeight/Math.abs(maxY-minY);
+		double s = Math.min(sx, sy);
 
-    	double m00, m11, m02, m12;
-    	if (minX < maxX) {
-    		m00 = s;
-    		m02 = -s*minX;
-    	}
-    	else {
-    		// inverted X axis
-    		m00 = -s;
-    		m02 = this.canvasWidth+s*maxX;
-    	}
-    	if (minY < maxY) {
-    		m11 = s;
-    		m12 = -s*minY;
-    	}
-    	else {
-    		// inverted Y axis
-    		m11 = -s;
-    		m12 = this.canvasHeight+s*maxY;
-    	}
+		double m00, m11, m02, m12;
+		if (minX < maxX) {
+			m00 = s;
+			m02 = -s*minX;
+		}
+		else {
+			// inverted X axis
+			m00 = -s;
+			m02 = this.canvasWidth+s*maxX;
+		}
+		if (minY < maxY) {
+			m11 = s;
+			m12 = -s*minY;
+		}
+		else {
+			// inverted Y axis
+			m11 = -s;
+			m12 = this.canvasHeight+s*maxY;
+		}
 
 		// scale to the available view port
-    	this.scaleTransform = new AffineTransform(m00, 0, 0, m11, m02, m12);
+		this.scaleTransform = new AffineTransform(m00, 0, 0, m11, m02, m12);
 
 		// invert the Y axis since (0, 0) is at top left for AWT
 		AffineTransform invertY = new AffineTransform(1, 0, 0, -1, 0, this.canvasHeight);
@@ -219,144 +221,144 @@ public class CGMDisplay {
 		this.Cgm.paint(this);
 	}
 
-    public Graphics2D getGraphics2D() {
-        return this.g2d;
-    }
+	public Graphics2D getGraphics2D() {
+		return this.g2d;
+	}
 
-    public void setFillColor(Color c) {
-        this.fillColor = c;
-    }
+	public void setFillColor(Color c) {
+		this.fillColor = c;
+	}
 
-    public void setFillColorIndex(int colorIndex) {
-    	assert (colorIndex < this.colorTable.length);
-    	this.fillColor = this.colorTable[colorIndex];
-    }
+	public void setFillColorIndex(int colorIndex) {
+		assert (colorIndex < this.colorTable.length);
+		this.fillColor = this.colorTable[colorIndex];
+	}
 
-    public Color getFillColor() {
-    	if (this.fillColor == null) {
-    		assert (this.fillColorIndex < this.colorTable.length);
-    		return this.colorTable[this.fillColorIndex];
-    	}
-        return this.fillColor;
-    }
+	public Color getFillColor() {
+		if (this.fillColor == null) {
+			assert (this.fillColorIndex < this.colorTable.length);
+			return this.colorTable[this.fillColorIndex];
+		}
+		return this.fillColor;
+	}
 
-    public void setFilled(boolean flag) {
-        this.isFilled = flag;
-    }
+	public void setFilled(boolean flag) {
+		this.isFilled = flag;
+	}
 
-    public boolean isFilled() {
-        return this.isFilled;
-    }
+	public boolean isFilled() {
+		return this.isFilled;
+	}
 
-    public void setEdgeColor(Color c) {
-        this.edgeColor = c;
-    }
+	public void setEdgeColor(Color c) {
+		this.edgeColor = c;
+	}
 
-    public void setEdgeColorIndex(int colorIndex) {
-    	assert (colorIndex < this.colorTable.length);
-    	this.edgeColor = this.colorTable[colorIndex];
-    }
+	public void setEdgeColorIndex(int colorIndex) {
+		assert (colorIndex < this.colorTable.length);
+		this.edgeColor = this.colorTable[colorIndex];
+	}
 
-    public Color getEdgeColor() {
-    	if (this.edgeColor == null) {
-    		assert (this.edgeColorIndex < this.colorTable.length);
-    		return this.colorTable[this.edgeColorIndex];
-    	}
-        return this.edgeColor;
-    }
+	public Color getEdgeColor() {
+		if (this.edgeColor == null) {
+			assert (this.edgeColorIndex < this.colorTable.length);
+			return this.colorTable[this.edgeColorIndex];
+		}
+		return this.edgeColor;
+	}
 
-    public void setEdge(boolean flag) {
-        this.drawEdge = flag;
-    }
+	public void setEdge(boolean flag) {
+		this.drawEdge = flag;
+	}
 
-    /**
-     * Returns true if edge should be drawn
-     * @return true/false
-     */
-    public boolean drawEdge() {
-        return this.drawEdge;
-    }
+	/**
+	 * Returns true if edge should be drawn
+	 * @return true/false
+	 */
+	public boolean drawEdge() {
+		return this.drawEdge;
+	}
 
-    public void setLineColor(Color c) {
-        this.lineColor = c;
-    }
+	public void setLineColor(Color c) {
+		this.lineColor = c;
+	}
 
-    public void setLineColorIndex(int colorIndex) {
-    	assert (colorIndex < this.colorTable.length);
-    	this.lineColor = this.colorTable[colorIndex];
-    }
+	public void setLineColorIndex(int colorIndex) {
+		assert (colorIndex < this.colorTable.length);
+		this.lineColor = this.colorTable[colorIndex];
+	}
 
-    public Color getLineColor() {
-    	if (this.lineColor == null) {
-    		assert (this.lineColorIndex < this.colorTable.length);
-    		return this.colorTable[this.lineColorIndex];
-    	}
-        return this.lineColor;
-    }
+	public Color getLineColor() {
+		if (this.lineColor == null) {
+			assert (this.lineColorIndex < this.colorTable.length);
+			return this.colorTable[this.lineColorIndex];
+		}
+		return this.lineColor;
+	}
 
-    public void setMarkerColor(Color c) {
-        this.markerColor = c;
-    }
+	public void setMarkerColor(Color c) {
+		this.markerColor = c;
+	}
 
-    public void setMarkerColorIndex(int colorIndex) {
-    	assert (colorIndex < this.colorTable.length);
-    	this.markerColor = this.colorTable[colorIndex];
-    }
+	public void setMarkerColorIndex(int colorIndex) {
+		assert (colorIndex < this.colorTable.length);
+		this.markerColor = this.colorTable[colorIndex];
+	}
 
-    public Color getMarkerColor() {
-    	if (this.markerColor == null) {
-    		assert (this.markerColorIndex < this.colorTable.length);
-    		return this.colorTable[this.markerColorIndex];
-    	}
-        return this.markerColor;
-    }
+	public Color getMarkerColor() {
+		if (this.markerColor == null) {
+			assert (this.markerColorIndex < this.colorTable.length);
+			return this.colorTable[this.markerColorIndex];
+		}
+		return this.markerColor;
+	}
 
-    public void setTextColor(Color c) {
-        this.textColor = c;
-    }
+	public void setTextColor(Color c) {
+		this.textColor = c;
+	}
 
-    public void setTextColorIndex(int colorIndex) {
-    	assert (colorIndex < this.colorTable.length);
-    	this.textColor = this.colorTable[colorIndex];
-    }
+	public void setTextColorIndex(int colorIndex) {
+		assert (colorIndex < this.colorTable.length);
+		this.textColor = this.colorTable[colorIndex];
+	}
 
-    public Color getTextColor() {
-    	if (this.textColor == null) {
-    		assert (this.textColorIndex < this.colorTable.length);
-    		return this.colorTable[this.textColorIndex];
-    	}
-        return this.textColor;
-    }
+	public Color getTextColor() {
+		if (this.textColor == null) {
+			assert (this.textColorIndex < this.colorTable.length);
+			return this.colorTable[this.textColorIndex];
+		}
+		return this.textColor;
+	}
 
-    public void setCharacterHeight(double h) {
-        this.characterHeight = h;
-    }
+	public void setCharacterHeight(double h) {
+		this.characterHeight = h;
+	}
 
-    public double getCharacterHeight() {
-        return this.characterHeight;
-    }
+	public double getCharacterHeight() {
+		return this.characterHeight;
+	}
 
-    public void scale(Graphics g, int w, int h) {
-    	this.g2d = (Graphics2D)g;
-        if (this.extent == null)
-            return;
+	public void scale(Graphics g, int w, int h) {
+		this.g2d = (Graphics2D)g;
+		if (this.extent == null)
+			return;
 
-        double extentWidth = Math.abs(this.extent[1].x - this.extent[0].x);
-        double extentHeight = Math.abs(this.extent[1].y - this.extent[0].y);
+		double extentWidth = Math.abs(this.extent[1].x - this.extent[0].x);
+		double extentHeight = Math.abs(this.extent[1].y - this.extent[0].y);
 
-        double fx = w / extentWidth;
-        if (fx * (extentHeight) > h) {
-        	fx = h / extentHeight;
-        }
-        this.canvasWidth = (int)(fx * extentWidth);
+		double fx = w / extentWidth;
+		if (fx * (extentHeight) > h) {
+			fx = h / extentHeight;
+		}
+		this.canvasWidth = (int)(fx * extentWidth);
 		this.canvasHeight = (int)(fx * extentHeight);
 
-        this.isScaled  = true;
-    }
+		this.isScaled  = true;
+	}
 
-    public boolean isScaled() {
-    	return this.isScaled;
-    }
+	public boolean isScaled() {
+		return this.isScaled;
+	}
 
 	/**
 	 * Returns the extent of the drawing.
@@ -374,37 +376,37 @@ public class CGMDisplay {
 	 *         always represents the lower left corner, extent[1] always
 	 *         represents the upper right corner
 	 */
-    public Point2D.Double[] getExtent() {
-    	return this.extent;
-    }
+	public Point2D.Double[] getExtent() {
+		return this.extent;
+	}
 
-    protected final double angle(double x, double y) {
+	protected final double angle(double x, double y) {
 		return normalizeAngle(Math.atan2(y, x));
-    }
+	}
 
-    /**
-     * Normalizes an angle in the range -pi..pi to 0..2pi
-     * @param a
-     * @return
-     */
-    final protected double normalizeAngle(double a) {
-    	if (a < 0) {
-    		return a + 2*Math.PI;
-    	}
-    	return a;
-    }
+	/**
+	 * Normalizes an angle in the range -pi..pi to 0..2pi
+	 * @param a
+	 * @return
+	 */
+	final protected double normalizeAngle(double a) {
+		if (a < 0) {
+			return a + 2*Math.PI;
+		}
+		return a;
+	}
 
-    /**
-     * Returns a transformation to apply to transform from the given coordinate system
-     * @param op The origin of the coordinate system
-     * @param ip The first axis vector
-     * @param jp The second axis vector
-     * @return The transformation to apply
-     */
-    protected final AffineTransform getCoordinateSystemTransformation(Point2D.Double op,
+	/**
+	 * Returns a transformation to apply to transform from the given coordinate system
+	 * @param op The origin of the coordinate system
+	 * @param ip The first axis vector
+	 * @param jp The second axis vector
+	 * @return The transformation to apply
+	 */
+	protected final AffineTransform getCoordinateSystemTransformation(Point2D.Double op,
 			Point2D.Double ip, Point2D.Double jp) {
 
-    	double ipAngle = Math.atan2(ip.y, ip.x);
+		double ipAngle = Math.atan2(ip.y, ip.x);
 		AffineTransform rotationTransform = AffineTransform.getRotateInstance(ipAngle);
 		AffineTransform invertedRotationTransform = AffineTransform.getRotateInstance(-ipAngle);
 
@@ -414,7 +416,7 @@ public class CGMDisplay {
 		AffineTransform shearTransform;
 		if (rotatedSecondConjugate.y != 0) {
 			shearTransform = AffineTransform.getShearInstance(rotatedSecondConjugate.x /
-																rotatedSecondConjugate.y, 0);
+					rotatedSecondConjugate.y, 0);
 		}
 		else {
 			// identity
@@ -427,8 +429,8 @@ public class CGMDisplay {
 		AffineTransform translateInstance = AffineTransform.getTranslateInstance(op.x, op.y);
 		translateInstance.concatenate(rotationTransform);
 
-    	return translateInstance;
-    }
+		return translateInstance;
+	}
 
 	public void setFonts(FontWrapper[] fontWrappers) {
 		this.fonts = fontWrappers;
@@ -566,11 +568,11 @@ public class CGMDisplay {
 
 	public void setLineType(int type) {
 		this.lineStroke = new BasicStroke(this.lineStroke.getLineWidth(),
-			this.lineStroke.getEndCap(),
-			this.lineStroke.getLineJoin(),
-			this.lineStroke.getMiterLimit(),
-			this.lineDashes.get(type),
-			this.lineStroke.getDashPhase());
+				this.lineStroke.getEndCap(),
+				this.lineStroke.getLineJoin(),
+				this.lineStroke.getMiterLimit(),
+				this.lineDashes.get(type),
+				this.lineStroke.getDashPhase());
 	}
 
 	public BasicStroke getLineStroke() {
@@ -579,11 +581,11 @@ public class CGMDisplay {
 
 	public void setEdgeType(int type) {
 		this.edgeStroke = new BasicStroke(this.edgeStroke.getLineWidth(),
-			this.edgeStroke.getEndCap(),
-			this.edgeStroke.getLineJoin(),
-			this.edgeStroke.getMiterLimit(),
-			this.lineDashes.get(type),
-			this.edgeStroke.getDashPhase());
+				this.edgeStroke.getEndCap(),
+				this.edgeStroke.getLineJoin(),
+				this.edgeStroke.getMiterLimit(),
+				this.lineDashes.get(type),
+				this.edgeStroke.getDashPhase());
 	}
 
 	public BasicStroke getEdgeStroke() {
@@ -721,57 +723,57 @@ public class CGMDisplay {
 	public void setLineWidth(double width) {
 		SpecificationMode mode = LineWidthSpecificationMode.getMode();
 		this.lineStroke = new BasicStroke((float) scaleWidth(width, mode),
-			this.lineStroke.getEndCap(),
-			this.lineStroke.getLineJoin(),
-			this.lineStroke.getMiterLimit(),
-			this.lineStroke.getDashArray(),
-			this.lineStroke.getDashPhase());
+				this.lineStroke.getEndCap(),
+				this.lineStroke.getLineJoin(),
+				this.lineStroke.getMiterLimit(),
+				this.lineStroke.getDashArray(),
+				this.lineStroke.getDashPhase());
 	}
 
 	public void setEdgeWidth(double width) {
 		SpecificationMode mode = EdgeWidthSpecificationMode.getMode();
 		this.edgeStroke = new BasicStroke((float) scaleWidth(width, mode),
-			this.edgeStroke.getEndCap(),
-			this.edgeStroke.getLineJoin(),
-			this.edgeStroke.getMiterLimit(),
-			this.edgeStroke.getDashArray(),
-			this.edgeStroke.getDashPhase());
+				this.edgeStroke.getEndCap(),
+				this.edgeStroke.getLineJoin(),
+				this.edgeStroke.getMiterLimit(),
+				this.edgeStroke.getDashArray(),
+				this.edgeStroke.getDashPhase());
 	}
 
 	public void setLineCap(LineCapIndicator lineIndicator) {
 		this.lineStroke = new BasicStroke(this.lineStroke.getLineWidth(),
-			lineIndicator.getBasicStrokeConstant(),
-			this.lineStroke.getLineJoin(),
-			this.lineStroke.getMiterLimit(),
-			this.lineStroke.getDashArray(),
-			this.lineStroke.getDashPhase());
+				lineIndicator.getBasicStrokeConstant(),
+				this.lineStroke.getLineJoin(),
+				this.lineStroke.getMiterLimit(),
+				this.lineStroke.getDashArray(),
+				this.lineStroke.getDashPhase());
 	}
 
 	public void setEdgeCap(LineCapIndicator lineIndicator) {
 		this.edgeStroke = new BasicStroke(this.edgeStroke.getLineWidth(),
-			lineIndicator.getBasicStrokeConstant(),
-			this.edgeStroke.getLineJoin(),
-			this.edgeStroke.getMiterLimit(),
-			this.edgeStroke.getDashArray(),
-			this.edgeStroke.getDashPhase());
+				lineIndicator.getBasicStrokeConstant(),
+				this.edgeStroke.getLineJoin(),
+				this.edgeStroke.getMiterLimit(),
+				this.edgeStroke.getDashArray(),
+				this.edgeStroke.getDashPhase());
 	}
 
 	public void setLineJoin(JoinIndicator type) {
 		this.lineStroke = new BasicStroke(this.lineStroke.getLineWidth(),
-			this.lineStroke.getEndCap(),
-			type.getBasicStrokeConstant(),
-			this.lineStroke.getMiterLimit(),
-			this.lineStroke.getDashArray(),
-			this.lineStroke.getDashPhase());
+				this.lineStroke.getEndCap(),
+				type.getBasicStrokeConstant(),
+				this.lineStroke.getMiterLimit(),
+				this.lineStroke.getDashArray(),
+				this.lineStroke.getDashPhase());
 	}
 
 	public void setEdgeJoin(JoinIndicator type) {
 		this.edgeStroke = new BasicStroke(this.edgeStroke.getLineWidth(),
-			this.edgeStroke.getEndCap(),
-			type.getBasicStrokeConstant(),
-			this.edgeStroke.getMiterLimit(),
-			this.edgeStroke.getDashArray(),
-			this.edgeStroke.getDashPhase());
+				this.edgeStroke.getEndCap(),
+				type.getBasicStrokeConstant(),
+				this.edgeStroke.getMiterLimit(),
+				this.edgeStroke.getDashArray(),
+				this.edgeStroke.getDashPhase());
 	}
 
 	public void setMarkerType(MarkerType.Type type) {
@@ -955,6 +957,25 @@ public class CGMDisplay {
 	public boolean getClipFlag() {
 		return this.clipFlag;
 	}
+
+	/**
+	 * Returns an information structure to be able to draw tiles of a tile
+	 * array.
+	 * 
+	 * @return
+	 */
+	TileArrayInfo getTileArrayInfo() {
+		return this.tileArrayInfo;
+	}
+
+	/**
+	 * Sets information to be able to draw tiles of a tile array
+	 * @param tileArrayInfo
+	 */
+	void setTileArrayInfo(TileArrayInfo tileArrayInfo) {
+		this.tileArrayInfo = tileArrayInfo;
+	}
+
 }
 
 /*

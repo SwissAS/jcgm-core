@@ -21,7 +21,8 @@
  */
 package net.sf.jcgm.core;
 
-import java.io.*;
+import java.io.DataInput;
+import java.io.IOException;
 
 
 /**
@@ -33,6 +34,11 @@ import java.io.*;
 class RealPrecision extends Command {
 	enum Precision { FLOATING_32, FLOATING_64, FIXED_32, FIXED_64 }
 	static private Precision precision;
+	/**
+	 * Flag to tell us whether a real precision command has already been
+	 * processed or not
+	 */
+	static boolean realPrecisionProcessed;
 	
 	static {
 		reset();
@@ -70,21 +76,35 @@ class RealPrecision extends Command {
         else {
         	assert false : "unsupported representation";
         }
+        
+        realPrecisionProcessed = true;
     }
     
     public static void reset() {
     	precision = Precision.FIXED_32;
+    	realPrecisionProcessed = false;
 	}
 
 	static public Precision getPrecision() {
     	return RealPrecision.precision;
     }
 
+	/**
+	 * Returns a flag to tell us if we encountered a real precision command
+	 * already or not
+	 * 
+	 * @return
+	 */
+	static public boolean hasRealPrecisionBeenProcessed() {
+		return realPrecisionProcessed;
+	}
+	
     @Override
 	public String toString() {
         String s = "RealPrecision " + String.valueOf(RealPrecision.precision);
         return s;
     }
+
 }
 
 /*

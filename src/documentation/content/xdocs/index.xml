@@ -5,7 +5,9 @@
   <header>
     <title>jcgm -- Computer Graphics Metafile interpreter and
     renderer</title>
-	<meta name="keywords">CGM, Java, SDK, computer graphics metafile, open source</meta>
+    <meta name="keywords">CGM, Java, SDK, computer graphics
+    metafile, open source, display, render, renderer, convert,
+    converter, jcgm</meta>
   </header>
   <body>
     <section id="intro">
@@ -30,13 +32,18 @@
       by using 
       <a href="http://xmlgraphics.apache.org/fop/">FOP</a>.</p>
     </section>
-	<section id="acknowledgments">
-		<title>Acknowledgments</title>
-		<p>
-			This library was originally developped <a
-				href="http://www.bbn.com">BBN Technologies</a> and released as
-			part of the <a href="http://www.openmap.org">OpenMap</a> project.
-		</p>
-	</section>
+    <section id="feedback">
+      <title>Feedback</title>
+      <p>Send feedback via the jcgm project page at Sourceforge: 
+      <a href="http://sourceforge.net/projects/jcgm/">
+      http://sourceforge.net/projects/jcgm/</a>.</p>
+    </section>
+    <section id="acknowledgments">
+      <title>Acknowledgments</title>
+      <p>This library was originally developped 
+      <a href="http://www.bbn.com">BBN Technologies</a>and released
+      as part of the 
+      <a href="http://www.openmap.org">OpenMap</a>project.</p>
+    </section>
   </body>
 </document>

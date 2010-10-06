@@ -30,10 +30,13 @@ import java.io.DataInput;
 import java.io.EOFException;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 import net.sf.jcgm.core.ColourModel.Model;
 import net.sf.jcgm.core.RealPrecision.Precision;
+import net.sf.jcgm.core.StructuredDataRecord.StructuredDataType;
 import net.sf.jcgm.core.VDCRealPrecision.Type;
 
 /**
@@ -50,126 +53,114 @@ import net.sf.jcgm.core.VDCRealPrecision.Type;
  */
 class Command implements Cloneable {
 	/** All the command parameters */
-    protected int args[];
+	protected int args[];
 
-    /** The current command parameter we're reading */
-    protected int currentArg = 0;
+	/** The current command parameter we're reading */
+	protected int currentArg = 0;
 
-    /** The current bit in the current argument we're reading */
-    private int posInArg = 0;
+	/** The current bit in the current argument we're reading */
+	private int posInArg = 0;
 
-    private final int elementClass;
-    private final int elementCode;
+	private final int elementClass;
+	private final int elementCode;
 
-    /**
-     * The base class for all commands.
-     * @param ec The element class
-     * @param eid The element ID
-     * @param l The number of arguments for the command
-     * @param in The input stream used to read the command
-     * @throws IOException
-     */
-    public Command(int ec, int eid, int l, DataInput in)
-            throws IOException {
+	/**
+	 * The base class for all commands.
+	 * @param ec The element class
+	 * @param eid The element ID
+	 * @param l The number of arguments for the command
+	 * @param in The input stream used to read the command
+	 * @throws IOException
+	 */
+	public Command(int ec, int eid, int l, DataInput in)
+	throws IOException {
 
-        this.elementClass = ec;
-        this.elementCode = eid;
-        if (l != 31) {
-            this.args = new int[l];
-            for (int i = 0; i < l; i++)
-                this.args[i] = in.readUnsignedByte();
-            if (l % 2 == 1) {
-            	try {
-                	int skip = in.readUnsignedByte();
-            		assert(skip == 0): "skipping data";
-            	}
-            	catch (EOFException e) {
-            		// we've reached the end of the data input. Since we're only
+		this.elementClass = ec;
+		this.elementCode = eid;
+		if (l != 31) {
+			this.args = new int[l];
+			for (int i = 0; i < l; i++)
+				this.args[i] = in.readUnsignedByte();
+			if (l % 2 == 1) {
+				try {
+					int skip = in.readUnsignedByte();
+					assert(skip == 0): "skipping data";
+				}
+				catch (EOFException e) {
+					// we've reached the end of the data input. Since we're only
 					// skipping data here, the exception can be ignored.
-            	}
-            }
-        } else {
-        	// this is a long form command
-            boolean done = true;
-            int a = 0;
-            do {
-            	l = read16(in);
-            	if (l == -1)
-            		break;
-            	if ((l & (1 << 15)) != 0) {
-            		// data is partitioned and it's not the last partition
-            		done = false;
-                	// clear bit 15
-                	l = l & ~(1 << 15);
-            	}
-            	else {
-            		done = true;
-            	}
-            	if (this.args == null) {
-            		this.args = new int[l];
-            	}
-            	else {
-            		// resize the args array
-            		this.args = Arrays.copyOf(this.args, this.args.length + l);
-            	}
-                for (int i = 0; i < l; i++)
-                    this.args[a++] = in.readUnsignedByte();
+				}
+			}
+		} else {
+			// this is a long form command
+			boolean done = true;
+			int a = 0;
+			do {
+				l = read16(in);
+				if (l == -1)
+					break;
+				if ((l & (1 << 15)) != 0) {
+					// data is partitioned and it's not the last partition
+					done = false;
+					// clear bit 15
+					l = l & ~(1 << 15);
+				}
+				else {
+					done = true;
+				}
+				if (this.args == null) {
+					this.args = new int[l];
+				}
+				else {
+					// resize the args array
+					this.args = Arrays.copyOf(this.args, this.args.length + l);
+				}
+				for (int i = 0; i < l; i++)
+					this.args[a++] = in.readUnsignedByte();
 
-                // align on a word if necessary
-                if (l % 2 == 1) {
-                    int skip = in.readUnsignedByte();
-                    assert(skip == 0): "skipping data";
-                }
-            }
-            while (!done);
-        }
-    }
+				// align on a word if necessary
+				if (l % 2 == 1) {
+					int skip = in.readUnsignedByte();
+					assert(skip == 0): "skipping data";
+				}
+			}
+			while (!done);
+		}
+	}
 
 	/**
 	 * Removes the reference to the arguments, important for commands that have
 	 * large arguments such as cell arrays, etc.
 	 */
-    void cleanUpArguments() {
-    	this.args = null;
-    }
+	void cleanUpArguments() {
+		this.args = null;
+	}
 
-    private int read16(DataInput in) throws IOException {
-        return (in.readUnsignedByte() << 8) | in.readUnsignedByte();
-    }
+	private int read16(DataInput in) throws IOException {
+		return (in.readUnsignedByte() << 8) | in.readUnsignedByte();
+	}
 
-    @Override
+	@Override
 	public String toString() {
-        return "Unsupported " + this.elementClass + "," + this.elementCode + " (" + (this.args != null ? this.args.length : "arguments cleared") + ")";
-    }
+		return "Unsupported " + this.elementClass + "," + this.elementCode + " (" + (this.args != null ? this.args.length : "arguments cleared") + ")";
+	}
 
-    final protected String makeFixedString() {
-    	int length = makeUInt8();
-    	if (length == 255) {
-    		length = makeUInt16();
-    		if ((length & (1 << 16)) != 0) {
-    			length = (length << 16) | makeUInt16();
-    		}
-    	}
-    	char[] c = new char[length];
-    	for (int i = 0; i < length; i++) {
-    		c[i] = makeChar();
-    	}
+	final protected String makeFixedString() {
+		int length = getStringCount();
+		char[] c = new char[length];
+		for (int i = 0; i < length; i++) {
+			c[i] = makeChar();
+		}
 
-    	return new String(c);
-    }
+		return new String(c);
+	}
 
-    final protected String makeString() {
-    	int length = makeUInt8();
-    	if (length == 255) {
-    		length = makeUInt16();
-    		if ((length & (1 << 16)) != 0) {
-    			length = (length << 16) | makeUInt16();
-    		}
-    	}
-    	byte[] c = new byte[length];
-    	for (int i = 0; i < length; i++) {
-    		c[i] = makeByte();
-    	}
+	final protected String makeString() {
+		int length = getStringCount();
+		byte[] c = new byte[length];
+		for (int i = 0; i < length; i++) {
+			c[i] = makeByte();
+		}
 
 		try {
 			return new String(c, "ISO8859-1");
@@ -177,127 +168,143 @@ class Command implements Cloneable {
 		catch (UnsupportedEncodingException e) {
 			return new String(c);
 		}
-    }
+	}
 
-    final protected byte makeByte() {
-    	skipBits();
-    	assert (this.currentArg < this.args.length);
-    	return (byte)this.args[this.currentArg++];
-    }
+	private int getStringCount() {
+		int length = makeUInt8();
+		if (length == 255) {
+			length = makeUInt16();
+			if ((length & (1 << 16)) != 0) {
+				length = (length << 16) | makeUInt16();
+			}
+		}
+		return length;
+	}
 
-    final protected char makeChar() {
-    	skipBits();
-    	assert (this.currentArg < this.args.length);
-    	return (char)this.args[this.currentArg++];
-    }
+	final protected byte makeByte() {
+		skipBits();
+		assert (this.currentArg < this.args.length);
+		return (byte)this.args[this.currentArg++];
+	}
 
-    final protected int makeSignedInt8() {
-    	skipBits();
-    	assert(this.currentArg < this.args.length);
-    	return (byte) this.args[this.currentArg++];
-    }
+	final protected char makeChar() {
+		skipBits();
+		assert (this.currentArg < this.args.length);
+		return (char)this.args[this.currentArg++];
+	}
 
-    final protected int makeSignedInt16() {
-    	skipBits();
-    	assert(this.currentArg+1 < this.args.length);
-        return ((short) (this.args[this.currentArg++] << 8) + this.args[this.currentArg++]);
-    }
+	final protected int makeSignedInt8() {
+		skipBits();
+		assert(this.currentArg < this.args.length);
+		return (byte) this.args[this.currentArg++];
+	}
 
-    final protected int makeSignedInt24() {
-    	skipBits();
-    	assert(this.currentArg+2 < this.args.length);
-    	return (this.args[this.currentArg++] << 16) + (this.args[this.currentArg++] << 8) + this.args[this.currentArg++];
-    }
+	final protected int makeSignedInt16() {
+		skipBits();
+		assert(this.currentArg+1 < this.args.length);
+		return ((short) (this.args[this.currentArg++] << 8) + this.args[this.currentArg++]);
+	}
 
-    final protected int makeSignedInt32() {
-    	skipBits();
-    	assert(this.currentArg+3 < this.args.length);
-    	return (this.args[this.currentArg++] << 24) + (this.args[this.currentArg++] << 16) + (this.args[this.currentArg++] << 8) + this.args[this.currentArg++];
-    }
+	final protected int makeSignedInt24() {
+		skipBits();
+		assert(this.currentArg+2 < this.args.length);
+		return (this.args[this.currentArg++] << 16) + (this.args[this.currentArg++] << 8) + this.args[this.currentArg++];
+	}
 
-    final protected int makeInt() {
-    	int precision = IntegerPrecision.getPrecision();
-    	return makeInt(precision);
-    }
+	final protected int makeSignedInt32() {
+		skipBits();
+		assert(this.currentArg+3 < this.args.length);
+		return (this.args[this.currentArg++] << 24) + (this.args[this.currentArg++] << 16) + (this.args[this.currentArg++] << 8) + this.args[this.currentArg++];
+	}
 
-    final protected int sizeOfInt() {
-    	int precision = IntegerPrecision.getPrecision();
-    	return precision / 8;
-    }
+	final protected int makeInt() {
+		int precision = IntegerPrecision.getPrecision();
+		return makeInt(precision);
+	}
 
-    final protected int makeIndex() {
-    	int precision = IndexPrecision.getPrecision();
-    	return makeInt(precision);
-    }
+	final protected int sizeOfInt() {
+		int precision = IntegerPrecision.getPrecision();
+		return precision / 8;
+	}
 
-    private int makeInt(int precision) {
-    	skipBits();
-    	if (precision == 8) {
-    		return makeSignedInt8();
-    	}
-    	if (precision == 16) {
-    		return makeSignedInt16();
-    	}
-    	if (precision == 24) {
-    		makeSignedInt24();
-    	}
-    	if (precision == 32) {
-    		makeSignedInt32();
-    	}
+	final protected int makeIndex() {
+		int precision = IndexPrecision.getPrecision();
+		return makeInt(precision);
+	}
 
-    	unsupported("unsupported integer precision "+precision);
-    	// return default
-    	return makeSignedInt16();
-    }
+	final protected int makeName() {
+		int precision = NamePrecision.getPrecision();
+		return makeInt(precision);
+	}
 
-    final protected int makeUInt(int precision) {
-    	if (precision == 1) {
-    		return makeUInt1();
-    	}
-    	if (precision == 2) {
-    		return makeUInt2();
-    	}
-    	if (precision == 4) {
-    		return makeUInt4();
-    	}
-    	if (precision == 8) {
-    		return makeUInt8();
-    	}
-    	if (precision == 16) {
-    		return makeUInt16();
-    	}
-    	if (precision == 24) {
-    		return makeUInt24();
-    	}
-    	if (precision == 32) {
-    		return makeUInt32();
-    	}
+	private int makeInt(int precision) {
+		skipBits();
+		if (precision == 8) {
+			return makeSignedInt8();
+		}
+		if (precision == 16) {
+			return makeSignedInt16();
+		}
+		if (precision == 24) {
+			makeSignedInt24();
+		}
+		if (precision == 32) {
+			makeSignedInt32();
+		}
 
-    	unsupported("unsupported uint precision "+precision);
-    	// return default
-    	return makeUInt8();
-    }
+		unsupported("unsupported integer precision "+precision);
+		// return default
+		return makeSignedInt16();
+	}
+
+	final protected int makeUInt(int precision) {
+		if (precision == 1) {
+			return makeUInt1();
+		}
+		if (precision == 2) {
+			return makeUInt2();
+		}
+		if (precision == 4) {
+			return makeUInt4();
+		}
+		if (precision == 8) {
+			return makeUInt8();
+		}
+		if (precision == 16) {
+			return makeUInt16();
+		}
+		if (precision == 24) {
+			return makeUInt24();
+		}
+		if (precision == 32) {
+			return makeUInt32();
+		}
+
+		unsupported("unsupported uint precision "+precision);
+		// return default
+		return makeUInt8();
+	}
 
 	private int makeUInt32() {
-    	skipBits();
+		skipBits();
 		assert this.currentArg+3 < this.args.length;
 		return (char)(this.args[this.currentArg++] << 24) + (char)(this.args[this.currentArg++] << 16) + (char)(this.args[this.currentArg++] << 8) + (char)this.args[this.currentArg++];
 	}
 
 	private int makeUInt24() {
-    	skipBits();
+		skipBits();
 		assert this.currentArg+2 < this.args.length;
 		return (char)(this.args[this.currentArg++] << 16) + (char)(this.args[this.currentArg++] << 8) + (char)this.args[this.currentArg++];
 	}
 
 	private int makeUInt16() {
-    	skipBits();
+		skipBits();
 		assert this.currentArg+1 < this.args.length;
 		return (char)(this.args[this.currentArg++] << 8) + (char)this.args[this.currentArg++];
 	}
 
 	private int makeUInt8() {
-    	skipBits();
+		skipBits();
 		assert this.currentArg < this.args.length;
 		return (char)this.args[this.currentArg++];
 	}
@@ -337,7 +344,7 @@ class Command implements Cloneable {
 		}
 	}
 
-    final protected double makeVdc() {
+	final protected double makeVdc() {
 		if (VDCType.getType().equals(VDCType.Type.REAL)) {
 			Type precision = VDCRealPrecision.getPrecision();
 			if (precision.equals(Type.FIXED_POINT_32BIT)) {
@@ -359,23 +366,23 @@ class Command implements Cloneable {
 
 		// defaults to integer
 		// if (VDCType.getType().equals(VDCType.Type.INTEGER)) {
-			int precision = VDCIntegerPrecision.getPrecision();
-			if (precision == 16) {
-				return makeSignedInt16();
-			}
-			if (precision == 24) {
-				return makeSignedInt24();
-			}
-			if (precision == 32) {
-				return makeSignedInt32();
-			}
-
-			unsupported("unsupported precision "+precision);
+		int precision = VDCIntegerPrecision.getPrecision();
+		if (precision == 16) {
 			return makeSignedInt16();
+		}
+		if (precision == 24) {
+			return makeSignedInt24();
+		}
+		if (precision == 32) {
+			return makeSignedInt32();
+		}
+
+		unsupported("unsupported precision "+precision);
+		return makeSignedInt16();
 		// }
 	}
 
-    final protected int sizeOfVdc() {
+	final protected int sizeOfVdc() {
 		if (VDCType.getType().equals(VDCType.Type.INTEGER)) {
 			int precision = VDCIntegerPrecision.getPrecision();
 			return (precision / 8);
@@ -397,9 +404,20 @@ class Command implements Cloneable {
 			}
 		}
 		return 1;
-    }
+	}
 
-    final protected double makeReal() {
+	final protected double makeVc() {
+		switch (DeviceViewportSpecificationMode.getMode()) {
+		case MillimetersWithScaleFactor:
+		case PhysicalDeviceCoordinates:
+			return makeInt();
+		case FractionOfDrawingSurface:
+		default:
+			return makeReal();
+		}
+	}
+
+	final protected double makeReal() {
 		Precision precision = RealPrecision.getPrecision();
 		if (precision.equals(RealPrecision.Precision.FIXED_32)) {
 			return makeFixedPoint32();
@@ -417,9 +435,9 @@ class Command implements Cloneable {
 		unsupported("unsupported real precision "+precision);
 		// return default
 		return makeFixedPoint32();
-    }
+	}
 
-    final protected double makeFixedPoint() {
+	final protected double makeFixedPoint() {
 		Precision precision = RealPrecision.getPrecision();
 		if (precision.equals(RealPrecision.Precision.FIXED_32)) {
 			return makeFixedPoint32();
@@ -430,9 +448,9 @@ class Command implements Cloneable {
 		unsupported("unsupported real precision "+precision);
 		// return default
 		return makeFixedPoint32();
-    }
+	}
 
-    final protected double makeFloatingPoint() {
+	final protected double makeFloatingPoint() {
 		Precision precision = RealPrecision.getPrecision();
 		if (precision.equals(RealPrecision.Precision.FLOATING_32)) {
 			return makeFloatingPoint32();
@@ -441,82 +459,82 @@ class Command implements Cloneable {
 			return makeFloatingPoint64();
 		}
 		return makeFloatingPoint32();
-    }
+	}
 
-    private double makeFixedPoint32() {
+	private double makeFixedPoint32() {
 		double wholePart = makeSignedInt16();
 		double fractionPart = makeUInt16();
 
 		return wholePart + (fractionPart / (2 << 15));
 	}
 
-    private int sizeOfFixedPoint32() {
-    	return 2+2;
-    }
+	private int sizeOfFixedPoint32() {
+		return 2+2;
+	}
 
-    private double makeFixedPoint64() {
+	private double makeFixedPoint64() {
 		double wholePart = makeSignedInt32();
 		double fractionPart = makeUInt32();
 
 		return wholePart + (fractionPart / (2 << 31));
 	}
 
-    private int sizeOfFixedPoint64() {
-    	return 4+4;
-    }
-
-    private double makeFloatingPoint32() {
-    	skipBits();
-    	int bits = 0;
-    	for (int i = 0; i < 4; i++) {
-    		bits = (bits << 8) | makeChar();
-    	}
-    	return Float.intBitsToFloat(bits);
+	private int sizeOfFixedPoint64() {
+		return 4+4;
 	}
 
-    private int sizeOfFloatingPoint32() {
-    	return 2*2;
-    }
+	protected final double makeFloatingPoint32() {
+		skipBits();
+		int bits = 0;
+		for (int i = 0; i < 4; i++) {
+			bits = (bits << 8) | makeChar();
+		}
+		return Float.intBitsToFloat(bits);
+	}
+
+	private int sizeOfFloatingPoint32() {
+		return 2*2;
+	}
 
 	private double makeFloatingPoint64() {
-    	skipBits();
-    	long bits = 0;
-    	for (int i = 0; i < 8; i++) {
-    		bits = (bits << 8) | makeChar();
-    	}
+		skipBits();
+		long bits = 0;
+		for (int i = 0; i < 8; i++) {
+			bits = (bits << 8) | makeChar();
+		}
 		return Double.longBitsToDouble(bits);
 	}
 
-    private int sizeOfFloatingPoint64() {
-    	return 2*4;
-    }
+	private int sizeOfFloatingPoint64() {
+		return 2*4;
+	}
 
 	final protected int makeEnum() {
-    	return makeSignedInt16();
-    }
+		return makeSignedInt16();
+	}
 
 	final protected int sizeOfEnum() {
 		return 2;
 	}
 
-    final protected Point2D.Double makePoint() {
-    	return new Point2D.Double(makeVdc(), makeVdc());
-    }
+	final protected Point2D.Double makePoint() {
+		return new Point2D.Double(makeVdc(), makeVdc());
+	}
 
-    final protected int sizeOfPoint() {
-    	return 2 * sizeOfVdc();
-    }
+	final protected int sizeOfPoint() {
+		return 2 * sizeOfVdc();
+	}
 
-    final protected int makeColorIndex() {
-    	int precision = ColourIndexPrecision.getPrecision();
-    	return makeUInt(precision);
-    }
+	final protected int makeColorIndex() {
+		int precision = ColourIndexPrecision.getPrecision();
+		return makeUInt(precision);
+	}
 
-    final protected int makeColorIndex(int precision) {
-    	return makeUInt(precision);
-    }
+	final protected int makeColorIndex(int precision) {
+		return makeUInt(precision);
+	}
 
-    final protected Color makeDirectColor() {
+	final protected Color makeDirectColor() {
 		int precision = ColourPrecision.getPrecision();
 		Model model = ColourModel.getModel();
 
@@ -563,19 +581,19 @@ class Command implements Cloneable {
 		return Color.CYAN;
 	}
 
-    final protected int sizeOfDirectColor() {
+	final protected int sizeOfDirectColor() {
 		int precision = ColourPrecision.getPrecision();
 		Model model = ColourModel.getModel();
 
-    	if (model.equals(Model.RGB)) {
-    		return 3 * precision / 8;
-    	}
+		if (model.equals(Model.RGB)) {
+			return 3 * precision / 8;
+		}
 
-    	assert false;
-    	return 0;
-    }
+		assert false;
+		return 0;
+	}
 
-    private int[] scaleColorValueRGB(int r, int g, int b) {
+	private int[] scaleColorValueRGB(int r, int g, int b) {
 		int[] min = ColourValueExtent.getMinimumColorValueRGB();
 		int[] max = ColourValueExtent.getMaximumColorValueRGB();
 
@@ -590,123 +608,210 @@ class Command implements Cloneable {
 				255 * (g - min[1])/(max[1] - min[1]),
 				255 * (b - min[2])/(max[2] - min[2])
 		};
-    }
-
-    /**
-     * Clamp the given value between the given minimum and maximum
-     * @param r The value to clamp
-     * @param min The minimum value
-     * @param max The maximum value
-     * @return The clamped value
-     */
-    private int clamp(int r, int min, int max) {
-    	return Math.max(Math.min(r, max), min);
 	}
 
-    final protected double makeFloat32(int i) {
-    	skipBits();
-    	int sign = this.args[2 * i] & (1 << 16);
-    	int exponent = (this.args[2 * i] >> 8) & 255;
-    	int fraction = ((this.args[2 * i] & 127) << 16) | this.args[2 * i + 1];
+	/**
+	 * Clamp the given value between the given minimum and maximum
+	 * @param r The value to clamp
+	 * @param min The minimum value
+	 * @param max The maximum value
+	 * @return The clamped value
+	 */
+	private int clamp(int r, int min, int max) {
+		return Math.max(Math.min(r, max), min);
+	}
 
-    	// only base 10 supported
-    	return Math.pow(1, sign) * fraction * Math.pow(10, exponent);
-    }
+	final protected double makeFloat32(int i) {
+		skipBits();
+		int sign = this.args[2 * i] & (1 << 16);
+		int exponent = (this.args[2 * i] >> 8) & 255;
+		int fraction = ((this.args[2 * i] & 127) << 16) | this.args[2 * i + 1];
 
-    final protected double makeSizeSpecification(SpecificationMode specificationMode) {
-    	if (specificationMode.equals(SpecificationMode.ABSOLUTE)) {
-    		return makeVdc();
-    	}
-    	return makeReal();
-    }
+		// only base 10 supported
+		return Math.pow(1, sign) * fraction * Math.pow(10, exponent);
+	}
 
-    /**
-     * Align on a word boundary
-     */
-    final protected void skip() {
-    	if (this.currentArg >= this.args.length) {
-    		// we reached the end of the array, nothing to skip
-    		return;
-    	}
+	final protected double makeSizeSpecification(SpecificationMode specificationMode) {
+		if (specificationMode.equals(SpecificationMode.ABSOLUTE)) {
+			return makeVdc();
+		}
+		return makeReal();
+	}
 
-    	if (this.currentArg % 2 == 1) {
-    		assert this.args[this.currentArg] == 0 : "skipping data";
-    		this.currentArg++;
-    	}
-    }
+	final protected StructuredDataRecord makeSDR() {
+		StructuredDataRecord ret = new StructuredDataRecord();
+		int sdrLength = getStringCount();
+		int startPos = this.currentArg;
+		while (this.currentArg < (startPos + sdrLength)) {
+			StructuredDataType dataType = StructuredDataType.get(makeIndex());
+			int dataCount = makeInt();
+			List<Object> data = new ArrayList<Object>();
+			for (int i = 0; i < dataCount; i++) {
+				switch (dataType) {
+				case SDR:
+					data.add(makeSDR());
+					break;
+				case CI:
+					data.add(makeColorIndex());
+					break;
+				case CD:
+					data.add(makeDirectColor());
+					break; 
+				case N:
+					data.add(makeName());
+					break;
+				case E:
+					data.add(makeEnum());
+					break;
+				case I:
+					data.add(makeInt());
+					break;
+				case RESERVED:
+					// reserved
+					break;
+				case IF8:
+					data.add(makeSignedInt8());
+					break;
+				case IF16:
+					data.add(makeSignedInt16());
+					break;
+				case IF32:
+					data.add(makeSignedInt32());
+					break;
+				case IX:
+					data.add(makeIndex());
+					break;
+				case R:
+					data.add(makeReal());
+					break;
+				case S:
+					data.add(makeString());
+					break;
+				case SF:
+					data.add(makeString());
+					break;
+				case VC:
+					data.add(makeVc());
+					break;
+				case VDC:
+					data.add(makeVdc());
+					break;
+				case CCO:
+					data.add(makeDirectColor());
+					break;
+				case UI8:
+					data.add(makeUInt8());
+					break;
+				case UI32:
+					data.add(makeUInt32());
+					break;
+				case BS:
+					// bit stream? XXX how do we know how many bits to read?
+					break;
+				case CL:
+					// color list? XXX how to read?
+					break;
+				case UI16:
+					data.add(makeUInt16());
+					break;
+				default:
+					unsupported("makeSDR()-unsupported dataTypeIndex "
+							+ dataType);
+				}
+			}
+			ret.add(dataType, dataCount, data);
+		}
+		return ret;
+	}
 
-    public void paint(CGMDisplay d) {
-    	// default empty implementation
-    }
+	/**
+	 * Align on a word boundary
+	 */
+	final protected void skip() {
+		if (this.currentArg >= this.args.length) {
+			// we reached the end of the array, nothing to skip
+			return;
+		}
 
-    /**
-     * Reads one command from the given input stream.
-     * @param in Where to read the command from
-     * @return The command or {@code null} if the end of stream was found
-     * @throws IOException On I/O error
-     */
-    public static Command read(DataInput in) throws IOException {
-        int k;
-        try {
-        	k = in.readUnsignedByte();
-            k = (k << 8) | in.readUnsignedByte();
-        }
-        catch (EOFException e) {
-        	return null;
-        }
+		if (this.currentArg % 2 == 1) {
+			assert this.args[this.currentArg] == 0 : "skipping data";
+			this.currentArg++;
+		}
+	}
 
-        // the element class
-        int ec = k >> 12;
-        int eid = (k >> 5) & 127;
-        int l = k & 31;
-        return readCommand(in, ec, eid, l);
-    }
+	public void paint(@SuppressWarnings("unused") CGMDisplay d) {
+		// default empty implementation
+	}
+
+	/**
+	 * Reads one command from the given input stream.
+	 * @param in Where to read the command from
+	 * @return The command or {@code null} if the end of stream was found
+	 * @throws IOException On I/O error
+	 */
+	public static Command read(DataInput in) throws IOException {
+		int k;
+		try {
+			k = in.readUnsignedByte();
+			k = (k << 8) | in.readUnsignedByte();
+		}
+		catch (EOFException e) {
+			return null;
+		}
+
+		// the element class
+		int ec = k >> 12;
+			int eid = (k >> 5) & 127;
+			int l = k & 31;
+			return readCommand(in, ec, eid, l);
+	}
 
 	protected static Command readCommand(DataInput in, int ec, int eid, int l) throws IOException {
 		switch (ElementClass.getElementClass(ec)) {
 
-        case DELIMITER_ELEMENTS: // 0
-        	return readDelimiterElements(in, ec, eid, l);
+		case DELIMITER_ELEMENTS: // 0
+			return readDelimiterElements(in, ec, eid, l);
 
-        case METAFILE_DESCRIPTOR_ELEMENTS: // 1
-            return readMetaFileDescriptorElements(in, ec, eid, l);
+		case METAFILE_DESCRIPTOR_ELEMENTS: // 1
+			return readMetaFileDescriptorElements(in, ec, eid, l);
 
-        case PICTURE_DESCRIPTOR_ELEMENTS: // 2
-            return readPictureDescriptorElements(in, ec, eid, l);
+		case PICTURE_DESCRIPTOR_ELEMENTS: // 2
+			return readPictureDescriptorElements(in, ec, eid, l);
 
-        case CONTROL_ELEMENTS: // 3
-        	return readControlElements(in, ec, eid, l);
+		case CONTROL_ELEMENTS: // 3
+			return readControlElements(in, ec, eid, l);
 
-        case GRAPHICAL_PRIMITIVE_ELEMENTS: // 4
-            return readGraphicalPrimitiveElements(in, ec, eid, l);
+		case GRAPHICAL_PRIMITIVE_ELEMENTS: // 4
+			return readGraphicalPrimitiveElements(in, ec, eid, l);
 
-        case ATTRIBUTE_ELEMENTS: // 5
-            return readAttributeElements(in, ec, eid, l);
+		case ATTRIBUTE_ELEMENTS: // 5
+			return readAttributeElements(in, ec, eid, l);
 
-        case ESCAPE_ELEMENTS: // 6
-            return new Escape(ec, eid, l, in);
+		case ESCAPE_ELEMENTS: // 6
+			return new Escape(ec, eid, l, in);
 
-        case EXTERNAL_ELEMENTS: // 7
-        	unsupported(ec, eid);
-            return new Command(ec, eid, l, in);
+		case EXTERNAL_ELEMENTS: // 7
+			unsupported(ec, eid);
+			return new Command(ec, eid, l, in);
 
-        case SEGMENT_ELEMENTS: // 8
-        	unsupported(ec, eid);
-            return new Command(ec, eid, l, in);
+		case SEGMENT_ELEMENTS: // 8
+			unsupported(ec, eid);
+			return new Command(ec, eid, l, in);
 
-        case APPLICATION_STRUCTURE_ELEMENTS: // 9
-        	unsupported(ec, eid);
-            return new Command(ec, eid, l, in);
+		case APPLICATION_STRUCTURE_ELEMENTS: // 9
+			unsupported(ec, eid);
+			return new Command(ec, eid, l, in);
 
-        default:
-        	assert (10 <= ec && ec <= 15) : "unsupported element class";
-        	unsupported(ec, eid);
-            return new Command(ec, eid, l, in);
-        }
+		default:
+			assert (10 <= ec && ec <= 15) : "unsupported element class";
+			unsupported(ec, eid);
+			return new Command(ec, eid, l, in);
+		}
 	}
 
+	// Class: 0
 	private static Command readDelimiterElements(DataInput in, int ec, int eid, int l)
-			throws IOException {
+	throws IOException {
 		// Delimiter elements
 		switch (DelimiterElement.getElement(eid)) {
 
@@ -754,10 +859,17 @@ class Command implements Cloneable {
 		case BEGIN_COMPOUND_TEXT_PATH:
 			// 0, 18
 		case END_COMPOUND_TEXT_PATH:
+			unsupported(ec, eid);
+			return new Command(ec, eid, l, in);
+
 			// 0, 19
 		case BEGIN_TILE_ARRAY:
+			return new BeginTileArray(ec, eid, l, in);
+
 			// 0, 20
 		case END_TILE_ARRAY:
+			return new EndTileArray(ec, eid, l, in);
+
 			// 0, 21
 		case BEGIN_APPLICATION_STRUCTURE:
 			unsupported(ec, eid);
@@ -774,18 +886,19 @@ class Command implements Cloneable {
 
 		default:
 			assert false : "unsupported element ID=" + eid;
-			return new Command(ec, eid, l, in);
+		return new Command(ec, eid, l, in);
 		}
 	}
 
+	// Class: 1
 	private static Command readMetaFileDescriptorElements(DataInput in, int ec, int eid, int l) throws IOException {
 		switch (MetafileDescriptorElement.getElement(eid)) {
 
 		case METAFILE_VERSION: // 1
-		    return new MetafileVersion(ec, eid, l, in);
+			return new MetafileVersion(ec, eid, l, in);
 
 		case METAFILE_DESCRIPTION: // 2
-		    return new MetafileDescription(ec, eid, l, in);
+			return new MetafileDescription(ec, eid, l, in);
 
 		case VDC_TYPE: // 3
 			return new VDCType(ec, eid, l, in);
@@ -794,7 +907,7 @@ class Command implements Cloneable {
 			return new IntegerPrecision(ec, eid, l, in);
 
 		case REAL_PRECISION: // 5
-		    return new RealPrecision(ec, eid, l, in);
+			return new RealPrecision(ec, eid, l, in);
 
 		case INDEX_PRECISION: // 6
 			return new IndexPrecision(ec, eid, l, in);
@@ -806,36 +919,35 @@ class Command implements Cloneable {
 			return new ColourIndexPrecision(ec, eid, l, in);
 
 		case MAXIMUM_COLOUR_INDEX: // 9
-		    return new MaximumColourIndex(ec, eid, l, in);
+			return new MaximumColourIndex(ec, eid, l, in);
 
 		case COLOUR_VALUE_EXTENT: // 10
-		    return new ColourValueExtent(ec, eid, l, in);
+			return new ColourValueExtent(ec, eid, l, in);
 
 		case METAFILE_ELEMENT_LIST: // 11
-		    return new MetafileElementList(ec, eid, l, in);
+			return new MetafileElementList(ec, eid, l, in);
 
 		case METAFILE_DEFAULTS_REPLACEMENT: // 12
-		    return new MetafileDefaultsReplacement(ec, eid, l, in);
+			return new MetafileDefaultsReplacement(ec, eid, l, in);
 
 		case FONT_LIST: // 13
-		    return new FontList(ec, eid, l, in);
+			return new FontList(ec, eid, l, in);
 
 		case CHARACTER_SET_LIST: // 14
-		    return new CharacterSetList(ec, eid, l, in);
+			return new CharacterSetList(ec, eid, l, in);
 
 		case CHARACTER_CODING_ANNOUNCER: // 15
 			return new CharacterCodingAnnouncer(ec, eid, l, in);
 
 		case NAME_PRECISION: // 16
-			unsupported(ec, eid);
-		    return new Command(ec, eid, l, in);
+			return new NamePrecision(ec, eid, l, in);
 
 		case MAXIMUM_VDC_EXTENT: // 17
 			return new MaximumVDCExtent(ec, eid, l, in);
 
 		case SEGMENT_PRIORITY_EXTENT: // 18
 			unsupported(ec, eid);
-		    return new Command(ec, eid, l, in);
+			return new Command(ec, eid, l, in);
 
 		case COLOUR_MODEL: // 19
 			return new ColourModel(ec, eid, l, in);
@@ -846,48 +958,54 @@ class Command implements Cloneable {
 		case SYMBOL_LIBRARY_LIST: // 23
 		case PICTURE_DIRECTORY: // 24
 			unsupported(ec, eid);
-		    return new Command(ec, eid, l, in);
+			return new Command(ec, eid, l, in);
 
 		default:
 			assert false : "unsupported element ID="+eid;
-		    return new Command(ec, eid, l, in);
+		return new Command(ec, eid, l, in);
 		}
 	}
 
+	// Class: 2
 	private static Command readPictureDescriptorElements(DataInput in, int ec, int eid, int l) throws IOException {
 		switch (PictureDescriptorElement.getElement(eid)) {
 		// 2, 1
 		case SCALING_MODE:
-		    return new ScalingMode(ec, eid, l, in);
+			return new ScalingMode(ec, eid, l, in);
 
-		// 2, 2
+			// 2, 2
 		case COLOUR_SELECTION_MODE:
-		    return new ColourSelectionMode(ec, eid, l, in);
+			return new ColourSelectionMode(ec, eid, l, in);
 
-		    // 2, 3
+			// 2, 3
 		case LINE_WIDTH_SPECIFICATION_MODE:
-		    return new LineWidthSpecificationMode(ec, eid, l, in);
+			return new LineWidthSpecificationMode(ec, eid, l, in);
 
-		    // 2, 4
+			// 2, 4
 		case MARKER_SIZE_SPECIFICATION_MODE:
-		    return new MarkerSizeSpecificationMode(ec, eid, l, in);
+			return new MarkerSizeSpecificationMode(ec, eid, l, in);
 
-		    // 2, 5
+			// 2, 5
 		case EDGE_WIDTH_SPECIFICATION_MODE:
-		    return new EdgeWidthSpecificationMode(ec, eid, l, in);
+			return new EdgeWidthSpecificationMode(ec, eid, l, in);
 
-		    // 2, 6
+			// 2, 6
 		case VDC_EXTENT:
-		    return new VDCExtent(ec, eid, l, in);
+			return new VDCExtent(ec, eid, l, in);
 
-		    // 2, 7
+			// 2, 7
 		case BACKGROUND_COLOUR:
 			return new BackgroundColour(ec, eid, l, in);
 
 			// 2, 8
 		case DEVICE_VIEWPORT:
+			unsupported(ec, eid);
+			return new Command(ec, eid, l, in);
+
 			// 2, 9
 		case DEVICE_VIEWPORT_SPECIFICATION_MODE:
+			return new DeviceViewportSpecificationMode(ec, eid, l, in);
+
 			// 2, 10
 		case DEVICE_VIEWPORT_MAPPING:
 			// 2, 11
@@ -901,7 +1019,7 @@ class Command implements Cloneable {
 			// 2, 15:
 		case EDGE_REPRESENTATION:
 			unsupported(ec, eid);
-		    return new Command(ec, eid, l, in);
+			return new Command(ec, eid, l, in);
 
 			// 2, 16
 		case INTERIOR_STYLE_SPECIFICATION_MODE:
@@ -918,14 +1036,15 @@ class Command implements Cloneable {
 			// 2, 20
 		case APPLICATION_STRUCTURE_DIRECTORY:
 			unsupported(ec, eid);
-		    return new Command(ec, eid, l, in);
+			return new Command(ec, eid, l, in);
 
 		default:
 			unsupported(ec, eid);
-		    return new Command(ec, eid, l, in);
+			return new Command(ec, eid, l, in);
 		}
 	}
 
+	// Class: 3
 	private static Command readControlElements(DataInput in, int ec, int eid, int l) throws IOException {
 		switch (ControlElement.getElement(eid)) {
 		case VDC_INTEGER_PRECISION:
@@ -938,71 +1057,72 @@ class Command implements Cloneable {
 			return new ClipIndicator(ec, eid, l, in);
 		default:
 			unsupported(ec, eid);
-		    return new Command(ec, eid, l, in);
+			return new Command(ec, eid, l, in);
 		}
 	}
 
+	// Class: 4
 	private static Command readGraphicalPrimitiveElements(DataInput in, int ec, int eid, int l) throws IOException {
 		switch (GraphicalPrimitiveElements.getElement(eid)) {
 
 		case POLYLINE: // 1
-		    return new Polyline(ec, eid, l, in);
+			return new Polyline(ec, eid, l, in);
 
 		case DISJOINT_POLYLINE: // 2
-		    return new DisjointPolyline(ec, eid, l, in);
+			return new DisjointPolyline(ec, eid, l, in);
 
 		case POLYMARKER: // 3
-		    return new PolyMarker(ec, eid, l, in);
+			return new PolyMarker(ec, eid, l, in);
 
 		case TEXT: // 4
-		    return new Text(ec, eid, l, in);
+			return new Text(ec, eid, l, in);
 
 		case RESTRICTED_TEXT: // 5
-		   return new RestrictedText(ec, eid, l, in);
+			return new RestrictedText(ec, eid, l, in);
 
 		case APPEND_TEXT: // 6
 			unsupported(ec, eid);
-		    return new Command(ec, eid, l, in);
+			return new Command(ec, eid, l, in);
 
 		case POLYGON: // 7
-		    return new PolygonElement(ec, eid, l, in);
+			return new PolygonElement(ec, eid, l, in);
 
 		case POLYGON_SET: // 8
-		    return new PolygonSet(ec, eid, l, in);
+			return new PolygonSet(ec, eid, l, in);
 
 		case CELL_ARRAY: // 9
 			return new CellArray(ec, eid, l, in);
 
 		case GENERALIZED_DRAWING_PRIMITIVE: // 10
 			unsupported(ec, eid);
-		    return new Command(ec, eid, l, in);
+			return new Command(ec, eid, l, in);
 
 		case RECTANGLE: // 11
-		    return new RectangleElement(ec, eid, l, in);
+			return new RectangleElement(ec, eid, l, in);
 
 		case CIRCLE: // 12
-		    return new CircleElement(ec, eid, l, in);
+			return new CircleElement(ec, eid, l, in);
 
 		case CIRCULAR_ARC_3_POINT: // 13
-		    return new CircularArc3Point(ec, eid, l, in);
+			return new CircularArc3Point(ec, eid, l, in);
 
 		case CIRCULAR_ARC_3_POINT_CLOSE: // 14
-		    return new CircularArc3PointClose(ec, eid, l, in);
+			return new CircularArc3PointClose(ec, eid, l, in);
 
 		case CIRCULAR_ARC_CENTRE: // 15
-		    return new CircularArcCentre(ec, eid, l, in);
+			return new CircularArcCentre(ec, eid, l, in);
 
 		case CIRCULAR_ARC_CENTRE_CLOSE: // 16
-		   return new CircularArcCentreClose(ec, eid, l, in);
+			return new CircularArcCentreClose(ec, eid, l, in);
 
 		case ELLIPSE: // 17
-		    return new EllipseElement(ec, eid, l, in);
+			return new EllipseElement(ec, eid, l, in);
 
 		case ELLIPTICAL_ARC: // 18
-		    return new EllipticalArc(ec, eid, l, in);
+			return new EllipticalArc(ec, eid, l, in);
 
 		case ELLIPTICAL_ARC_CLOSE: // 19
-		    return new EllipticalArcClose(ec, eid, l, in);
+			return new EllipticalArcClose(ec, eid, l, in);
 
 		case CIRCULAR_ARC_CENTRE_REVERSED: // 20
 		case CONNECTING_EDGE: // 21
@@ -1011,23 +1131,28 @@ class Command implements Cloneable {
 		case NON_UNIFORM_B_SPLINE: // 24
 		case NON_UNIFORM_RATIONAL_B_SPLINE: // 25
 			unsupported(ec, eid);
-		    return new Command(ec, eid, l, in);
+			return new Command(ec, eid, l, in);
 
 		case POLYBEZIER: // 26
 			return new PolyBezier(ec, eid, l, in);
 
 		case POLYSYMBOL: // 27
-		case BITONAL_TILE: // 28
-		case TILE: // 29
 			unsupported(ec, eid);
-		    return new Command(ec, eid, l, in);
+			return new Command(ec, eid, l, in);
+
+		case BITONAL_TILE: // 28
+			return new BitonalTile(ec, eid, l, in);
+
+		case TILE: // 29
+			return new Tile(ec, eid, l, in);
 
 		default:
 			unsupported(ec, eid);
-		    return new Command(ec, eid, l, in);
+			return new Command(ec, eid, l, in);
 		}
 	}
 
+	// Class: 5
 	private static Command readAttributeElements(DataInput in, int ec, int eid, int l) throws IOException {
 		switch (AttributeElement.getElement(eid)) {
 		case LINE_BUNDLE_INDEX: // 1
@@ -1035,13 +1160,13 @@ class Command implements Cloneable {
 			return new Command(ec, eid, l, in);
 
 		case LINE_TYPE: // 2
-		    return new LineType(ec, eid, l, in);
+			return new LineType(ec, eid, l, in);
 
 		case LINE_WIDTH: // 3
-		    return new LineWidth(ec, eid, l, in);
+			return new LineWidth(ec, eid, l, in);
 
 		case LINE_COLOUR: // 4
-		    return new LineColour(ec, eid, l, in);
+			return new LineColour(ec, eid, l, in);
 
 		case MARKER_BUNDLE_INDEX: // 5
 			unsupported(ec, eid);
@@ -1061,7 +1186,7 @@ class Command implements Cloneable {
 			return new Command(ec, eid, l, in);
 
 		case TEXT_FONT_INDEX: // 10
-		    return new TextFontIndex(ec, eid, l, in);
+			return new TextFontIndex(ec, eid, l, in);
 
 		case TEXT_PRECISION: // 11
 			return new TextPrecision(ec, eid, l, in);
@@ -1073,10 +1198,10 @@ class Command implements Cloneable {
 			return new CharacterSpacing(ec, eid, l, in);
 
 		case TEXT_COLOUR: // 14
-		    return new TextColour(ec, eid, l, in);
+			return new TextColour(ec, eid, l, in);
 
 		case CHARACTER_HEIGHT: // 15
-		    return new CharacterHeight(ec, eid, l, in);
+			return new CharacterHeight(ec, eid, l, in);
 
 		case CHARACTER_ORIENTATION: // 16
 			return new CharacterOrientation(ec, eid, l, in);
@@ -1098,10 +1223,10 @@ class Command implements Cloneable {
 			return new Command(ec, eid, l, in);
 
 		case INTERIOR_STYLE: // 22
-		    return new InteriorStyle(ec, eid, l, in);
+			return new InteriorStyle(ec, eid, l, in);
 
 		case FILL_COLOUR: // 23
-		    return new FillColour(ec, eid, l, in);
+			return new FillColour(ec, eid, l, in);
 
 		case HATCH_INDEX: // 24
 			return new HatchIndex(ec, eid, l, in);
@@ -1112,16 +1237,16 @@ class Command implements Cloneable {
 			return new Command(ec, eid, l, in);
 
 		case EDGE_TYPE: // 27
-		    return new EdgeType(ec, eid, l, in);
+			return new EdgeType(ec, eid, l, in);
 
 		case EDGE_WIDTH: // 28
-		    return new EdgeWidth(ec, eid, l, in);
+			return new EdgeWidth(ec, eid, l, in);
 
 		case EDGE_COLOUR: // 29
-		    return new EdgeColour(ec, eid, l, in);
+			return new EdgeColour(ec, eid, l, in);
 
 		case EDGE_VISIBILITY: // 30
-		    return new EdgeVisibility(ec, eid, l, in);
+			return new EdgeVisibility(ec, eid, l, in);
 
 		case FILL_REFERENCE_POINT: // 31
 		case PATTERN_TABLE: // 32
@@ -1170,7 +1295,7 @@ class Command implements Cloneable {
 		case SYMBOL_ORIENTATION: // 51
 		default:
 			unsupported(ec, eid);
-		    return new Command(ec, eid, l, in);
+			return new Command(ec, eid, l, in);
 		}
 	}
 
@@ -1203,12 +1328,12 @@ class Command implements Cloneable {
 
 	@Override
 	public Object clone() {
-        try {
-            return super.clone();
-        } catch (Exception e) {
-            return null;
-        }
-    }
+		try {
+			return super.clone();
+		} catch (Exception e) {
+			return null;
+		}
+	}
 
 	/**
 	 * Returns the element class for this command
@@ -1242,22 +1367,22 @@ class Command implements Cloneable {
 			switch (currentSegment) {
 			case PathIterator.SEG_MOVETO:
 				sb.append("MOVETO=");
-	    		sb.append(coords[0]).append(",").append(coords[1]).append(";");
+				sb.append(coords[0]).append(",").append(coords[1]).append(";");
 				break;
 			case PathIterator.SEG_LINETO:
 				sb.append("LINETO=");
-	    		sb.append(coords[0]).append(",").append(coords[1]).append(";");
+				sb.append(coords[0]).append(",").append(coords[1]).append(";");
 				break;
 			case PathIterator.SEG_QUADTO:
 				sb.append("QUADTO=");
-	    		sb.append(coords[0]).append(",").append(coords[1]).append(",");
-	    		sb.append(coords[2]).append(",").append(coords[3]).append(";");
+				sb.append(coords[0]).append(",").append(coords[1]).append(",");
+				sb.append(coords[2]).append(",").append(coords[3]).append(";");
 				break;
 			case PathIterator.SEG_CUBICTO:
 				sb.append("CUBICTO=");
-	    		sb.append(coords[0]).append(",").append(coords[1]).append(",");
-	    		sb.append(coords[2]).append(",").append(coords[3]).append(",");
-	    		sb.append(coords[4]).append(",").append(coords[5]).append(";");
+				sb.append(coords[0]).append(",").append(coords[1]).append(",");
+				sb.append(coords[2]).append(",").append(coords[3]).append(",");
+				sb.append(coords[4]).append(",").append(coords[5]).append(";");
 				break;
 			case PathIterator.SEG_CLOSE:
 				sb.append("CLOSE=");
