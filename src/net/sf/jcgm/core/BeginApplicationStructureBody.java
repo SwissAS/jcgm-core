@@ -21,7 +21,8 @@
  */
 package net.sf.jcgm.core;
 
-import java.io.*;
+import java.io.DataInput;
+import java.io.IOException;
 
 
 /**
@@ -31,19 +32,19 @@ import java.io.*;
  * @version $Id$
  */
 class BeginApplicationStructureBody extends Command {
-    public BeginApplicationStructureBody(int ec, int eid, int l, DataInput in)
-            throws IOException {
-        super(ec, eid, l, in);
-        // no arguments
-        
-        // make sure all the arguments were read
-        assert (this.currentArg == this.args.length);
-    }
+	BeginApplicationStructureBody(int ec, int eid, int l, DataInput in)
+	throws IOException {
+		super(ec, eid, l, in);
+		// no arguments
 
-    @Override
+		// make sure all the arguments were read
+		assert (this.currentArg == this.args.length);
+	}
+
+	@Override
 	public String toString() {
-        return "BeginApplicationStructureBody";
-    }
+		return "BeginApplicationStructureBody";
+	}
 }
 
 /*
