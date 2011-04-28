@@ -21,7 +21,8 @@
  */
 package net.sf.jcgm.core;
 
-import java.io.*;
+import java.io.DataInput;
+import java.io.IOException;
 
 
 /**
@@ -31,9 +32,9 @@ import java.io.*;
  * @version $Id$
  */
 class LineAndEdgeTypeDefinition extends Command {
-    private int lineType;
-	private double dashCycleRepeatLength;
-	private int[] dashElements;
+    private final int lineType;
+	private final double dashCycleRepeatLength;
+	private final int[] dashElements;
 
 	public LineAndEdgeTypeDefinition(int ec, int eid, int l, DataInput in)
             throws IOException {
@@ -42,7 +43,7 @@ class LineAndEdgeTypeDefinition extends Command {
         this.lineType = makeIndex();
         assert(this.lineType <= 0);
         
-        this.dashCycleRepeatLength = makeSizeSpecification(LineWidthSpecificationMode.getMode());
+        this.dashCycleRepeatLength = Math.abs(makeSizeSpecification(LineWidthSpecificationMode.getMode()));
         this.dashElements = new int[(this.args.length-this.currentArg)/sizeOfInt()];
         
         for (int i = 0; i < this.dashElements.length; i++) {
