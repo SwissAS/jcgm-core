@@ -142,6 +142,8 @@ public class CGMDisplay {
 
 	private TileArrayInfo tileArrayInfo;
 
+	private boolean isTransparent = false;
+
 	public CGMDisplay(CGM cgm) {
 		reset();
 		this.lineDashes = new HashMap<Integer, float[]>();
@@ -174,9 +176,11 @@ public class CGMDisplay {
 	public void paint(Graphics g) {
 		this.g2d = (Graphics2D)g;
 
-		// start with a white background color
-		this.g2d.setColor(getIndexedColor(0));
-		this.g2d.fillRect(0, 0, this.canvasWidth, this.canvasHeight);
+		if (!this.isTransparent) {
+			// start with a white background color
+			this.g2d.setColor(getIndexedColor(0));
+			this.g2d.fillRect(0, 0, this.canvasWidth, this.canvasHeight);
+		}
 
 		// force anti aliasing
 		this.g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
@@ -223,6 +227,14 @@ public class CGMDisplay {
 
 	public Graphics2D getGraphics2D() {
 		return this.g2d;
+	}
+
+	public void setTransparent(boolean transparent) {
+		this.isTransparent = transparent;
+	}
+
+	public boolean isTransparent() {
+		return this.isTransparent;
 	}
 
 	public void setFillColor(Color c) {

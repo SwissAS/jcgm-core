@@ -36,34 +36,36 @@ import java.io.IOException;
  * @version $Id$
  */
 class BackgroundColour extends Command {
-    private final Color backgroundColor;
+	private final Color backgroundColor;
 
 	public BackgroundColour(int ec, int eid, int l, DataInput in)
-            throws IOException {
-        super(ec, eid, l, in);
+	throws IOException {
+		super(ec, eid, l, in);
 
-        this.backgroundColor = makeDirectColor();
+		this.backgroundColor = makeDirectColor();
 
-        // make sure all the arguments were read
-        assert (this.currentArg == this.args.length);
-    }
+		// make sure all the arguments were read
+		assert (this.currentArg == this.args.length);
+	}
 
 	@Override
 	public void paint(CGMDisplay d) {
-		Graphics2D g2d = d.getGraphics2D();
-		g2d.setColor(this.backgroundColor);
+		if (!d.isTransparent()) {
+			Graphics2D g2d = d.getGraphics2D();
+			g2d.setColor(this.backgroundColor);
 
-		Point2D.Double[] extent = d.getExtent();
-		g2d.fill(new Rectangle2D.Double(extent[0].x, extent[0].y,
-				extent[1].x	- extent[0].x, extent[1].y - extent[0].y));
+			Point2D.Double[] extent = d.getExtent();
+			g2d.fill(new Rectangle2D.Double(extent[0].x, extent[0].y,
+					extent[1].x - extent[0].x, extent[1].y - extent[0].y));
+		}
 	}
 
 	@Override
 	public String toString() {
-    	StringBuilder sb = new StringBuilder();
-    	sb.append("BackgroundColour ").append(this.backgroundColor);
-    	return sb.toString();
-    }
+		StringBuilder sb = new StringBuilder();
+		sb.append("BackgroundColour ").append(this.backgroundColor);
+		return sb.toString();
+	}
 }
 
 /*
