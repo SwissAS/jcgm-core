@@ -20,6 +20,8 @@
 					<li>fixed an issue with background colors</li>
 					<li>added support for BeginTileArray, BitonalTile (partial), DeviceViewportSpecificationMode, EndTileArray, NamePrecision, Tile (partial)</li>
 					<li>added a method to be able to read structured data records</li>
+					<li>support for transparent CGM files was added. Use <code>CGMDisplay.setTransparent(true)</code>, thanks clivebutler</li>
+					<li>added patch by clivebutler to only have images with zero dimension when the extent is empty</li>
 				</ul>
 			</section>
 			<section id="core-0.1.1">
@@ -57,6 +59,9 @@
 				<p>
 					Changes in the latest development version:
 				</p>
+				<ul>
+					<li>The <code>ImageReadParam.setSourceTenderSize(Dimension)</code> method can now be used to define the size of the rendered CGM image, thanks clivebutler.</li>
+				</ul>
 			</section>
 			<section id="image-0.1.1">
 				<title>Version 0.1.1</title>
