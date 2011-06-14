@@ -366,8 +366,8 @@ public class CGM implements Cloneable {
     		}
     	}
 
-    	int width = (int)(Math.abs(extent[1].x - extent[0].x) * factor);
-    	int height = (int)(Math.abs(extent[1].y - extent[0].y) * factor);
+    	int width = (int)Math.ceil((Math.abs(extent[1].x - extent[0].x) * factor));
+    	int height = (int)Math.ceil((Math.abs(extent[1].y - extent[0].y) * factor));
 
     	return new Dimension(width, height);
     }
