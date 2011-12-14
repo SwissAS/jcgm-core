@@ -39,159 +39,159 @@ import java.io.IOException;
  * @version $Id$
  */
 public class CellArray extends Command {
-    private int representationFlag;
-	private int nx;
-	private int ny;
-	private Point2D p;
-	private Point2D q;
-	private Point2D r;
-	
+	private final int representationFlag;
+	private final int nx;
+	private final int ny;
+	private final Point2D p;
+	private final Point2D q;
+	private final Point2D r;
+
 	// either the colors are filled or the colorIndexes depending on the color selection mode
 	private Color[] colors;
 	private int[] colorIndexes;
 	private BufferedImage bufferedImage = null;
 
 	public CellArray(int ec, int eid, int l, DataInput in)
-            throws IOException {
-        super(ec, eid, l, in);
+			throws IOException {
+		super(ec, eid, l, in);
 
-        // 3P, 3I, E, CLIST
-        this.p = makePoint();
-        this.q = makePoint();
-        this.r = makePoint();
-        this.nx = makeInt(); // number of cells per row
-        this.ny = makeInt(); // number of rows
-        
-        int localColorPrecision = makeInt();
-        if (localColorPrecision == 0) {
-        	if (ColourSelectionMode.getType() == ColourSelectionMode.Type.INDEXED) {
-        		localColorPrecision = ColourIndexPrecision.getPrecision();
-        	}
-        	else {
-        		localColorPrecision = ColourPrecision.getPrecision();
-        	}
-        }
-        
-        this.representationFlag = makeEnum();
-        
-        int nColor = this.nx * this.ny;
-        if (ColourSelectionMode.getType().equals(ColourSelectionMode.Type.DIRECT)) {
-        	this.colors = new Color[nColor];
-        	
-        	if (this.representationFlag == 0) {
-        		// run length list mode
-        		int c = 0;
-        		while (c < nColor) {
-        			int numColors = makeInt();
-        			Color color = makeDirectColor();
-        			
-        			// don't directly fill the array with numColors in case we
+		// 3P, 3I, E, CLIST
+		this.p = makePoint();
+		this.q = makePoint();
+		this.r = makePoint();
+		this.nx = makeInt(); // number of cells per row
+		this.ny = makeInt(); // number of rows
+
+		int localColorPrecision = makeInt();
+		if (localColorPrecision == 0) {
+			if (ColourSelectionMode.getType() == ColourSelectionMode.Type.INDEXED) {
+				localColorPrecision = ColourIndexPrecision.getPrecision();
+			}
+			else {
+				localColorPrecision = ColourPrecision.getPrecision();
+			}
+		}
+
+		this.representationFlag = makeEnum();
+
+		int nColor = this.nx * this.ny;
+		if (ColourSelectionMode.getType().equals(ColourSelectionMode.Type.DIRECT)) {
+			this.colors = new Color[nColor];
+
+			if (this.representationFlag == 0) {
+				// run length list mode
+				int c = 0;
+				while (c < nColor) {
+					int numColors = makeInt();
+					Color color = makeDirectColor();
+
+					// don't directly fill the array with numColors in case we
 					// encounter a erroneous CGM file, e.g. SCHEMA03.CGM that
 					// returns an incorrect number of colors; only fill at most
 					// the number of colors left in the array
-        			int maxIndex = Math.min(numColors, nColor - c);
+					int maxIndex = Math.min(numColors, nColor - c);
 					for (int i = 0; i < maxIndex; i++) {
-        				this.colors[c++] = color;
-        			}
-        			if (c > 0 && c % this.nx == 0) {
-        				// align on word at the end of a line
-        				skip();
-        			}
-        		}
-        	}
-        	else if (this.representationFlag == 1) {
-        		// packed list mode
-        		int i = 0;
-        		for (int row = 0; row < this.ny; row++) {
-        			for (int col = 0; col < this.nx; col++) {
-        				this.colors[i++] = makeDirectColor();
-        			}
-        			// align on word
-        			skip();
-        		}
-        	}
-        	else {
-        		unsupported("unsupported representation flag "+this.representationFlag);
-        	}
-        }
-        else if (ColourSelectionMode.getType().equals(ColourSelectionMode.Type.INDEXED)) {
-        	this.colorIndexes = new int[nColor];
-        	
-        	if (this.representationFlag == 0) {
-        		// run length list mode
-        		int c = 0;
-        		while (c < nColor) {
-        			int numColors = makeInt();
-        			int colorIndex = makeColorIndex(localColorPrecision);
-        			
-        			// don't directly fill the array with numColors in case we
+						this.colors[c++] = color;
+					}
+					if (c > 0 && c % this.nx == 0) {
+						// align on word at the end of a line
+						alignOnWord();
+					}
+				}
+			}
+			else if (this.representationFlag == 1) {
+				// packed list mode
+				int i = 0;
+				for (int row = 0; row < this.ny; row++) {
+					for (int col = 0; col < this.nx; col++) {
+						this.colors[i++] = makeDirectColor();
+					}
+					// align on word
+					alignOnWord();
+				}
+			}
+			else {
+				unsupported("unsupported representation flag "+this.representationFlag);
+			}
+		}
+		else if (ColourSelectionMode.getType().equals(ColourSelectionMode.Type.INDEXED)) {
+			this.colorIndexes = new int[nColor];
+
+			if (this.representationFlag == 0) {
+				// run length list mode
+				int c = 0;
+				while (c < nColor) {
+					int numColors = makeInt();
+					int colorIndex = makeColorIndex(localColorPrecision);
+
+					// don't directly fill the array with numColors in case we
 					// encounter a erroneous CGM file, e.g. SCHEMA03.CGM that
 					// returns an incorrect number of colors; only fill at most
 					// the number of colors left in the array
-        			int maxIndex = Math.min(numColors, nColor - c);
+					int maxIndex = Math.min(numColors, nColor - c);
 					for (int i = 0; i < maxIndex; i++) {
-        				this.colorIndexes[c++] = colorIndex;
-        			}
-        			if (c > 0 && c % this.nx == 0) {
-        				// align on word at the end of a line
-        				skip();
-        			}
-        		}
-        	}
-        	else if (this.representationFlag == 1) {
-        		// packed list mode
+						this.colorIndexes[c++] = colorIndex;
+					}
+					if (c > 0 && c % this.nx == 0) {
+						// align on word at the end of a line
+						alignOnWord();
+					}
+				}
+			}
+			else if (this.representationFlag == 1) {
+				// packed list mode
 				int i = 0;
 				for (int row = 0; row < this.ny; row++) {
 					for (int col = 0; col < this.nx; col++) {
 						this.colorIndexes[i++] = makeColorIndex(localColorPrecision);
 					}
 					// align on word
-					skip();
-        		}
-        	}
-        	else {
-        		unsupported("unsupported representation flag "+this.representationFlag);
-        	}
-        }
-        else {
-        	unsupported("unsupported color selection mode "+ColourSelectionMode.getType());
-        }
-        
-        // make sure all the arguments were read
-        // XXX
-        // assert (this.currentArg == this.args.length);
-    }
-    
-    @Override
+					alignOnWord();
+				}
+			}
+			else {
+				unsupported("unsupported representation flag "+this.representationFlag);
+			}
+		}
+		else {
+			unsupported("unsupported color selection mode "+ColourSelectionMode.getType());
+		}
+
+		// make sure all the arguments were read
+		// XXX
+		// assert (this.currentArg == this.args.length);
+	}
+
+	@Override
 	public void paint(CGMDisplay d) {
-    	// 1. create the image if it hasn't been created yet
-    	if (this.bufferedImage == null) {
-    		this.bufferedImage = new BufferedImage(this.nx, this.ny, BufferedImage.TYPE_INT_RGB);
-    		WritableRaster raster = this.bufferedImage.getRaster();
-    		int currentPixel = 0;
-    		for (int row = 0; row < this.ny; row++) {
-    			for (int col = 0; col < this.nx; col++) {
-    				Color c = (this.colors != null) ? this.colors[currentPixel++] : d
+		// 1. create the image if it hasn't been created yet
+		if (this.bufferedImage == null) {
+			this.bufferedImage = new BufferedImage(this.nx, this.ny, BufferedImage.TYPE_INT_RGB);
+			WritableRaster raster = this.bufferedImage.getRaster();
+			int currentPixel = 0;
+			for (int row = 0; row < this.ny; row++) {
+				for (int col = 0; col < this.nx; col++) {
+					Color c = (this.colors != null) ? this.colors[currentPixel++] : d
 							.getIndexedColor(this.colorIndexes[currentPixel++]);
-    				raster.setPixel(col, row, new int[] { c.getRed(), c.getGreen(), c.getBlue() });
-    			}
-    		}
-    		// we don't need the color information anymore. Set them to null to save some memory
-    		this.colors = null;
-    		this.colorIndexes = null;
-    	}
-		
+					raster.setPixel(col, row, new int[] { c.getRed(), c.getGreen(), c.getBlue() });
+				}
+			}
+			// we don't need the color information anymore. Set them to null to save some memory
+			this.colors = null;
+			this.colorIndexes = null;
+		}
+
 		// 2. the image is then painted on the graphic context, scaled and translated.
 		// XXX: shear is not supported yet
 		Graphics2D g2d = d.getGraphics2D();
-		
+
 		AffineTransform transform = AffineTransform.getTranslateInstance(this.p.getX(), this.p.getY());
-    	assert (this.nx != 0 && this.ny != 0);
+		assert (this.nx != 0 && this.ny != 0);
 		double sx = (this.q.getX() - this.p.getX()) / this.nx;
 		double sy = (this.q.getY() - this.r.getY()) / this.ny;
 		transform.scale(sx, sy);
 		g2d.drawRenderedImage(this.bufferedImage, transform);
-    }
+	}
 
 	@Override
 	public String toString() {
@@ -205,7 +205,7 @@ public class CellArray extends Command {
 		sb.append(" r=").append(this.r).append(",");
 
 		return sb.toString();
-    }
+	}
 }
 
 /*

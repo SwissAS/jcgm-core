@@ -72,7 +72,7 @@ public class Command implements Cloneable {
 	 * @throws IOException
 	 */
 	public Command(int ec, int eid, int l, DataInput in)
-	throws IOException {
+			throws IOException {
 
 		this.elementClass = ec;
 		this.elementCode = eid;
@@ -297,18 +297,18 @@ public class Command implements Cloneable {
 
 	private int makeUInt16() {
 		skipBits();
-		
+
 		if (this.currentArg+1 < this.args.length) {
 			// this is the default, two bytes
 			return (char)(this.args[this.currentArg++] << 8) + (char)this.args[this.currentArg++];
 		}
-		
+
 		// some CGM files request a 16 bit precision integer when there are only 8 bits left
 		if (this.currentArg < this.args.length) {
 			// TODO: add logging
 			return (char)this.args[this.currentArg++];
 		}
-		
+
 		assert false;
 		return 0;
 	}
@@ -737,14 +737,18 @@ public class Command implements Cloneable {
 	/**
 	 * Align on a word boundary
 	 */
-	final protected void skip() {
+	final protected void alignOnWord() {
 		if (this.currentArg >= this.args.length) {
 			// we reached the end of the array, nothing to skip
 			return;
 		}
 
-		if (this.currentArg % 2 == 1) {
-			assert this.args[this.currentArg] == 0 : "skipping data";
+		if (this.currentArg % 2 == 0 && this.posInArg > 0) {
+			this.posInArg = 0;
+			this.currentArg += 2;
+		}
+		else if (this.currentArg % 2 == 1) {
+			this.posInArg = 0;
 			this.currentArg++;
 		}
 	}
@@ -820,7 +824,7 @@ public class Command implements Cloneable {
 
 	// Class: 0
 	private static Command readDelimiterElements(DataInput in, int ec, int eid, int l)
-	throws IOException {
+			throws IOException {
 		// Delimiter elements
 		switch (DelimiterElement.getElement(eid)) {
 
