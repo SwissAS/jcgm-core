@@ -26,6 +26,7 @@
 					<li>integrated patch from tmyroadctfig: added support for
 						APPLICATION DATA and MESSAGE commands; made command
 						classes public</li>
+					<li>only clear the view once for multiple picture images (workaround only)</li>
 				</ul>
 			</section>
 			<section id="core-0.1.1">

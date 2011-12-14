@@ -39,7 +39,7 @@ public class BackgroundColour extends Command {
 	private final Color backgroundColor;
 
 	public BackgroundColour(int ec, int eid, int l, DataInput in)
-	throws IOException {
+			throws IOException {
 		super(ec, eid, l, in);
 
 		this.backgroundColor = makeDirectColor();
@@ -50,13 +50,16 @@ public class BackgroundColour extends Command {
 
 	@Override
 	public void paint(CGMDisplay d) {
-		if (!d.isTransparent()) {
+		// FIXME: the specification says that the setting of the background
+		// color should happen at Picture Body Begin, not here
+		if (!d.isTransparent() && !d.isViewCleared()) {
 			Graphics2D g2d = d.getGraphics2D();
 			g2d.setColor(this.backgroundColor);
 
 			Point2D.Double[] extent = d.getExtent();
 			g2d.fill(new Rectangle2D.Double(extent[0].x, extent[0].y,
 					extent[1].x - extent[0].x, extent[1].y - extent[0].y));
+			d.setViewCleared(true);
 		}
 	}
 

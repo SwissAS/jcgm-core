@@ -144,6 +144,13 @@ public class CGMDisplay {
 
 	private boolean isTransparent = false;
 
+	/**
+	 * Whether the view has been cleared. FIXME: how the view is cleared depends
+	 * on the profile we're using. We are not supporting profiles at this point,
+	 * so this setting might not be correct for all uses.
+	 */
+	private boolean isViewCleared= false;
+
 	public CGMDisplay(CGM cgm) {
 		reset();
 		this.lineDashes = new HashMap<Integer, float[]>();
@@ -986,6 +993,14 @@ public class CGMDisplay {
 	 */
 	void setTileArrayInfo(TileArrayInfo tileArrayInfo) {
 		this.tileArrayInfo = tileArrayInfo;
+	}
+
+	public boolean isViewCleared() {
+		return this.isViewCleared;
+	}
+
+	public void setViewCleared(boolean b) {
+		this.isViewCleared = b;
 	}
 
 }
