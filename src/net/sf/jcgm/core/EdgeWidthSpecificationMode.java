@@ -30,7 +30,7 @@ import java.io.*;
  * @author BBNT Solutions
  * @version $Id$
  */
-class EdgeWidthSpecificationMode extends Command {
+public class EdgeWidthSpecificationMode extends Command {
     static private SpecificationMode mode;
     
     static {

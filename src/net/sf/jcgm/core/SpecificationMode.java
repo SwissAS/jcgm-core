@@ -26,7 +26,7 @@ package net.sf.jcgm.core;
  * @author BBNT Solutions
  * @version $Id$
  */
-enum SpecificationMode {
+public enum SpecificationMode {
 	SCALED,		// type: R
 	ABSOLUTE,	// type: VDC
 	FRACTIONAL,	// type: R

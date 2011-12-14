@@ -29,9 +29,7 @@ package net.sf.jcgm.core;
 public interface ICommandListener {
 	/**
 	 * Will be called when a command has been read.
-	 * @param elementClass The class of the element
-	 * @param elementId The element code
-	 * @param commandText A descriptive text for the command
+	 * @param command the command.
 	 */
-	public void commandProcessed(int elementClass, int elementId, String commandText);
+	public void commandProcessed(Command command);
 }

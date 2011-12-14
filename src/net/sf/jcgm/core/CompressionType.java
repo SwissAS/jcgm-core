@@ -36,7 +36,7 @@ package net.sf.jcgm.core;
  * @author xphc
  * @since Oct 5, 2010
  */
-enum CompressionType {
+public enum CompressionType {
 	NULL_BACKGROUND(0),
 	NULL_FOREGROUND(1),
 	T6(2),

@@ -39,7 +39,7 @@ import java.io.IOException;
  * @author  xphc (Philippe Cadé)
  * @since Oct 5, 2010
  */
-class BeginTileArray extends Command {
+public class BeginTileArray extends Command {
 	private final Double position;
 	private final int cellPathDirection;
 	private final int lineProgressionDirection;

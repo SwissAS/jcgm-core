@@ -30,7 +30,7 @@ import java.io.*;
  * @author BBNT Solutions
  * @version $Id$
  */
-class MetafileDefaultsReplacement extends Command {
+public class MetafileDefaultsReplacement extends Command {
 	private Command embeddedCommand;
 
 	public MetafileDefaultsReplacement(int ec, int eid, int l, DataInput in)

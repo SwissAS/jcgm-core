@@ -30,7 +30,7 @@ import java.io.*;
  * @author BBNT Solutions
  * @version $Id$
  */
-class MetafileDescription extends Command {
+public class MetafileDescription extends Command {
     String S;
 
     public MetafileDescription(int ec, int eid, int l, DataInput in)
@@ -42,6 +42,10 @@ class MetafileDescription extends Command {
     @Override
 	public String toString() {
         return "MetafileDescription: " + this.S;
+    }
+
+    public String getDescription() {
+        return S;
     }
 }
 

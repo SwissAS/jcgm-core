@@ -31,7 +31,7 @@ import java.io.IOException;
  * @author BBNT Solutions
  * @version $Id$
  */
-class LineWidth extends Command {
+public class LineWidth extends Command {
     double width;
 
     public LineWidth(int ec, int eid, int l, DataInput in)

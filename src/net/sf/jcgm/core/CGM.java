@@ -38,6 +38,7 @@ import java.nio.ByteBuffer;
 import java.nio.MappedByteBuffer;
 import java.nio.channels.FileChannel;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.zip.GZIPInputStream;
 
@@ -50,15 +51,15 @@ import net.sf.jcgm.core.ScalingMode.Mode;
  * @version $Id$
  */
 public class CGM implements Cloneable {
-    private List<Command> commands;
+	private List<Command> commands;
 
-    private final List<ICommandListener> commandListeners = new ArrayList<ICommandListener>();
-    
-    private final static int INITIAL_NUM_COMMANDS = 500;
+	private final List<ICommandListener> commandListeners = new ArrayList<ICommandListener>();
 
-    public CGM() {
-    	// empty constructor. XXX: Remove?
-    }
+	private final static int INITIAL_NUM_COMMANDS = 500;
+
+	public CGM() {
+		// empty constructor. XXX: Remove?
+	}
 
 	public CGM(File cgmFile) throws IOException {
 		if (cgmFile == null)
@@ -72,28 +73,28 @@ public class CGM implements Cloneable {
 		else {
 			inputStream = new FileInputStream(cgmFile);
 		}
-        DataInputStream in = new DataInputStream(new BufferedInputStream(inputStream));
-        read(in);
-        in.close();
-    }
+		DataInputStream in = new DataInputStream(new BufferedInputStream(inputStream));
+		read(in);
+		in.close();
+	}
 
-    public void read(DataInput in) throws IOException {
-    	reset();
-        this.commands = new ArrayList<Command>(INITIAL_NUM_COMMANDS);
-        while (true) {
-            Command c = Command.read(in);
-            if (c == null)
-                break;
+	public void read(DataInput in) throws IOException {
+		reset();
+		this.commands = new ArrayList<Command>(INITIAL_NUM_COMMANDS);
+		while (true) {
+			Command c = Command.read(in);
+			if (c == null)
+				break;
 
-            for (ICommandListener listener : this.commandListeners) {
-				listener.commandProcessed(c.getElementClass(), c.getElementCode(), c.toString());
+			for (ICommandListener listener : this.commandListeners) {
+				listener.commandProcessed(c);
 			}
 
-            // get rid of all arguments after we read them
-            c.cleanUpArguments();
-            this.commands.add(c);
-        }
-    }
+			// get rid of all arguments after we read them
+			c.cleanUpArguments();
+			this.commands.add(c);
+		}
+	}
 
 	/**
 	 * Splits a CGM file containing several CGM files into pieces. Each single
@@ -144,7 +145,7 @@ public class CGM implements Cloneable {
 				}
 				currentPosition = randomAccessFile.getFilePointer();
 			}
-			
+
 			if (currentFileName != null) {
 				dumpToFile(outputDir, extractor, channel, startPosition,
 						currentPosition, currentFileName);
@@ -160,7 +161,7 @@ public class CGM implements Cloneable {
 	private static void dumpToFile(File outputDir,
 			IBeginMetafileNameExtractor extractor, FileChannel channel,
 			long startPosition, long currentPosition, String currentFileName)
-			throws IOException {
+					throws IOException {
 		// dump the CGM file
 		MappedByteBuffer byteBuffer = channel.map(
 				FileChannel.MapMode.READ_ONLY, startPosition,
@@ -234,7 +235,7 @@ public class CGM implements Cloneable {
 		// dump the CGM file
 		MappedByteBuffer byteBuffer = channel.map(
 				FileChannel.MapMode.READ_ONLY, startPosition, currentPosition
-						- startPosition);
+				- startPosition);
 
 		byte[] byteArray = new byte[(int) (currentPosition - startPosition)];
 		byteBuffer.get(byteArray);
@@ -244,7 +245,7 @@ public class CGM implements Cloneable {
 		// we're not really using here
 		Messages.getInstance().reset();
 	}
-	
+
 	/**
 	 * Writes the given bytes to a file
 	 * 
@@ -275,17 +276,17 @@ public class CGM implements Cloneable {
 		}
 	}
 
-    /**
-     * Adds the given listener to the list of command listeners
-     * @param listener The listener to add
-     */
-    public void addCommandListener(ICommandListener listener) {
-    	this.commandListeners.add(listener);
-    }
+	/**
+	 * Adds the given listener to the list of command listeners
+	 * @param listener The listener to add
+	 */
+	public void addCommandListener(ICommandListener listener) {
+		this.commandListeners.add(listener);
+	}
 
-    /**
-     * All the command classes with static data need to be reset here
-     */
+	/**
+	 * All the command classes with static data need to be reset here
+	 */
 	private void reset() {
 		ColourIndexPrecision.reset();
 		ColourModel.reset();
@@ -316,89 +317,93 @@ public class CGM implements Cloneable {
 				c.paint(d);
 			}
 		}
-    }
+	}
 
 	private boolean filter(Command c) {
 		return true;
-//		List<Class<?>> classes = new ArrayList<Class<?>>();
-//		//classes.add(PolygonElement.class);
-//		classes.add(Text.class);
-//		//classes.add(CircleElement.class);
-//		
-//		for (Class<?> clazz: classes) {
-//			if (clazz.isInstance(c))
-//				return false;
-//		}
-//		
-//		return true;
+		//		List<Class<?>> classes = new ArrayList<Class<?>>();
+		//		//classes.add(PolygonElement.class);
+		//		classes.add(Text.class);
+		//		//classes.add(CircleElement.class);
+		//		
+		//		for (Class<?> clazz: classes) {
+		//			if (clazz.isInstance(c))
+		//				return false;
+		//		}
+		//		
+		//		return true;
 	}
 
-    /**
-     * Returns the size of the CGM graphic.
-     * @return The dimension or null if no {@link VDCExtent} command was found.
-     */
-    public Dimension getSize() {
-    	// default to 96 DPI which is the Microsoft Windows default DPI setting
-    	return getSize(96);
-    }
+	/**
+	 * Returns the size of the CGM graphic.
+	 * @return The dimension or null if no {@link VDCExtent} command was found.
+	 */
+	public Dimension getSize() {
+		// default to 96 DPI which is the Microsoft Windows default DPI setting
+		return getSize(96);
+	}
 
-    /**
-     * Returns the size of the CGM graphic taking into account a specific DPI setting
-     * @param dpi The DPI value to use
-     * @return The dimension or null if no {@link VDCExtent} command was found.
-     */
-    public Dimension getSize(double dpi) {
-    	Point2D.Double[] extent = extent();
-    	if (extent == null)
-    		return null;
+	/**
+	 * Returns the size of the CGM graphic taking into account a specific DPI setting
+	 * @param dpi The DPI value to use
+	 * @return The dimension or null if no {@link VDCExtent} command was found.
+	 */
+	public Dimension getSize(double dpi) {
+		Point2D.Double[] extent = extent();
+		if (extent == null)
+			return null;
 
-    	double factor = 1;
+		double factor = 1;
 
-    	ScalingMode scalingMode = getScalingMode();
-    	if (scalingMode != null) {
-    		Mode mode = scalingMode.getMode();
-    		if (ScalingMode.Mode.METRIC.equals(mode)) {
-    			double metricScalingFactor = scalingMode.getMetricScalingFactor();
-    			if (metricScalingFactor != 0) {
-    				// 1 inch = 25,4 millimeter
-    				factor = (dpi * metricScalingFactor) / 25.4;
-    			}
-    		}
-    	}
+		ScalingMode scalingMode = getScalingMode();
+		if (scalingMode != null) {
+			Mode mode = scalingMode.getMode();
+			if (ScalingMode.Mode.METRIC.equals(mode)) {
+				double metricScalingFactor = scalingMode.getMetricScalingFactor();
+				if (metricScalingFactor != 0) {
+					// 1 inch = 25,4 millimeter
+					factor = (dpi * metricScalingFactor) / 25.4;
+				}
+			}
+		}
 
-    	int width = (int)Math.ceil((Math.abs(extent[1].x - extent[0].x) * factor));
-    	int height = (int)Math.ceil((Math.abs(extent[1].y - extent[0].y) * factor));
+		int width = (int)Math.ceil((Math.abs(extent[1].x - extent[0].x) * factor));
+		int height = (int)Math.ceil((Math.abs(extent[1].y - extent[0].y) * factor));
 
-    	return new Dimension(width, height);
-    }
+		return new Dimension(width, height);
+	}
 
-    public Point2D.Double[] extent() {
-    	for (Command c : this.commands) {
-            if (c instanceof VDCExtent) {
-                Point2D.Double[] extent = ((VDCExtent) c).extent();
-                return extent;
-            }
-    	}
-        return null;
-    }
+	public Point2D.Double[] extent() {
+		for (Command c : this.commands) {
+			if (c instanceof VDCExtent) {
+				Point2D.Double[] extent = ((VDCExtent) c).extent();
+				return extent;
+			}
+		}
+		return null;
+	}
 
-    private ScalingMode getScalingMode() {
-    	for (Command c : this.commands) {
-            if (c instanceof ScalingMode) {
-                return (ScalingMode)c;
-            }
-    	}
-        return null;
-    }
+	private ScalingMode getScalingMode() {
+		for (Command c : this.commands) {
+			if (c instanceof ScalingMode) {
+				return (ScalingMode)c;
+			}
+		}
+		return null;
+	}
 
-    public void showCGMCommands() {
-    	showCGMCommands(System.out);
-    }
+	public void showCGMCommands() {
+		showCGMCommands(System.out);
+	}
 
 	public void showCGMCommands(PrintStream stream) {
 		for (Command c : this.commands) {
-            stream.println("Command: " + c);
+			stream.println("Command: " + c);
 		}
+	}
+
+	public List<Command> getCommands() {
+		return Collections.unmodifiableList(this.commands);
 	}
 
 }

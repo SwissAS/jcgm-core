@@ -30,7 +30,7 @@ import java.io.*;
  * @author BBNT Solutions
  * @version $Id$
  */
-class CharacterExpansionFactor extends Command {
+public class CharacterExpansionFactor extends Command {
     private double factor;
 
 	public CharacterExpansionFactor(int ec, int eid, int l, DataInput in)

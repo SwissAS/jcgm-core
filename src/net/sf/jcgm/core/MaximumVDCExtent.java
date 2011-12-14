@@ -31,7 +31,7 @@ import java.io.*;
  * @author BBNT Solutions
  * @version $Id$
  */
-class MaximumVDCExtent extends Command {
+public class MaximumVDCExtent extends Command {
     Point2D.Double firstCorner;
 	Point2D.Double secondCorner;
 

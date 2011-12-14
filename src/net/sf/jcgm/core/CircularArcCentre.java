@@ -34,7 +34,7 @@ import java.io.IOException;
  * @author BBNT Solutions
  * @version $Id$
  */
-class CircularArcCentre extends Command {
+public class CircularArcCentre extends Command {
     protected Point2D.Double center;
 	protected double startDeltaX;
 	protected double startDeltaY;

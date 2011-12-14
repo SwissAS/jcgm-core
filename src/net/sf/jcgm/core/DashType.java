@@ -26,7 +26,7 @@ package net.sf.jcgm.core;
  * @version $Id$
  * @since Feb 23, 2009
  */
-class DashType {
+public class DashType {
 	public final static int SOLID = 1;
 	public final static int DASH = 2;
 	public final static int DOT = 3;

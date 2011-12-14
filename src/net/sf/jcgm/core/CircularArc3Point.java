@@ -34,7 +34,7 @@ import java.io.*;
  * @author BBNT Solutions
  * @version $Id$
  */
-class CircularArc3Point extends Command {
+public class CircularArc3Point extends Command {
     private Point2D.Double center;
 	protected Arc2D.Double shape;
 	private double radius;

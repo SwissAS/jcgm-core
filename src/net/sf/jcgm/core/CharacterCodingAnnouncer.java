@@ -30,7 +30,7 @@ import java.io.*;
  * @author BBNT Solutions
  * @version $Id$
  */
-class CharacterCodingAnnouncer extends Command {
+public class CharacterCodingAnnouncer extends Command {
 	enum Type {
 		BASIC_7_BIT,
 		BASIC_8_BIT,

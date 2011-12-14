@@ -30,7 +30,7 @@ import java.io.*;
  * @author BBNT Solutions
  * @version $Id$
  */
-class EndPicture extends Command {
+public class EndPicture extends Command {
     String S;
 
     public EndPicture(int ec, int eid, int l, DataInput in)

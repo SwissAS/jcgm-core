@@ -34,7 +34,7 @@ import java.io.*;
  * @author BBNT Solutions
  * @version $Id$
  */
-class PolyBezier extends Command {
+public class PolyBezier extends Command {
     /**
      * 1: discontinuous, 2: continuous, >2: reserved for registered values
      */

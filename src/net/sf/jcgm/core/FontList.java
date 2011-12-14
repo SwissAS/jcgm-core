@@ -34,7 +34,7 @@ import java.util.Map;
  * @author BBNT Solutions
  * @version $Id$
  */
-class FontList extends Command {
+public class FontList extends Command {
 	String fontNames[];
     FontWrapper[] fonts;
     

@@ -34,7 +34,7 @@ import java.io.IOException;
  * @author BBNT Solutions
  * @version $Id$
  */
-class PolygonElement extends Command {
+public class PolygonElement extends Command {
 	private final Path2D.Double polygon;
 
     public PolygonElement(int ec, int eid, int l, DataInput in)

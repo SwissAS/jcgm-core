@@ -30,7 +30,7 @@ import java.io.*;
  * @author BBNT Solutions
  * @version $Id$
  */
-class MarkerColour extends ColourCommand {
+public class MarkerColour extends ColourCommand {
 	public MarkerColour(int ec, int eid, int l, DataInput in)
             throws IOException {
         super(ec, eid, l, in);

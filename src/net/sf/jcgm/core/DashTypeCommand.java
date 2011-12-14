@@ -29,7 +29,7 @@ import java.io.IOException;
  * @version $Id$
  * @since Feb 23, 2009
  */
-class DashTypeCommand extends Command {
+public class DashTypeCommand extends Command {
     protected int type = DashType.SOLID;
     
     public DashTypeCommand(int ec, int eid, int l, DataInput in) throws IOException {

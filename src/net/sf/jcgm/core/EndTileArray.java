@@ -37,7 +37,7 @@ import java.io.IOException;
  * @author  xphc (Philippe Cadé)
  * @since Oct 5, 2010
  */
-class EndTileArray extends Command {
+public class EndTileArray extends Command {
 	EndTileArray(int ec, int eid, int l, DataInput in) throws IOException {
 		super(ec, eid, l, in);
 		// no parameters

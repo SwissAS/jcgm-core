@@ -30,7 +30,7 @@ import java.io.*;
  * @author BBNT Solutions
  * @version $Id$
  */
-class ScalingMode extends Command {
+public class ScalingMode extends Command {
 	enum Mode {
 		ABSTRACT, METRIC
 	}
@@ -42,7 +42,7 @@ class ScalingMode extends Command {
             throws IOException {
         super(ec, eid, l, in);
         
-        int mod = makeEnum();
+        int mod = l > 0 ? makeEnum() : 0;
         if (mod == 0) {
         	this.mode = Mode.ABSTRACT;
         }

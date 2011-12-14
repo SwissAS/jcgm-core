@@ -32,7 +32,7 @@ import java.io.IOException;
  * @version $Id$
  * @since Jun 12, 2009
  */
-class ClipIndicator extends Command {
+public class ClipIndicator extends Command {
 
 	private boolean flag;
 

@@ -29,7 +29,7 @@ import java.awt.Font;
  * @version $Id$
  * @since May 8, 2009
  */
-class FontWrapper {
+public class FontWrapper {
 	public Font font;
 	public boolean useSymbolEncoding;
 	

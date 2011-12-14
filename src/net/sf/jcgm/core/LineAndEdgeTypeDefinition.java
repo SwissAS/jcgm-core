@@ -31,7 +31,7 @@ import java.io.IOException;
  * @author BBNT Solutions
  * @version $Id$
  */
-class LineAndEdgeTypeDefinition extends Command {
+public class LineAndEdgeTypeDefinition extends Command {
     private final int lineType;
 	private final double dashCycleRepeatLength;
 	private final int[] dashElements;

@@ -30,7 +30,7 @@ import java.io.*;
  * @author BBNT Solutions
  * @version $Id$
  */
-class MetafileElementList extends Command {
+public class MetafileElementList extends Command {
 	String[] metaFileElements; 
 
     public MetafileElementList(int ec, int eid, int l, DataInput in)

@@ -29,7 +29,7 @@ import java.io.*;
  * @author BBNT Solutions
  * @version $Id$
  */
-class ColourCommand extends Command {
+public class ColourCommand extends Command {
     protected Color color = null;
 	protected int colorIndex = -1;
 

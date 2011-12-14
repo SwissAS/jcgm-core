@@ -32,7 +32,7 @@ import java.io.*;
  * @author BBNT Solutions
  * @version $Id$
  */
-class CircularArc3PointClose extends CircularArc3Point {
+public class CircularArc3PointClose extends CircularArc3Point {
 	private int type;
 	
     public CircularArc3PointClose(int ec, int eid, int l, DataInput in)

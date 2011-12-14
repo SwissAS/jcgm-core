@@ -30,7 +30,7 @@ import java.io.*;
  * @author BBNT Solutions
  * @version $Id$
  */
-class VDCIntegerPrecision extends Command {
+public class VDCIntegerPrecision extends Command {
 	private static int precision;
 	
 	static {

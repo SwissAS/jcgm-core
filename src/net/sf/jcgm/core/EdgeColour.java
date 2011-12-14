@@ -31,7 +31,7 @@ import java.io.IOException;
  * @author BBNT Solutions
  * @version $Id$
  */
-class EdgeColour extends ColourCommand {
+public class EdgeColour extends ColourCommand {
 	public EdgeColour(int ec, int eid, int l, DataInput in)
             throws IOException {
         super(ec, eid, l, in);

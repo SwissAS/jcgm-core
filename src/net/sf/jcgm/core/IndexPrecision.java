@@ -30,7 +30,7 @@ import java.io.*;
  * @author BBNT Solutions
  * @version $Id$
  */
-class IndexPrecision extends Command {
+public class IndexPrecision extends Command {
     static int precision;
     
     static {

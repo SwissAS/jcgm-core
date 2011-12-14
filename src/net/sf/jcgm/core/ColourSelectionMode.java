@@ -29,7 +29,7 @@ import java.io.*;
  * @author BBNT Solutions
  * @version $Id$
  */
-class ColourSelectionMode extends Command {
+public class ColourSelectionMode extends Command {
 	enum Type { INDEXED, DIRECT }
 
 	static private Type type;

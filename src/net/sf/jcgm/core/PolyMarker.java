@@ -39,7 +39,7 @@ import net.sf.jcgm.core.MarkerType.Type;
  * @version $Id$
  * @since May 13, 2009
  */
-class PolyMarker extends Command {
+public class PolyMarker extends Command {
 	private Point2D.Double[] points;
 
 	public PolyMarker(int ec, int eid, int l, DataInput in) throws IOException {

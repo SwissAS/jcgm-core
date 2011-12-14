@@ -30,13 +30,13 @@ import java.io.*;
  * @author BBNT Solutions
  * @version $Id$
  */
-class BeginPicture extends Command {
+public class BeginPicture extends Command {
     String S;
 
     public BeginPicture(int ec, int eid, int l, DataInput in)
             throws IOException {
         super(ec, eid, l, in);
-        this.S = makeString();
+        this.S = l > 0 ? makeString() : "";
         
         // make sure all the arguments were read
         assert (this.currentArg == this.args.length);
@@ -45,6 +45,10 @@ class BeginPicture extends Command {
     @Override
 	public String toString() {
         return "BeginPicture " + this.S;
+    }
+
+    public String getPictureName() {
+        return S;
     }
 }
 

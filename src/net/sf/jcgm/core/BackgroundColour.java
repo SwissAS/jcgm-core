@@ -35,7 +35,7 @@ import java.io.IOException;
  * @author BBNT Solutions
  * @version $Id$
  */
-class BackgroundColour extends Command {
+public class BackgroundColour extends Command {
 	private final Color backgroundColor;
 
 	public BackgroundColour(int ec, int eid, int l, DataInput in)

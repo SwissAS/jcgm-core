@@ -30,7 +30,7 @@ import java.io.*;
  * @author BBNT Solutions
  * @version $Id$
  */
-class NoOp extends Command {
+public class NoOp extends Command {
     public NoOp(int ec, int eid, int l, DataInput in)
             throws IOException {
         super(ec, eid, l, in);

@@ -31,7 +31,7 @@ import java.io.IOException;
  * @version $Id$
  * @since Jun 12, 2009
  */
-class AlternateCharacterSetIndex extends Command {
+public class AlternateCharacterSetIndex extends Command {
 
 	private int index;
 

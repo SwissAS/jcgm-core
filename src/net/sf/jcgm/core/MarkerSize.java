@@ -31,7 +31,7 @@ import java.io.IOException;
  * @version $Id$
  * @since May 13, 2009
  */
-class MarkerSize extends Command {
+public class MarkerSize extends Command {
 	double width;
 
 	public MarkerSize(int ec, int eid, int l, DataInput in) throws IOException {

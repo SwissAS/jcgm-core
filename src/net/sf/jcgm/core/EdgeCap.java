@@ -30,7 +30,7 @@ import java.io.*;
  * @author BBNT Solutions
  * @version $Id$
  */
-class EdgeCap extends CapCommand {
+public class EdgeCap extends CapCommand {
 	public EdgeCap(int ec, int eid, int l, DataInput in)
             throws IOException {
         super(ec, eid, l, in);

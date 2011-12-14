@@ -35,7 +35,7 @@ import java.io.*;
  * @author BBNT Solutions
  * @version $Id$
  */
-class EllipticalArc extends EllipseElement {
+public class EllipticalArc extends EllipseElement {
 	
     protected double startVectorDeltaX;
     protected double startVectorDeltaY;

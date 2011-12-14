@@ -30,7 +30,7 @@ import java.io.*;
  * @author BBNT Solutions
  * @version $Id$
  */
-class FillColour extends ColourCommand {
+public class FillColour extends ColourCommand {
 	public FillColour(int ec, int eid, int l, DataInput in)
             throws IOException {
         super(ec, eid, l, in);

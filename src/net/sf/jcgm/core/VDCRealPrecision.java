@@ -30,7 +30,7 @@ import java.io.*;
  * @author BBNT Solutions
  * @version $Id$
  */
-class VDCRealPrecision extends Command {
+public class VDCRealPrecision extends Command {
     enum Type {
 		FLOATING_POINT_32BIT, 
 		FLOATING_POINT_64BIT,

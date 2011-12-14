@@ -30,7 +30,7 @@ import java.io.*;
  * @author BBNT Solutions
  * @version $Id$
  */
-class RestrictedTextType extends Command {
+public class RestrictedTextType extends Command {
 	enum Type {
 		BASIC, BOXED_CAP, BOXED_ALL, ISOTROPIC_CAP, ISOTROPIC_ALL, JUSTIFIED
 	}

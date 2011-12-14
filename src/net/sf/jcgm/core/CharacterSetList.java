@@ -32,7 +32,7 @@ import java.util.Map;
  * @author BBNT Solutions
  * @version $Id$
  */
-class CharacterSetList extends Command {
+public class CharacterSetList extends Command {
 	enum Type {
 		_94_CHAR_G_SET,
 		_96_CHAR_G_SET,

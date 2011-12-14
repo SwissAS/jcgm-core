@@ -30,7 +30,7 @@ import java.io.*;
  * @author BBNT Solutions
  * @version $Id$
  */
-class LineJoin extends JoinCommand {
+public class LineJoin extends JoinCommand {
     public LineJoin(int ec, int eid, int l, DataInput in)
             throws IOException {
         super(ec, eid, l, in);

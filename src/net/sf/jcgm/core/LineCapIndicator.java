@@ -29,7 +29,7 @@ import java.awt.BasicStroke;
  * @author BBNT Solutions
  * @version $Id$
  */
-enum LineCapIndicator {
+public enum LineCapIndicator {
 	UNSPECIFIED(BasicStroke.CAP_BUTT),
 	BUTT(BasicStroke.CAP_BUTT),
 	ROUND(BasicStroke.CAP_ROUND),

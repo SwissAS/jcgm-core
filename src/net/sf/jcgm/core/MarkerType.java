@@ -31,7 +31,7 @@ import java.io.IOException;
  * @version $Id$
  * @since May 13, 2009
  */
-class MarkerType extends Command {
+public class MarkerType extends Command {
 	enum Type { DOT, PLUS, ASTERISK, CIRCLE, CROSS }
 	private Type type = Type.ASTERISK;
 

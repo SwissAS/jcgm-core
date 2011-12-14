@@ -30,7 +30,7 @@ import java.io.*;
  * @author BBNT Solutions
  * @version $Id$
  */
-class MaximumColourIndex extends Command {
+public class MaximumColourIndex extends Command {
     private int maxColorIndex;
 
 	public MaximumColourIndex(int ec, int eid, int l, DataInput in)

@@ -38,7 +38,7 @@ import java.io.IOException;
  * @author  xphc
  * @since Oct 5, 2010
  */
-class BitonalTile extends TileElement {
+public class BitonalTile extends TileElement {
 	private Color backgroundColor = null;
 	private int backgroundColorIndex;
 	private Color foregroundColor = null;

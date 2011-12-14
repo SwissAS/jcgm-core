@@ -31,7 +31,7 @@ import java.io.IOException;
  * @version $Id$
  * @since Jun 12, 2009
  */
-class Escape extends Command {
+public class Escape extends Command {
 
 	private int identifier;
 	private String dataRecord;

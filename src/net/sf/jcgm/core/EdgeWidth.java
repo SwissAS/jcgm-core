@@ -30,7 +30,7 @@ import java.io.*;
  * @author BBNT Solutions
  * @version $Id$
  */
-class EdgeWidth extends Command {
+public class EdgeWidth extends Command {
     double width;
 
     public EdgeWidth(int ec, int eid, int l, DataInput in)

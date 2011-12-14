@@ -35,7 +35,7 @@ import java.io.IOException;
  * @version $Id$
  * @since Jun 12, 2009
  */
-class ClipRectangle extends Command {
+public class ClipRectangle extends Command {
 
 	private Shape shape;
 	private Point2D.Double p1;

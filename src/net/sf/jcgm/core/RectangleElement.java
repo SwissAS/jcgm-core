@@ -33,7 +33,7 @@ import java.io.*;
  * @author BBNT Solutions
  * @version $Id$
  */
-class RectangleElement extends Command {
+public class RectangleElement extends Command {
 	private Rectangle2D.Double shape;
 	private Point2D.Double firstCorner;
 	private Point2D.Double secondCorner;

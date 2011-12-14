@@ -37,7 +37,7 @@ import java.io.*;
  * @author BBNT Solutions
  * @version $Id$
  */
-class EllipseElement extends Command {
+public class EllipseElement extends Command {
 	protected Point2D.Double center;
 	protected Point2D.Double firstConjugateDiameterEndPoint;
 	protected Point2D.Double secondConjugateDiameterEndPoint;

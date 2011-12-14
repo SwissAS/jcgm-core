@@ -30,7 +30,7 @@ import java.io.*;
  * @author BBNT Solutions
  * @version $Id$
  */
-class EdgeVisibility extends Command {
+public class EdgeVisibility extends Command {
     boolean Visibel;
 
     public EdgeVisibility(int ec, int eid, int l, DataInput in)

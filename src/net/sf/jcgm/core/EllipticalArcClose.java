@@ -32,7 +32,7 @@ import java.io.*;
  * @author BBNT Solutions
  * @version $Id$
  */
-class EllipticalArcClose extends EllipticalArc {
+public class EllipticalArcClose extends EllipticalArc {
 	private int type;
 
     public EllipticalArcClose(int ec, int eid, int l, DataInput in)

@@ -30,7 +30,7 @@ import java.io.*;
  * @author BBNT Solutions
  * @version $Id$
  */
-class MetafileVersion extends Command {
+public class MetafileVersion extends Command {
     int X;
 
     public MetafileVersion(int ec, int eid, int l, DataInput in)
@@ -42,6 +42,10 @@ class MetafileVersion extends Command {
     @Override
 	public String toString() {
         return "MetafileVersion " + this.X;
+    }
+
+    public int getVersion() {
+        return X;
     }
 }
 

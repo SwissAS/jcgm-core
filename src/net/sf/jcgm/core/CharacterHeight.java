@@ -31,7 +31,7 @@ import java.io.*;
  * @author BBNT Solutions
  * @version $Id$
  */
-class CharacterHeight extends Command {
+public class CharacterHeight extends Command {
     double characterHeight;
 
     public CharacterHeight(int ec, int eid, int l, DataInput in)

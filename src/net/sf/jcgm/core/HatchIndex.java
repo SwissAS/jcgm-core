@@ -31,7 +31,7 @@ import java.io.IOException;
  * @version $Id$
  * @since Jun 10, 2009
  */
-class HatchIndex extends Command {
+public class HatchIndex extends Command {
 	enum HatchType {
 		HORIZONTAL_LINES, VERTICAL_LINES, POSITIVE_SLOPE_LINES, NEGATIVE_SLOPE_LINES,
 		HORIZONTAL_VERTICAL_CROSSHATCH, POSITIVE_NEGATIVE_CROSSHATCH

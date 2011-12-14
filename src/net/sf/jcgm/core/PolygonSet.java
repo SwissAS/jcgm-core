@@ -34,7 +34,7 @@ import java.io.IOException;
  * @author BBNT Solutions
  * @version $Id$
  */
-class PolygonSet extends Command {
+public class PolygonSet extends Command {
 	final private static int INVISIBLE = 0;
 	final private static int VISIBLE = 1;
 	final private static int CLOSE_INVISIBLE = 2;

@@ -30,7 +30,7 @@ import java.io.*;
  * @author BBNT Solutions
  * @version $Id$
  */
-class TextColour extends ColourCommand {
+public class TextColour extends ColourCommand {
 	public TextColour(int ec, int eid, int l, DataInput in)
             throws IOException {
         super(ec, eid, l, in);

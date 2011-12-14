@@ -23,6 +23,9 @@
 					<li>support for transparent CGM files was added. Use <code>CGMDisplay.setTransparent(true)</code>, thanks clivebutler</li>
 					<li>added patch by clivebutler to only have images with zero dimension when the extent is empty</li>
 					<li>fixed a problem for cell arrays using color selection mode "indexed" and representation flag "packed list"</li>
+					<li>integrated patch from tmyroadctfig: added support for
+						APPLICATION DATA and MESSAGE commands; made command
+						classes public</li>
 				</ul>
 			</section>
 			<section id="core-0.1.1">

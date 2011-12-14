@@ -30,7 +30,7 @@ import java.io.IOException;
  * @version $Id$
  * @since May 13, 2009
  */
-class JoinCommand extends Command {
+public class JoinCommand extends Command {
 	JoinIndicator type;
 	
 	public JoinCommand(int ec, int eid, int l, DataInput in) 

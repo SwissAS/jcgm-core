@@ -30,7 +30,7 @@ import java.io.*;
  * @author BBNT Solutions
  * @version $Id$
  */
-class InteriorStyle extends Command {
+public class InteriorStyle extends Command {
 	enum Style {
 		HOLLOW,
 		SOLID,

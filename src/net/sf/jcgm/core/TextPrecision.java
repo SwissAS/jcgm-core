@@ -30,7 +30,7 @@ import java.io.*;
  * @author BBNT Solutions
  * @version $Id$
  */
-class TextPrecision extends Command {
+public class TextPrecision extends Command {
 	enum Precision {
 		STRING,
 		CHARACTER,

@@ -30,7 +30,7 @@ import java.io.IOException;
  * @author BBNT Solutions
  * @version $Id$
  */
-abstract class CapCommand extends Command {
+public abstract class CapCommand extends Command {
 
 	protected LineCapIndicator lineIndicator;
 	protected DashCapIndicator dashIndicator;

@@ -34,7 +34,7 @@ import java.io.IOException;
  * @author BBNT Solutions
  * @version $Id$
  */
-class DisjointPolyline extends Command {
+public class DisjointPolyline extends Command {
 	private final Line2D.Double[] lines;
 
     public DisjointPolyline(int ec, int eid, int l, DataInput in)

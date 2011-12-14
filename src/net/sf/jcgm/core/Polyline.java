@@ -34,7 +34,7 @@ import java.io.IOException;
  * @author BBNT Solutions
  * @version $Id$
  */
-class Polyline extends Command {
+public class Polyline extends Command {
 	private final Path2D.Double path;
 
     public Polyline(int ec, int eid, int l, DataInput in)

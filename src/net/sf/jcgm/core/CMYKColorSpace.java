@@ -33,7 +33,7 @@ import java.io.Serializable;
  * @date 18/11/09
  * @see java.awt.color.ColorSpace, java.awt.color.ICC_ColorSpace
  */
-class CMYKColorSpace extends ColorSpace implements Serializable {
+public class CMYKColorSpace extends ColorSpace implements Serializable {
 
 	private static final long serialVersionUID = -5982040365555064012L;
 	

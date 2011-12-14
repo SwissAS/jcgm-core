@@ -30,7 +30,7 @@ import java.io.*;
  * @author BBNT Solutions
  * @version $Id$
  */
-class VDCType extends Command {
+public class VDCType extends Command {
 	enum Type {
 		INTEGER,
 		REAL

@@ -27,7 +27,7 @@ package net.sf.jcgm.core;
  * @author  Philippe Cadé
  * @since Dec 15, 2009
  */
-enum AttributeElement {
+public enum AttributeElement {
 	UNUSED_0(0),
 	LINE_BUNDLE_INDEX(1),
 	LINE_TYPE(2),

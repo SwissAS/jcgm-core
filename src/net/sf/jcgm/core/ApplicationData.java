@@ -1,11 +1,12 @@
 /*
- * <copyright>
+ * <copyright> Copyright 1997-2003 BBNT Solutions, LLC under sponsorship of the
+ * Defense Advanced Research Projects Agency (DARPA).
  * Copyright 2009 Swiss AviationSoftware Ltd.
- * 
+ *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of the Cougaar Open Source License as published by DARPA on
  * the Cougaar Open Source Website (www.cougaar.org).
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -20,50 +21,39 @@
  */
 package net.sf.jcgm.core;
 
+import java.io.*;
+
+
 /**
- * Element class 3: Control Elements
- * @version $Id$ 
- * @author  Philippe Cadé
- * @since Dec 15, 2009
+ * Class=7, Element=2
+ * @author Luke Quinane
+ * @since Nov 03, 2011
  */
-public enum ControlElement {
-	UNUSED_0(0),
-	VDC_INTEGER_PRECISION(1),
-	VDC_REAL_PRECISION(2),
-	AUXILIARY_COLOUR(3),
-	TRANSPARENCY(4),
-	CLIP_RECTANGLE(5),
-	CLIP_INDICATOR(6),
-	LINE_CLIPPING_MODE(7),
-	MARKER_CLIPPING_MODE(8),
-	EDGE_CLIPPING_MODE(9),
-	NEW_REGION(10),
-	SAVE_PRIMITIVE_CONTEXT(11),
-	RESTORE_PRIMITIVE_CONTEXT(12),
-	UNUSED_13(13),
-	UNUSED_14(14),
-	UNUSED_15(15),
-	UNUSED_16(16),
-	PROTECTION_REGION_INDICATOR(17),
-	GENERALIZED_TEXT_PATH_MODE(18),
-	MITRE_LIMIT(19),
-	TRANSPARENT_CELL_COLOUR(20);
+public class ApplicationData extends Command {
 
-	private final int elementCode;
+    int identifier;
+    String data;
 
-	ControlElement(int ec) {
-		elementCode = ec;
-	}
+    public ApplicationData(int ec, int eid, int l, DataInput in)
+            throws IOException {
+        super(ec, eid, l, in);
 
-	public static ControlElement getElement(int ec) {
-		if (ec < 0 || ec >= values().length)
-			throw new ArrayIndexOutOfBoundsException(ec);
+        identifier = makeInt();
+        data = makeString();
+    }
 
-		return values()[ec];
-	}
-
+    @Override
 	public String toString() {
-		return name().concat("(").concat(String.valueOf(elementCode)).concat(")");
-	}
+        return "ApplicationData: " + identifier + " " + this.data;
+    }
 
+    public int getIdentifier() {
+        return identifier;
+    }
+
+    public String getData() {
+        return data;
+    }
 }
+
+

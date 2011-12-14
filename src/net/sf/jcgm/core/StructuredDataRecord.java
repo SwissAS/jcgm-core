@@ -36,7 +36,7 @@ import java.util.List;
  * @author  xphc
  * @since Oct 5, 2010
  */
-class StructuredDataRecord {
+public class StructuredDataRecord {
 	enum StructuredDataType {
 		SDR(1),
 		CI(2),

@@ -30,7 +30,7 @@ import java.io.*;
  * @author BBNT Solutions
  * @version $Id$
  */
-class LineType extends DashTypeCommand {
+public class LineType extends DashTypeCommand {
     public LineType(int ec, int eid, int l, DataInput in)
             throws IOException {
         super(ec, eid, l, in);

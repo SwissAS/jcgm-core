@@ -91,6 +91,8 @@ public enum ElementClass {
 			return GraphicalPrimitiveElements.getElement(elementCode);
 		case ATTRIBUTE_ELEMENTS: // 5
 			return AttributeElement.getElement(elementCode);
+		case EXTERNAL_ELEMENTS: // 7
+			return ExternalElements.getElement(elementCode);
 		}
 		return "null";
 	}

@@ -31,7 +31,7 @@ import java.io.*;
  * @author BBNT Solutions
  * @version $Id$
  */
-class CharacterSpacing extends Command {
+public class CharacterSpacing extends Command {
     private double additionalInterCharacterSpace;
 
 	public CharacterSpacing(int ec, int eid, int l, DataInput in)

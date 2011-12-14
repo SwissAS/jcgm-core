@@ -45,7 +45,7 @@ import net.sf.jcgm.core.TextAlignment.VerticalAlignment;
  * @author BBNT Solutions
  * @version $Id$
  */
-class RestrictedText extends TextCommand {
+public class RestrictedText extends TextCommand {
     private final double deltaWidth;
 	private final double deltaHeight;
 	private final RestrictedTextType.Type type;

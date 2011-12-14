@@ -290,8 +290,8 @@
 							<th>Status</th>
 							<th>Remarks</th>
 						</tr>
-						<tr> <td>7</td> <td>1</td> <td>MESSAGE</td>						<td class="unsupported">	X</td> <td></td> </tr>
-						<tr> <td>7</td> <td>2</td> <td>APPLICATION DATA</td>	<td class="unsupported">	X</td> <td></td> </tr>
+						<tr> <td>7</td> <td>1</td> <td>MESSAGE</td>						<td class="supported">	O</td> <td></td> </tr>
+						<tr> <td>7</td> <td>2</td> <td>APPLICATION DATA</td>	<td class="supported">	O</td> <td></td> </tr>
 					</table>
 				</section>
 				<section id="class8">

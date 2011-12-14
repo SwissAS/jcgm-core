@@ -30,7 +30,7 @@ import java.io.*;
  * @author BBNT Solutions
  * @version $Id$
  */
-class TextPath extends Command {
+public class TextPath extends Command {
 	enum Type { RIGHT, LEFT, UP, DOWN }
 	
     private Type path;

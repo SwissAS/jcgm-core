@@ -27,7 +27,7 @@ package net.sf.jcgm.core;
  * @author  Philippe Cadé
  * @since Dec 15, 2009
  */
-enum DelimiterElement {
+public enum DelimiterElement {
 	NO_OP(0),
 	BEGIN_METAFILE(1),
 	END_METAFILE(2),
@@ -58,6 +58,10 @@ enum DelimiterElement {
 	DelimiterElement(int ec) {
 		elementCode = ec;
 	}
+
+    public int getElementCode() {
+        return elementCode;
+    }
 
 	public static DelimiterElement getElement(int ec) {
 		if (ec < 0 || ec >= values().length)

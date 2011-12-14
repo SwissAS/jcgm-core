@@ -27,7 +27,7 @@ package net.sf.jcgm.core;
  * @author  Philippe Cadé
  * @since Dec 15, 2009
  */
-enum PictureDescriptorElement {
+public enum PictureDescriptorElement {
 	UNUSED_0(0),
 	SCALING_MODE(1),
 	COLOUR_SELECTION_MODE(2),

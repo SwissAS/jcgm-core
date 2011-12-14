@@ -34,7 +34,7 @@ import java.io.*;
  * @author BBNT Solutions
  * @version $Id$
  */
-class CircleElement extends Command {
+public class CircleElement extends Command {
 	private Point2D.Double center;
 	private double radius;
 	private Ellipse2D.Double shape;

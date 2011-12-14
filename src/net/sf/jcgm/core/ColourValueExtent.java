@@ -32,7 +32,7 @@ import net.sf.jcgm.core.ColourModel.Model;
  * @author BBNT Solutions
  * @version $Id$
  */
-class ColourValueExtent extends Command {
+public class ColourValueExtent extends Command {
     static private int[] minimumColorValueRGB;
 	static private int[] maximumColorValueRGB;
 	private double firstComponentScale;

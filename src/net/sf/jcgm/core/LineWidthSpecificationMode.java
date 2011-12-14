@@ -30,7 +30,7 @@ import java.io.*;
  * @author BBNT Solutions
  * @version $Id$
  */
-class LineWidthSpecificationMode extends Command {
+public class LineWidthSpecificationMode extends Command {
     static private SpecificationMode mode;
     
     static {

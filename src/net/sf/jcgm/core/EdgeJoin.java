@@ -30,7 +30,7 @@ import java.io.*;
  * @author BBNT Solutions
  * @version $Id$
  */
-class EdgeJoin extends JoinCommand {
+public class EdgeJoin extends JoinCommand {
 	
     public EdgeJoin(int ec, int eid, int l, DataInput in)
             throws IOException {

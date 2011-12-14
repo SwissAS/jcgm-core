@@ -31,7 +31,7 @@ import java.io.IOException;
  * @author BBNT Solutions
  * @version $Id$
  */
-class BeginApplicationStructureBody extends Command {
+public class BeginApplicationStructureBody extends Command {
 	BeginApplicationStructureBody(int ec, int eid, int l, DataInput in)
 	throws IOException {
 		super(ec, eid, l, in);

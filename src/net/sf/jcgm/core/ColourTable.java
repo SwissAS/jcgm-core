@@ -35,7 +35,7 @@ import java.io.IOException;
  * @author BBNT Solutions
  * @version $Id$
  */
-class ColourTable extends Command {
+public class ColourTable extends Command {
     private final int startIndex;
 	private final Color[] colors;
 

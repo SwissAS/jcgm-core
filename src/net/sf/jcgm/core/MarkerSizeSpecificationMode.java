@@ -30,7 +30,7 @@ import java.io.*;
  * @author BBNT Solutions
  * @version $Id$
  */
-class MarkerSizeSpecificationMode extends Command {
+public class MarkerSizeSpecificationMode extends Command {
     static private SpecificationMode mode;
     
     static {

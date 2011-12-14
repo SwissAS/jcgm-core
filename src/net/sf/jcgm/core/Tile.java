@@ -37,7 +37,7 @@ import java.io.IOException;
  * @author  xphc
  * @since Oct 5, 2010
  */
-class Tile extends TileElement {
+public class Tile extends TileElement {
 	Tile(int ec, int eid, int l, DataInput in) throws IOException {
 		super(ec, eid, l, in);
 

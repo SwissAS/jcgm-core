@@ -27,7 +27,7 @@ package net.sf.jcgm.core;
  * @author  Philippe Cadé
  * @since Dec 15, 2009
  */
-enum GraphicalPrimitiveElements {
+public enum GraphicalPrimitiveElements {
 	UNUSED_0(0),
 	POLYLINE(1),
 	DISJOINT_POLYLINE(2),

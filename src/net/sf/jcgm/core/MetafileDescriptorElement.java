@@ -27,7 +27,7 @@ package net.sf.jcgm.core;
  * @author  Philippe Cadé
  * @since Dec 15, 2009
  */
-enum MetafileDescriptorElement {
+public enum MetafileDescriptorElement {
 	UNUSED_0(0),
 	METAFILE_VERSION(1),
 	METAFILE_DESCRIPTION(2),
@@ -66,6 +66,10 @@ enum MetafileDescriptorElement {
 		
 		return values()[ec];
 	}
+
+    public int getElementCode() {
+        return elementCode;
+    }
 	
 	public String toString() {
 		return name().concat("(").concat(String.valueOf(elementCode)).concat(")");

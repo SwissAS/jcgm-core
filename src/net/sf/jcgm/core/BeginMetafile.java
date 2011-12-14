@@ -31,13 +31,13 @@ import java.io.IOException;
  * @author BBNT Solutions
  * @version $Id$
  */
-class BeginMetafile extends Command {
+public class BeginMetafile extends Command {
     private final String fileName;
 
     public BeginMetafile(int ec, int eid, int l, DataInput in)
             throws IOException {
         super(ec, eid, l, in);
-        this.fileName = makeString();
+        this.fileName =  l > 0 ? makeString() : "";
         
         // make sure all the arguments were read
         assert (this.currentArg == this.args.length);

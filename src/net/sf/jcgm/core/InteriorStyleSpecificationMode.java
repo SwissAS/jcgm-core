@@ -30,7 +30,7 @@ import java.io.*;
  * @author BBNT Solutions
  * @version $Id$
  */
-class InteriorStyleSpecificationMode extends Command {
+public class InteriorStyleSpecificationMode extends Command {
 	SpecificationMode mode;
 	
     public InteriorStyleSpecificationMode(int ec, int eid, int l, DataInput in)

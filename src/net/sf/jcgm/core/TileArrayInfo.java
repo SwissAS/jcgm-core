@@ -31,7 +31,7 @@ import java.awt.geom.Point2D.Double;
  * @author xphc (Philippe Cadé)
  * @since Oct 6, 2010
  */
-class TileArrayInfo {
+public class TileArrayInfo {
 	private final Point2D.Double startPosition;
 	private final int nTilesInPathDirection;
 	private final double tileSizeInPathDirection;

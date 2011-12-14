@@ -30,7 +30,7 @@ import java.io.*;
  * @author BBNT Solutions
  * @version $Id$
  */
-class TextAlignment extends Command {
+public class TextAlignment extends Command {
 	enum HorizontalAlignment { NORMAL_HORIZONTAL, LEFT, CENTRE, RIGHT, CONTINOUS_HORIZONTAL }
 	enum VerticalAlignment { NORMAL_VERTICAL, TOP, CAP, HALF, BASE, BOTTOM, CONTINOUS_VERTICAL }
 

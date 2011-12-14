@@ -30,7 +30,7 @@ import java.io.*;
  * @author BBNT Solutions
  * @version $Id$
  */
-class LineCap extends CapCommand {
+public class LineCap extends CapCommand {
 	public LineCap(int ec, int eid, int l, DataInput in)
             throws IOException {
         super(ec, eid, l, in);

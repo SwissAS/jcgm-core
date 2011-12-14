@@ -29,7 +29,7 @@ import java.io.*;
  * @author BBNT Solutions
  * @version $Id$
  */
-class ColourPrecision extends Command {
+public class ColourPrecision extends Command {
     static int precision;
     
     static {

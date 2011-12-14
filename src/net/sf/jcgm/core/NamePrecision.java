@@ -30,7 +30,7 @@ import java.io.IOException;
  * @author xphc (Philippe Cadé)
  * @version $Id: IntegerPrecision.java 3 2009-10-16 08:51:15Z phica $
  */
-class NamePrecision extends Command {
+public class NamePrecision extends Command {
 	private static int precision;
 
 	static {

@@ -58,7 +58,7 @@ package net.sf.jcgm.core;
  * @version $Id$
  * @since May 7, 2009
  */
-class SymbolDecoder {
+public class SymbolDecoder {
 
 	final static char[] map = {
 		'\u0000', //	00	# null

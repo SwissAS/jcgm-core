@@ -31,7 +31,7 @@ import java.io.IOException;
  * @version $Id$
  * @since Jun 12, 2009
  */
-class CharacterSetIndex extends Command {
+public class CharacterSetIndex extends Command {
 
 	private int index;
 

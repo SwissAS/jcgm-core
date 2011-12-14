@@ -25,7 +25,7 @@ package net.sf.jcgm.core;
  * @author xphc (Philippe Cadé)
  * @version $Id$
  */
-enum DashCapIndicator {
+public enum DashCapIndicator {
 	UNSPECIFIED,
 	BUTT,
 	MATCH

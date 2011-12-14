@@ -30,7 +30,7 @@ import java.io.*;
  * @author BBNT Solutions
  * @version $Id$
  */
-class TextFontIndex extends Command {
+public class TextFontIndex extends Command {
 	int fontIndex;
 
     public TextFontIndex(int ec, int eid, int l, DataInput in)

@@ -30,7 +30,7 @@ import java.io.*;
  * @author BBNT Solutions
  * @version $Id$
  */
-class EdgeType extends DashTypeCommand {
+public class EdgeType extends DashTypeCommand {
     public EdgeType(int ec, int eid, int l, DataInput in)
             throws IOException {
         super(ec, eid, l, in);

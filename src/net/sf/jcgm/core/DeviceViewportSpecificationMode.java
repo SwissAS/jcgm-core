@@ -36,7 +36,7 @@ import java.io.IOException;
  * @author  xphc
  * @since Oct 5, 2010
  */
-class DeviceViewportSpecificationMode extends Command {
+public class DeviceViewportSpecificationMode extends Command {
 	enum Mode {
 		FractionOfDrawingSurface,
 		MillimetersWithScaleFactor,

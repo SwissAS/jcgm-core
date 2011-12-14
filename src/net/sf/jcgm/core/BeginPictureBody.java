@@ -30,7 +30,7 @@ import java.io.*;
  * @author BBNT Solutions
  * @version $Id$
  */
-class BeginPictureBody extends Command {
+public class BeginPictureBody extends Command {
     public BeginPictureBody(int ec, int eid, int l, DataInput in)
             throws IOException {
         super(ec, eid, l, in);

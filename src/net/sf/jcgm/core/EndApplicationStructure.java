@@ -9,7 +9,7 @@ import java.io.IOException;
  * @author  xphc
  * @since Oct 12, 2010
  */
-class EndApplicationStructure extends Command {
+public class EndApplicationStructure extends Command {
 
 	EndApplicationStructure(int ec, int eid, int l, DataInput in)
 			throws IOException {

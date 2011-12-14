@@ -37,6 +37,7 @@ import java.util.TreeMap;
 import java.util.zip.GZIPInputStream;
 
 import net.sf.jcgm.core.CGM;
+import net.sf.jcgm.core.Command;
 import net.sf.jcgm.core.ElementClass;
 import net.sf.jcgm.core.ICommandListener;
 import net.sf.jcgm.core.Message;
@@ -55,7 +56,7 @@ import net.sf.jcgm.core.Message;
  * @since Dec 15, 2009
  */
 public class Analyzer implements ICommandListener {
-	
+
 	/**
 	 * Map containing as key: the command class and element code; as value:
 	 * the number of occurrences of this command
@@ -67,13 +68,13 @@ public class Analyzer implements ICommandListener {
 	 * and element code, value: number of occurrences of this command.
 	 */
 	private final Map<CommandHelper, Integer> unsupportedCommands = new TreeMap<CommandHelper, Integer>();
-	
+
 	private PrintWriter messagesFile = null;
-	
+
 	private PrintWriter commandFile = null;
 
 	private final File outputPath;
-	
+
 	/**
 	 * Builds an analyzer
 	 * 
@@ -90,19 +91,19 @@ public class Analyzer implements ICommandListener {
 
 		try {
 			if (this.outputPath != null) {
-				messagesFile = new PrintWriter(new BufferedWriter(
+				this.messagesFile = new PrintWriter(new BufferedWriter(
 						new FileWriter(new File(this.outputPath
 								.getAbsolutePath()
 								+ File.separator + "messages.txt"))));
 
 				if (verbose) {
-					commandFile = new PrintWriter(new BufferedWriter(
+					this.commandFile = new PrintWriter(new BufferedWriter(
 							new FileWriter(new File(this.outputPath
 									.getAbsolutePath()
 									+ File.separator + "commands.txt"))));
 				}
 			}
-			
+
 			if (cgmFilesPath.isDirectory()) {
 				File[] cgmFiles = cgmFilesPath.listFiles(new FilenameFilter() {
 					@Override
@@ -117,22 +118,22 @@ public class Analyzer implements ICommandListener {
 				int i = 0;
 				int progress = 0;
 				long startTime = System.currentTimeMillis();
-				
+
 				for (File cgmFile : cgmFiles) {
 					System.out.print(cgmFile.getName());
 					System.out.print(", ");
 					analyze(cgmFile);
-					
+
 					int currentProgress = i * 100 / count;
 					if (currentProgress != progress) {
 						progress = currentProgress;
-						
+
 						long elapsedTime = System.currentTimeMillis() - startTime;
 						long totalTime = currentProgress != 0 ? elapsedTime * 100 / currentProgress : 0;
 						long remainingTime = totalTime - elapsedTime;
 						long remainingMinutes = (remainingTime / 1000) / 60;
 						long remainingSeconds = (remainingTime / 1000) % 60;
-						
+
 						StringBuilder sb = new StringBuilder();
 						sb.append('\n');
 						sb.append(progress).append("% ");
@@ -147,19 +148,19 @@ public class Analyzer implements ICommandListener {
 
 			saveResults();
 
-			if (messagesFile != null) {
-				messagesFile.close();
+			if (this.messagesFile != null) {
+				this.messagesFile.close();
 			}
-			
-			if (commandFile != null) {
-				commandFile.close();
+
+			if (this.commandFile != null) {
+				this.commandFile.close();
 			}
 		}
 		catch (IOException e) {
 			e.printStackTrace();
 		}
 	}
-	
+
 	/**
 	 * @param cgmFile
 	 */
@@ -167,7 +168,7 @@ public class Analyzer implements ICommandListener {
 		try {
 			CGM cgm = new CGM();
 			cgm.addCommandListener(this);
-			
+
 			InputStream inputStream;
 			if (cgmFile.getName().endsWith(".cgm.gz") || cgmFile.getName().endsWith(".cgmz")) {
 				inputStream = new GZIPInputStream(new FileInputStream(cgmFile));
@@ -175,30 +176,30 @@ public class Analyzer implements ICommandListener {
 			else {
 				inputStream = new FileInputStream(cgmFile);
 			}
-			
-	        DataInputStream in = new DataInputStream(new BufferedInputStream(inputStream));
-	        cgm.read(in);
-	        in.close();
 
-	        if (messagesFile != null) {
-				messagesFile.println(cgmFile.getName());
+			DataInputStream in = new DataInputStream(new BufferedInputStream(inputStream));
+			cgm.read(in);
+			in.close();
+
+			if (this.messagesFile != null) {
+				this.messagesFile.println(cgmFile.getName());
 
 				for (Message message : cgm.getMessages()) {
-					messagesFile.print('\t');
-					messagesFile.println(String.valueOf(message));
+					this.messagesFile.print('\t');
+					this.messagesFile.println(String.valueOf(message));
 
 					CommandHelper commandHelper = new CommandHelper(message
 							.getElementClass(), message.getElementCode());
-					Integer count = unsupportedCommands.get(commandHelper);
+					Integer count = this.unsupportedCommands.get(commandHelper);
 					if (count == null) {
-						unsupportedCommands.put(commandHelper, Integer
+						this.unsupportedCommands.put(commandHelper, Integer
 								.valueOf(1));
 					} else {
-						unsupportedCommands.put(commandHelper, Integer
+						this.unsupportedCommands.put(commandHelper, Integer
 								.valueOf(count + 1));
 					}
 				}
-	        }
+			}
 		}
 		catch (IOException e) {
 			e.printStackTrace();
@@ -212,21 +213,21 @@ public class Analyzer implements ICommandListener {
 		FileWriter countFile = null;
 		FileWriter unsupportedCountFile = null;
 		FileWriter detailWriter = null;
-		
+
 		try {
 			// output the command count
 			countFile = new FileWriter(new
 					File(this.outputPath.getAbsolutePath()+File.separator+"count.csv"));
-		
-			Set<CommandHelper> helpers = commands.keySet();
+
+			Set<CommandHelper> helpers = this.commands.keySet();
 			saveHelpers(countFile, helpers);
-			
+
 			// output the unsupported command count
 			unsupportedCountFile = new FileWriter(new File(this.outputPath
 					.getAbsolutePath()
 					+ File.separator + "unsupported-count.csv"));
-			
-			helpers = unsupportedCommands.keySet();
+
+			helpers = this.unsupportedCommands.keySet();
 			saveHelpers(unsupportedCountFile, helpers);
 		}
 		catch (IOException e) {
@@ -237,11 +238,11 @@ public class Analyzer implements ICommandListener {
 				if (countFile != null) {
 					countFile.close();
 				}
-				
+
 				if (unsupportedCountFile != null) {
 					unsupportedCountFile.close();
 				}
-				
+
 				if (detailWriter != null) {
 					detailWriter.close();
 				}
@@ -255,7 +256,7 @@ public class Analyzer implements ICommandListener {
 	private void saveHelpers(FileWriter fileWriter, Set<CommandHelper> helpers)
 			throws IOException {
 		for (CommandHelper helper : helpers) {
-			Integer count = commands.get(helper);
+			Integer count = this.commands.get(helper);
 			fileWriter.write(String.valueOf(ElementClass.getElementClass(helper.elementClass)));
 			fileWriter.write(",");
 			fileWriter.write(String.valueOf(ElementClass.getElement(helper.elementClass, helper.elementId)));
@@ -264,7 +265,7 @@ public class Analyzer implements ICommandListener {
 			fileWriter.write('\n');
 		}
 	}
-	
+
 	/**
 	 * Prints usage information and exits 
 	 */
@@ -272,11 +273,11 @@ public class Analyzer implements ICommandListener {
 		System.out.println("java Analyzer path-to-cgm-files [path-for-result-files] -v");
 		System.exit(1);
 	}
-	
+
 	private class CommandHelper implements Comparable<CommandHelper> {
 		final int elementClass;
 		final int elementId;
-		
+
 		CommandHelper(int elementClass, int elementId) {
 			this.elementClass = elementClass;
 			this.elementId = elementId;
@@ -284,35 +285,35 @@ public class Analyzer implements ICommandListener {
 
 		@Override
 		public int compareTo(CommandHelper o) {
-			if (elementClass < o.elementClass)
+			if (this.elementClass < o.elementClass)
 				return -1;
-			
-			if (elementClass > o.elementClass)
+
+			if (this.elementClass > o.elementClass)
 				return 1;
-			
-			if (elementId < o.elementId) 
+
+			if (this.elementId < o.elementId) 
 				return -1;
-			
-			if (elementId > o.elementId)
+
+			if (this.elementId > o.elementId)
 				return 1;
-			
+
 			return 0;
 		}
 	}
 
 	@Override
-	public void commandProcessed(int elementClass, int elementId, String commandText) {
-		CommandHelper helper = new CommandHelper(elementClass, elementId);
-		Integer count = commands.get(helper);
+	public void commandProcessed(Command command) {
+		CommandHelper helper = new CommandHelper(command.getElementClass(), command.getElementCode());
+		Integer count = this.commands.get(helper);
 		if (count == null) {
-			commands.put(helper, Integer.valueOf(1));
+			this.commands.put(helper, Integer.valueOf(1));
 		}
 		else {
-			commands.put(helper, Integer.valueOf(count+1));
+			this.commands.put(helper, Integer.valueOf(count+1));
 		}
-		
-		if (commandFile != null) {
-			commandFile.println(commandText);
+
+		if (this.commandFile != null) {
+			this.commandFile.println(command.toString());
 		}
 	}
 
@@ -334,16 +335,16 @@ public class Analyzer implements ICommandListener {
 		else {
 			outputDir = null;
 		}
-		
+
 		boolean verbose = false;
 		if (args.length >= 3 && "-v".equals(args[2])) {
 			verbose = true;
 		}
 
 		long start = System.currentTimeMillis();
-		
+
 		new Analyzer(cgmDir, outputDir, verbose);
-		
+
 		long elapsed = System.currentTimeMillis() - start;
 		System.out.println("\nAnalyzing took "+elapsed+" ms.");
 	}

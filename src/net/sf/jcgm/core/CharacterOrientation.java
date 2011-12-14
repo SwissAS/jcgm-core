@@ -31,7 +31,7 @@ import java.io.*;
  * @author BBNT Solutions
  * @version $Id$
  */
-class CharacterOrientation extends Command {
+public class CharacterOrientation extends Command {
     private double xUp;
 	private double yUp;
 	private double xBase;

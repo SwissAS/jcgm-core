@@ -40,7 +40,7 @@ import java.io.IOException;
  * @author Philippe Cadé
  * @version $Id$
  */
-abstract class TextCommand extends Command {
+public abstract class TextCommand extends Command {
 
 	/** The string to display */
 	protected String string;
@@ -174,4 +174,7 @@ abstract class TextCommand extends Command {
 		}
 	}
 
+    public String getString() {
+        return string;
+    }
 }

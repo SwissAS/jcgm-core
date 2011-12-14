@@ -29,7 +29,7 @@ import java.io.*;
  * @author BBNT Solutions
  * @version $Id$
  */
-class ColourModel extends Command {
+public class ColourModel extends Command {
 	enum Model { RGB, CIELAB, CIELUV, CMYK, RGB_RELATED }
 	private static Model model;
 	

@@ -31,7 +31,7 @@ import java.io.IOException;
  * @author BBNT Solutions
  * @version $Id$
  */
-class RealPrecision extends Command {
+public class RealPrecision extends Command {
 	enum Precision { FLOATING_32, FLOATING_64, FIXED_32, FIXED_64 }
 	static private Precision precision;
 	/**

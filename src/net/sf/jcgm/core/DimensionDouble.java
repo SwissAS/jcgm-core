@@ -30,7 +30,7 @@ import java.awt.geom.Dimension2D;
  * @author Philippe Cadé
  * @version $Id$
  */
-class DimensionDouble extends Dimension2D {
+public class DimensionDouble extends Dimension2D {
 
 	private double width;
 	private double height;

@@ -36,7 +36,7 @@ import java.io.IOException;
  * @author BBNT Solutions
  * @version $Id$
  */
-class Text extends TextCommand {
+public class Text extends TextCommand {
 	public Text(int ec, int eid, int l, DataInput in) throws IOException {
 		super(ec, eid, l, in);
 		this.position = makePoint();

@@ -32,7 +32,7 @@ import java.io.*;
  * @author BBNT Solutions
  * @version $Id$
  */
-class CircularArcCentreClose extends CircularArcCentre {
+public class CircularArcCentreClose extends CircularArcCentre {
 	private int type;
 	
     public CircularArcCentreClose(int ec, int eid, int l, DataInput in)

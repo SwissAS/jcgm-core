@@ -31,7 +31,7 @@ import java.io.*;
  * @author BBNT Solutions
  * @version $Id$
  */
-class VDCExtent extends Command {
+public class VDCExtent extends Command {
     Point2D.Double lowerLeftCorner;
 	Point2D.Double upperRightCorner;
 

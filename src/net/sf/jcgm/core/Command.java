@@ -21,8 +21,12 @@
  */
 package net.sf.jcgm.core;
 
-import java.awt.Color;
-import java.awt.Shape;
+import net.sf.jcgm.core.ColourModel.Model;
+import net.sf.jcgm.core.RealPrecision.Precision;
+import net.sf.jcgm.core.StructuredDataRecord.StructuredDataType;
+import net.sf.jcgm.core.VDCRealPrecision.Type;
+
+import java.awt.*;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.PathIterator;
 import java.awt.geom.Point2D;
@@ -33,11 +37,6 @@ import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-
-import net.sf.jcgm.core.ColourModel.Model;
-import net.sf.jcgm.core.RealPrecision.Precision;
-import net.sf.jcgm.core.StructuredDataRecord.StructuredDataType;
-import net.sf.jcgm.core.VDCRealPrecision.Type;
 
 /**
  * Base class for all the CGM commands.
@@ -51,7 +50,7 @@ import net.sf.jcgm.core.VDCRealPrecision.Type;
  * @author BBNT Solutions
  * @version $Id$
  */
-class Command implements Cloneable {
+public class Command implements Cloneable {
 	/** All the command parameters */
 	protected int args[];
 
@@ -84,7 +83,6 @@ class Command implements Cloneable {
 			if (l % 2 == 1) {
 				try {
 					int skip = in.readUnsignedByte();
-					assert(skip == 0): "skipping data";
 				}
 				catch (EOFException e) {
 					// we've reached the end of the data input. Since we're only
@@ -803,8 +801,7 @@ class Command implements Cloneable {
 			return new Escape(ec, eid, l, in);
 
 		case EXTERNAL_ELEMENTS: // 7
-			unsupported(ec, eid);
-			return new Command(ec, eid, l, in);
+			return readExternalElements(in, ec, eid, l);
 
 		case SEGMENT_ELEMENTS: // 8
 			unsupported(ec, eid);
@@ -1304,6 +1301,20 @@ class Command implements Cloneable {
 		case SYMBOL_COLOUR: // 49
 		case SYMBOL_SIZE: // 50
 		case SYMBOL_ORIENTATION: // 51
+		default:
+			unsupported(ec, eid);
+			return new Command(ec, eid, l, in);
+		}
+	}
+
+	// Class: 7
+	private static Command readExternalElements(DataInput in, int ec, int eid, int l) throws IOException {
+		switch (ExternalElements.getElement(eid)) {
+		case MESSAGE: // 1
+			return new MessageCommand(ec, eid, l, in);
+
+		case APPLICATION_DATA: // 2
+			return new ApplicationData(ec, eid, l, in);
 		default:
 			unsupported(ec, eid);
 			return new Command(ec, eid, l, in);
