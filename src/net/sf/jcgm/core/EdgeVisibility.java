@@ -21,7 +21,8 @@
  */
 package net.sf.jcgm.core;
 
-import java.io.*;
+import java.io.DataInput;
+import java.io.IOException;
 
 
 /**
@@ -31,23 +32,26 @@ import java.io.*;
  * @version $Id$
  */
 public class EdgeVisibility extends Command {
-    boolean Visibel;
+	boolean isVisible;
 
-    public EdgeVisibility(int ec, int eid, int l, DataInput in)
-            throws IOException {
-        super(ec, eid, l, in);
-        this.Visibel = (makeInt() != 0);
-    }
+	public EdgeVisibility(int ec, int eid, int l, DataInput in)
+			throws IOException {
+		super(ec, eid, l, in);
+		this.isVisible = (makeEnum() != 0);
 
-    @Override
+		// make sure all the arguments were read
+		assert (this.currentArg == this.args.length);
+	}
+
+	@Override
 	public String toString() {
-        return "EdgeVisibility " + (this.Visibel ? "On" : "Off");
-    }
+		return "EdgeVisibility " + (this.isVisible ? "On" : "Off");
+	}
 
-    @Override
+	@Override
 	public void paint(CGMDisplay d) {
-        d.setEdge(this.Visibel);
-    }
+		d.setEdge(this.isVisible);
+	}
 }
 
 /*
