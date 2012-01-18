@@ -15,6 +15,15 @@
 					Changes in the latest development version:
 				</p>
 				<ul>
+					<li></li>
+				</ul>
+			</section>
+			<section id="core-0.2.0">
+				<title>Version 0.2.0</title>
+				<p>
+					Changes in the core library:
+				</p>
+				<ul>
 					<li>added another split method with an extractor that accepts input streams</li>
 					<li>added CgmException class</li>
 					<li>fixed an issue with background colors</li>
@@ -27,6 +36,8 @@
 						APPLICATION DATA and MESSAGE commands; made command
 						classes public</li>
 					<li>only clear the view once for multiple picture images (workaround only)</li>
+					<li>corrected a problem with font sizes on images with small
+					extents</li>
 				</ul>
 			</section>
 			<section id="core-0.1.1">

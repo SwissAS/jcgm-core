@@ -36,91 +36,91 @@ import java.util.Map;
  */
 public class FontList extends Command {
 	String fontNames[];
-    FontWrapper[] fonts;
-    
-    static Map<String, FontWrapper> fontMapping;
-    
-    final static int DEFAULT_FONT_SIZE = 32;
-    
-    static {
-    	fontMapping = new HashMap<String, FontWrapper>();
-    	fontMapping.put("times-roman",				new FontWrapper(new Font(Font.SERIF, Font.PLAIN, DEFAULT_FONT_SIZE), false));
-    	fontMapping.put("times-bold",				new FontWrapper(new Font(Font.SERIF, Font.BOLD, DEFAULT_FONT_SIZE), false));
-    	fontMapping.put("times-italic",				new FontWrapper(new Font(Font.SERIF, Font.ITALIC, DEFAULT_FONT_SIZE), false));
-    	fontMapping.put("times-bolditalic",			new FontWrapper(new Font(Font.SERIF, Font.BOLD | Font.ITALIC, DEFAULT_FONT_SIZE), false));
-    	fontMapping.put("times-bold-italic",		new FontWrapper(new Font(Font.SERIF, Font.BOLD | Font.ITALIC, DEFAULT_FONT_SIZE), false));
+	FontWrapper[] fonts;
 
-    	fontMapping.put("helvetica",				new FontWrapper(new Font(Font.SANS_SERIF, Font.PLAIN, DEFAULT_FONT_SIZE), false));
-    	fontMapping.put("helvetica-bold",			new FontWrapper(new Font(Font.SANS_SERIF, Font.BOLD, DEFAULT_FONT_SIZE), false));
-    	fontMapping.put("helvetica-oblique",		new FontWrapper(new Font(Font.SANS_SERIF, Font.ITALIC, DEFAULT_FONT_SIZE), false));
-    	fontMapping.put("helvetica-boldoblique",	new FontWrapper(new Font(Font.SANS_SERIF, Font.BOLD | Font.ITALIC, DEFAULT_FONT_SIZE), false));
-    	fontMapping.put("helvetica-bold-oblique",	new FontWrapper(new Font(Font.SANS_SERIF, Font.BOLD | Font.ITALIC, DEFAULT_FONT_SIZE), false));
+	static Map<String, FontWrapper> fontMapping;
 
-    	fontMapping.put("courier",					new FontWrapper(new Font(Font.MONOSPACED, Font.PLAIN, DEFAULT_FONT_SIZE), false));
-    	fontMapping.put("courier-bold",				new FontWrapper(new Font(Font.MONOSPACED, Font.BOLD, DEFAULT_FONT_SIZE), false));
-    	fontMapping.put("courier-italic",			new FontWrapper(new Font(Font.MONOSPACED, Font.ITALIC, DEFAULT_FONT_SIZE), false));
-    	fontMapping.put("courier-oblique",			new FontWrapper(new Font(Font.MONOSPACED, Font.ITALIC, DEFAULT_FONT_SIZE), false));
-    	fontMapping.put("courier-bolditalic",		new FontWrapper(new Font(Font.MONOSPACED, Font.BOLD | Font.ITALIC, DEFAULT_FONT_SIZE), false));
-    	fontMapping.put("courier-boldoblique",		new FontWrapper(new Font(Font.MONOSPACED, Font.BOLD | Font.ITALIC, DEFAULT_FONT_SIZE), false));
-    	fontMapping.put("courier-bold-italic",		new FontWrapper(new Font(Font.MONOSPACED, Font.BOLD | Font.ITALIC, DEFAULT_FONT_SIZE), false));
-    	fontMapping.put("courier-bold-oblique",		new FontWrapper(new Font(Font.MONOSPACED, Font.BOLD | Font.ITALIC, DEFAULT_FONT_SIZE), false));
+	final static int DEFAULT_FONT_SIZE = 32;
 
-    	// this has to be a font that is able to display all characters, typically a unicode font
-    	fontMapping.put("symbol",					new FontWrapper(new Font(Font.SERIF, Font.PLAIN, DEFAULT_FONT_SIZE), true));
-     }
+	static {
+		fontMapping = new HashMap<String, FontWrapper>();
+		fontMapping.put("times-roman",				new FontWrapper(new Font(Font.SERIF, Font.PLAIN, DEFAULT_FONT_SIZE), false));
+		fontMapping.put("times-bold",				new FontWrapper(new Font(Font.SERIF, Font.BOLD, DEFAULT_FONT_SIZE), false));
+		fontMapping.put("times-italic",				new FontWrapper(new Font(Font.SERIF, Font.ITALIC, DEFAULT_FONT_SIZE), false));
+		fontMapping.put("times-bolditalic",			new FontWrapper(new Font(Font.SERIF, Font.BOLD | Font.ITALIC, DEFAULT_FONT_SIZE), false));
+		fontMapping.put("times-bold-italic",		new FontWrapper(new Font(Font.SERIF, Font.BOLD | Font.ITALIC, DEFAULT_FONT_SIZE), false));
 
-    public FontList(int ec, int eid, int l, DataInput in)
-            throws IOException {
-    	super(ec, eid, l, in);
-        int count = 0, i = 0;
-        while (i < this.args.length) {
-            count++;
-            i += this.args[i] + 1;
-        }
-        this.fontNames = new String[count];
-        count = 0;
-        i = 0;
-        while (i < this.args.length) {
-            char a[] = new char[this.args[i]];
-            for (int j = 0; j < this.args[i]; j++)
-                a[j] = (char) this.args[i + j + 1];
-            this.fontNames[count] = new String(a);
-            count++;
-            i += this.args[i] + 1;
-        }
-        
-        this.fonts = new FontWrapper[this.fontNames.length];
-        i = 0;
-        for (String fontName: this.fontNames) {
-    		FontWrapper mappedFont = fontMapping.get(normalizeFontName(fontName));
-    		if (mappedFont != null) {
-    			this.fonts[i++] = mappedFont;
-    		}
-    		else {
-            	Font decodedFont = Font.decode(fontName);
-            	// XXX: assume non symbolic encoding, is that right?
-            	this.fonts[i++] = new FontWrapper(decodedFont, false);
-    		}
-        }
-    }
-    
-    private String normalizeFontName(String fontName) {
-    	return fontName.toLowerCase().replace('_', '-');
-    }
-    
+		fontMapping.put("helvetica",				new FontWrapper(new Font(Font.SANS_SERIF, Font.PLAIN, DEFAULT_FONT_SIZE), false));
+		fontMapping.put("helvetica-bold",			new FontWrapper(new Font(Font.SANS_SERIF, Font.BOLD, DEFAULT_FONT_SIZE), false));
+		fontMapping.put("helvetica-oblique",		new FontWrapper(new Font(Font.SANS_SERIF, Font.ITALIC, DEFAULT_FONT_SIZE), false));
+		fontMapping.put("helvetica-boldoblique",	new FontWrapper(new Font(Font.SANS_SERIF, Font.BOLD | Font.ITALIC, DEFAULT_FONT_SIZE), false));
+		fontMapping.put("helvetica-bold-oblique",	new FontWrapper(new Font(Font.SANS_SERIF, Font.BOLD | Font.ITALIC, DEFAULT_FONT_SIZE), false));
+
+		fontMapping.put("courier",					new FontWrapper(new Font(Font.MONOSPACED, Font.PLAIN, DEFAULT_FONT_SIZE), false));
+		fontMapping.put("courier-bold",				new FontWrapper(new Font(Font.MONOSPACED, Font.BOLD, DEFAULT_FONT_SIZE), false));
+		fontMapping.put("courier-italic",			new FontWrapper(new Font(Font.MONOSPACED, Font.ITALIC, DEFAULT_FONT_SIZE), false));
+		fontMapping.put("courier-oblique",			new FontWrapper(new Font(Font.MONOSPACED, Font.ITALIC, DEFAULT_FONT_SIZE), false));
+		fontMapping.put("courier-bolditalic",		new FontWrapper(new Font(Font.MONOSPACED, Font.BOLD | Font.ITALIC, DEFAULT_FONT_SIZE), false));
+		fontMapping.put("courier-boldoblique",		new FontWrapper(new Font(Font.MONOSPACED, Font.BOLD | Font.ITALIC, DEFAULT_FONT_SIZE), false));
+		fontMapping.put("courier-bold-italic",		new FontWrapper(new Font(Font.MONOSPACED, Font.BOLD | Font.ITALIC, DEFAULT_FONT_SIZE), false));
+		fontMapping.put("courier-bold-oblique",		new FontWrapper(new Font(Font.MONOSPACED, Font.BOLD | Font.ITALIC, DEFAULT_FONT_SIZE), false));
+
+		// this has to be a font that is able to display all characters, typically a unicode font
+		fontMapping.put("symbol",					new FontWrapper(new Font(Font.SERIF, Font.PLAIN, DEFAULT_FONT_SIZE), true));
+	}
+
+	public FontList(int ec, int eid, int l, DataInput in)
+			throws IOException {
+		super(ec, eid, l, in);
+		int count = 0, i = 0;
+		while (i < this.args.length) {
+			count++;
+			i += this.args[i] + 1;
+		}
+		this.fontNames = new String[count];
+		count = 0;
+		i = 0;
+		while (i < this.args.length) {
+			char a[] = new char[this.args[i]];
+			for (int j = 0; j < this.args[i]; j++)
+				a[j] = (char) this.args[i + j + 1];
+			this.fontNames[count] = new String(a);
+			count++;
+			i += this.args[i] + 1;
+		}
+
+		this.fonts = new FontWrapper[this.fontNames.length];
+		i = 0;
+		for (String fontName: this.fontNames) {
+			FontWrapper mappedFont = fontMapping.get(normalizeFontName(fontName));
+			if (mappedFont != null) {
+				this.fonts[i++] = mappedFont;
+			}
+			else {
+				Font decodedFont = Font.decode(fontName);
+				// XXX: assume non symbolic encoding, is that right?
+				this.fonts[i++] = new FontWrapper(decodedFont.deriveFont(Float.valueOf(DEFAULT_FONT_SIZE)), false);
+			}
+		}
+	}
+
+	private String normalizeFontName(String fontName) {
+		return fontName.toLowerCase().replace('_', '-');
+	}
+
 	@Override
 	public void paint(CGMDisplay d) {
 		d.setFonts(this.fonts);
 	}
 
-    @Override
+	@Override
 	public String toString() {
-        String s = "FontList ";
-        for (int i = 0; i < this.fontNames.length - 1; i++)
-            s = s + this.fontNames[i] + ", ";
-        s = s + this.fontNames[this.fontNames.length - 1];
-        return s;
-    }
+		String s = "FontList ";
+		for (int i = 0; i < this.fontNames.length - 1; i++)
+			s = s + this.fontNames[i] + ", ";
+		s = s + this.fontNames[this.fontNames.length - 1];
+		return s;
+	}
 }
 
 /*

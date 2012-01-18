@@ -25,7 +25,6 @@ import java.awt.Font;
 import java.awt.FontMetrics;
 import java.awt.Graphics2D;
 import java.awt.GraphicsEnvironment;
-import java.awt.Shape;
 import java.awt.Toolkit;
 import java.awt.font.FontRenderContext;
 import java.awt.font.GlyphVector;
@@ -46,211 +45,209 @@ import net.sf.jcgm.core.TextAlignment.VerticalAlignment;
  * @version $Id$
  */
 public class RestrictedText extends TextCommand {
-    private final double deltaWidth;
+	private final double deltaWidth;
 	private final double deltaHeight;
 	private final RestrictedTextType.Type type;
 
-	private Shape shape;
+	public RestrictedText(int ec, int eid, int l, DataInput in)
+			throws IOException {
+		super(ec, eid, l, in);
 
-    public RestrictedText(int ec, int eid, int l, DataInput in)
-            throws IOException {
-        super(ec, eid, l, in);
+		this.deltaWidth = makeVdc();
+		this.deltaHeight = makeVdc();
+		this.position = makePoint();
 
-        this.deltaWidth = makeVdc();
-        this.deltaHeight = makeVdc();
-        this.position = makePoint();
-        
-        int finalNotFinal = makeEnum();
-        
-        this.string = makeString();
-        
-        this.type = RestrictedTextType.getType();
+		/* int finalNotFinal = */ makeEnum();
 
-        // make sure all the arguments were read
-        assert (this.currentArg == this.args.length);
-    }
+		this.string = makeString();
 
-    @Override
+		this.type = RestrictedTextType.getType();
+
+		// make sure all the arguments were read
+		assert (this.currentArg == this.args.length);
+	}
+
+	@Override
 	public String toString() {
-        return "RestrictedText \"" + this.string + "\" deltaWidth=" + this.deltaWidth +
-        " deltaHeight=" + this.deltaHeight + " textPosition.x=" + this.position.x + 
-        " textPosition.y=" + this.position.y;
-        
-    }
+		return "RestrictedText \"" + this.string + "\" deltaWidth=" + this.deltaWidth +
+				" deltaHeight=" + this.deltaHeight + " textPosition.x=" + this.position.x + 
+				" textPosition.y=" + this.position.y;
+
+	}
 
 	@Override
 	protected Point2D.Double getTextOffset(CGMDisplay d) {
-        // the location of the bounding box depends on the alignment and the text path
+		// the location of the bounding box depends on the alignment and the text path
 		TextPath.Type textPath = d.getTextPath();
-		
+
 		if (TextPath.Type.UP.equals(textPath)) {
-	        double xPos = 0;
-	        HorizontalAlignment horizontalAlignment = d.getHorizontalTextAlignment();
-	        if (HorizontalAlignment.NORMAL_HORIZONTAL.equals(horizontalAlignment)) {
-	        	xPos = -this.deltaWidth / 2;
-	        }
-	        else if (HorizontalAlignment.LEFT.equals(horizontalAlignment)) {
-	        	xPos = 0;
-	        }
-	        else if (HorizontalAlignment.CENTRE.equals(horizontalAlignment)) {
-	        	xPos = -this.deltaWidth/2;
-	        }
-	        else if (HorizontalAlignment.RIGHT.equals(horizontalAlignment)) {
-	        	xPos = -this.deltaWidth;
-	        }
-	        else if (HorizontalAlignment.CONTINOUS_HORIZONTAL.equals(horizontalAlignment)) {
-	        	xPos = -this.deltaWidth * d.getContinuousHorizontalAlignment();
-	        }
-	        
-	        double yPos = 0;
-	        VerticalAlignment verticalAlignment = d.getVerticalTextAlignment();
-	        if (VerticalAlignment.NORMAL_VERTICAL.equals(verticalAlignment) ||
-	        		VerticalAlignment.BASE.equals(verticalAlignment)) {
-	        	yPos = 0;
-	        }
-	        else if (VerticalAlignment.TOP.equals(verticalAlignment)) {
-	        	yPos = this.deltaHeight;
-	        }
-	        else if (VerticalAlignment.CAP.equals(verticalAlignment)) {
-	        	yPos = this.deltaHeight;
-	        }
-	        else if (VerticalAlignment.HALF.equals(verticalAlignment)) {
-	        	yPos = this.deltaHeight/2;
-	        }
-	        else if (VerticalAlignment.CONTINOUS_VERTICAL.equals(verticalAlignment)) {
-	        	yPos = this.deltaHeight * d.getContinuousVerticalAlignment();
-	        }
-	        return new Point2D.Double(xPos, yPos);
+			double xPos = 0;
+			HorizontalAlignment horizontalAlignment = d.getHorizontalTextAlignment();
+			if (HorizontalAlignment.NORMAL_HORIZONTAL.equals(horizontalAlignment)) {
+				xPos = -this.deltaWidth / 2;
+			}
+			else if (HorizontalAlignment.LEFT.equals(horizontalAlignment)) {
+				xPos = 0;
+			}
+			else if (HorizontalAlignment.CENTRE.equals(horizontalAlignment)) {
+				xPos = -this.deltaWidth/2;
+			}
+			else if (HorizontalAlignment.RIGHT.equals(horizontalAlignment)) {
+				xPos = -this.deltaWidth;
+			}
+			else if (HorizontalAlignment.CONTINOUS_HORIZONTAL.equals(horizontalAlignment)) {
+				xPos = -this.deltaWidth * d.getContinuousHorizontalAlignment();
+			}
+
+			double yPos = 0;
+			VerticalAlignment verticalAlignment = d.getVerticalTextAlignment();
+			if (VerticalAlignment.NORMAL_VERTICAL.equals(verticalAlignment) ||
+					VerticalAlignment.BASE.equals(verticalAlignment)) {
+				yPos = 0;
+			}
+			else if (VerticalAlignment.TOP.equals(verticalAlignment)) {
+				yPos = this.deltaHeight;
+			}
+			else if (VerticalAlignment.CAP.equals(verticalAlignment)) {
+				yPos = this.deltaHeight;
+			}
+			else if (VerticalAlignment.HALF.equals(verticalAlignment)) {
+				yPos = this.deltaHeight/2;
+			}
+			else if (VerticalAlignment.CONTINOUS_VERTICAL.equals(verticalAlignment)) {
+				yPos = this.deltaHeight * d.getContinuousVerticalAlignment();
+			}
+			return new Point2D.Double(xPos, yPos);
 		}
-		
+
 		if (TextPath.Type.DOWN.equals(textPath)) {
-	        double xPos = 0;
-	        HorizontalAlignment horizontalAlignment = d.getHorizontalTextAlignment();
-	        if (HorizontalAlignment.NORMAL_HORIZONTAL.equals(horizontalAlignment)) {
-	        	xPos = -this.deltaWidth / 2;
-	        }
-	        else if (HorizontalAlignment.LEFT.equals(horizontalAlignment)) {
-	        	xPos = 0;
-	        }
-	        else if (HorizontalAlignment.CENTRE.equals(horizontalAlignment)) {
-	        	xPos = -this.deltaWidth/2;
-	        }
-	        else if (HorizontalAlignment.RIGHT.equals(horizontalAlignment)) {
-	        	xPos = -this.deltaWidth;
-	        }
-	        else if (HorizontalAlignment.CONTINOUS_HORIZONTAL.equals(horizontalAlignment)) {
-	        	xPos = -this.deltaWidth * d.getContinuousHorizontalAlignment();
-	        }
-	        
-	        double yPos = 0;
-	        VerticalAlignment verticalAlignment = d.getVerticalTextAlignment();
-	        if (VerticalAlignment.NORMAL_VERTICAL.equals(verticalAlignment)) {
-	        	yPos = this.deltaHeight;
-	        }
-	        else if (VerticalAlignment.BASE.equals(verticalAlignment)) {
-	        	yPos = 0;
-	        }
-	        else if (VerticalAlignment.TOP.equals(verticalAlignment)) {
-	        	yPos = this.deltaHeight;
-	        }
-	        else if (VerticalAlignment.CAP.equals(verticalAlignment)) {
-	        	yPos = this.deltaHeight;
-	        }
-	        else if (VerticalAlignment.HALF.equals(verticalAlignment)) {
-	        	yPos = this.deltaHeight/2;
-	        }
-	        else if (VerticalAlignment.CONTINOUS_VERTICAL.equals(verticalAlignment)) {
-	        	yPos = this.deltaHeight * d.getContinuousVerticalAlignment();
-	        }
-	        return new Point2D.Double(xPos, yPos);
+			double xPos = 0;
+			HorizontalAlignment horizontalAlignment = d.getHorizontalTextAlignment();
+			if (HorizontalAlignment.NORMAL_HORIZONTAL.equals(horizontalAlignment)) {
+				xPos = -this.deltaWidth / 2;
+			}
+			else if (HorizontalAlignment.LEFT.equals(horizontalAlignment)) {
+				xPos = 0;
+			}
+			else if (HorizontalAlignment.CENTRE.equals(horizontalAlignment)) {
+				xPos = -this.deltaWidth/2;
+			}
+			else if (HorizontalAlignment.RIGHT.equals(horizontalAlignment)) {
+				xPos = -this.deltaWidth;
+			}
+			else if (HorizontalAlignment.CONTINOUS_HORIZONTAL.equals(horizontalAlignment)) {
+				xPos = -this.deltaWidth * d.getContinuousHorizontalAlignment();
+			}
+
+			double yPos = 0;
+			VerticalAlignment verticalAlignment = d.getVerticalTextAlignment();
+			if (VerticalAlignment.NORMAL_VERTICAL.equals(verticalAlignment)) {
+				yPos = this.deltaHeight;
+			}
+			else if (VerticalAlignment.BASE.equals(verticalAlignment)) {
+				yPos = 0;
+			}
+			else if (VerticalAlignment.TOP.equals(verticalAlignment)) {
+				yPos = this.deltaHeight;
+			}
+			else if (VerticalAlignment.CAP.equals(verticalAlignment)) {
+				yPos = this.deltaHeight;
+			}
+			else if (VerticalAlignment.HALF.equals(verticalAlignment)) {
+				yPos = this.deltaHeight/2;
+			}
+			else if (VerticalAlignment.CONTINOUS_VERTICAL.equals(verticalAlignment)) {
+				yPos = this.deltaHeight * d.getContinuousVerticalAlignment();
+			}
+			return new Point2D.Double(xPos, yPos);
 		}
-		
+
 		if (TextPath.Type.LEFT.equals(textPath)) {
-	        double xPos = 0;
-	        HorizontalAlignment horizontalAlignment = d.getHorizontalTextAlignment();
-	        if (HorizontalAlignment.NORMAL_HORIZONTAL.equals(horizontalAlignment)) {
-	        	xPos = -this.deltaWidth;
-	        }
-	        else if (HorizontalAlignment.LEFT.equals(horizontalAlignment)) {
-	        	xPos = 0;
-	        }
-	        else if (HorizontalAlignment.CENTRE.equals(horizontalAlignment)) {
-	        	xPos = -this.deltaWidth/2;
-	        }
-	        else if (HorizontalAlignment.RIGHT.equals(horizontalAlignment)) {
-	        	xPos = -this.deltaWidth;
-	        }
-	        else if (HorizontalAlignment.CONTINOUS_HORIZONTAL.equals(horizontalAlignment)) {
-	        	xPos = -this.deltaWidth * d.getContinuousHorizontalAlignment();
-	        }
-	        
-	        double yPos = 0;
-	        VerticalAlignment verticalAlignment = d.getVerticalTextAlignment();
-	        if (VerticalAlignment.NORMAL_VERTICAL.equals(verticalAlignment) ||
-	        		VerticalAlignment.BASE.equals(verticalAlignment)) {
-	        	yPos = 0;
-	        }
-	        else if (VerticalAlignment.TOP.equals(verticalAlignment)) {
-	        	yPos = this.deltaHeight;
-	        }
-	        else if (VerticalAlignment.CAP.equals(verticalAlignment)) {
-	        	// TODO
-	        }
-	        else if (VerticalAlignment.HALF.equals(verticalAlignment)) {
-	        	yPos = this.deltaHeight/2;
-	        }
-	        else if (VerticalAlignment.CONTINOUS_VERTICAL.equals(verticalAlignment)) {
-	        	yPos = this.deltaHeight * d.getContinuousVerticalAlignment();
-	        }
-	        return new Point2D.Double(xPos, yPos);
+			double xPos = 0;
+			HorizontalAlignment horizontalAlignment = d.getHorizontalTextAlignment();
+			if (HorizontalAlignment.NORMAL_HORIZONTAL.equals(horizontalAlignment)) {
+				xPos = -this.deltaWidth;
+			}
+			else if (HorizontalAlignment.LEFT.equals(horizontalAlignment)) {
+				xPos = 0;
+			}
+			else if (HorizontalAlignment.CENTRE.equals(horizontalAlignment)) {
+				xPos = -this.deltaWidth/2;
+			}
+			else if (HorizontalAlignment.RIGHT.equals(horizontalAlignment)) {
+				xPos = -this.deltaWidth;
+			}
+			else if (HorizontalAlignment.CONTINOUS_HORIZONTAL.equals(horizontalAlignment)) {
+				xPos = -this.deltaWidth * d.getContinuousHorizontalAlignment();
+			}
+
+			double yPos = 0;
+			VerticalAlignment verticalAlignment = d.getVerticalTextAlignment();
+			if (VerticalAlignment.NORMAL_VERTICAL.equals(verticalAlignment) ||
+					VerticalAlignment.BASE.equals(verticalAlignment)) {
+				yPos = 0;
+			}
+			else if (VerticalAlignment.TOP.equals(verticalAlignment)) {
+				yPos = this.deltaHeight;
+			}
+			else if (VerticalAlignment.CAP.equals(verticalAlignment)) {
+				// TODO
+			}
+			else if (VerticalAlignment.HALF.equals(verticalAlignment)) {
+				yPos = this.deltaHeight/2;
+			}
+			else if (VerticalAlignment.CONTINOUS_VERTICAL.equals(verticalAlignment)) {
+				yPos = this.deltaHeight * d.getContinuousVerticalAlignment();
+			}
+			return new Point2D.Double(xPos, yPos);
 		}
-		
-        double xPos = 0;
-        HorizontalAlignment horizontalAlignment = d.getHorizontalTextAlignment();
-        if (HorizontalAlignment.NORMAL_HORIZONTAL.equals(horizontalAlignment)) {
-        	xPos = 0;
-        }
-        else if (HorizontalAlignment.LEFT.equals(horizontalAlignment)) {
-        	xPos = 0;
-        }
-        else if (HorizontalAlignment.CENTRE.equals(horizontalAlignment)) {
-        	xPos = -this.deltaWidth/2;
-        }
-        else if (HorizontalAlignment.RIGHT.equals(horizontalAlignment)) {
-        	xPos = -this.deltaWidth;
-        }
-        else if (HorizontalAlignment.CONTINOUS_HORIZONTAL.equals(horizontalAlignment)) {
-        	xPos = -this.deltaWidth * d.getContinuousHorizontalAlignment();
-        }
-        
-        double yPos = 0;
-        VerticalAlignment verticalAlignment = d.getVerticalTextAlignment();
-        if (VerticalAlignment.NORMAL_VERTICAL.equals(verticalAlignment) ||
-        		VerticalAlignment.BASE.equals(verticalAlignment)) {
-        	yPos = 0;
-        }
-        else if (VerticalAlignment.TOP.equals(verticalAlignment)) {
-        	yPos = this.deltaHeight;
-        }
-        else if (VerticalAlignment.CAP.equals(verticalAlignment)) {
-        	// TODO
-        }
-        else if (VerticalAlignment.HALF.equals(verticalAlignment)) {
-        	yPos = this.deltaHeight/2;
-        }
-        else if (VerticalAlignment.CONTINOUS_VERTICAL.equals(verticalAlignment)) {
-        	yPos = this.deltaHeight * d.getContinuousVerticalAlignment();
-        }
-        return new Point2D.Double(xPos, yPos);
+
+		double xPos = 0;
+		HorizontalAlignment horizontalAlignment = d.getHorizontalTextAlignment();
+		if (HorizontalAlignment.NORMAL_HORIZONTAL.equals(horizontalAlignment)) {
+			xPos = 0;
+		}
+		else if (HorizontalAlignment.LEFT.equals(horizontalAlignment)) {
+			xPos = 0;
+		}
+		else if (HorizontalAlignment.CENTRE.equals(horizontalAlignment)) {
+			xPos = -this.deltaWidth/2;
+		}
+		else if (HorizontalAlignment.RIGHT.equals(horizontalAlignment)) {
+			xPos = -this.deltaWidth;
+		}
+		else if (HorizontalAlignment.CONTINOUS_HORIZONTAL.equals(horizontalAlignment)) {
+			xPos = -this.deltaWidth * d.getContinuousHorizontalAlignment();
+		}
+
+		double yPos = 0;
+		VerticalAlignment verticalAlignment = d.getVerticalTextAlignment();
+		if (VerticalAlignment.NORMAL_VERTICAL.equals(verticalAlignment) ||
+				VerticalAlignment.BASE.equals(verticalAlignment)) {
+			yPos = 0;
+		}
+		else if (VerticalAlignment.TOP.equals(verticalAlignment)) {
+			yPos = this.deltaHeight;
+		}
+		else if (VerticalAlignment.CAP.equals(verticalAlignment)) {
+			// TODO
+		}
+		else if (VerticalAlignment.HALF.equals(verticalAlignment)) {
+			yPos = this.deltaHeight/2;
+		}
+		else if (VerticalAlignment.CONTINOUS_VERTICAL.equals(verticalAlignment)) {
+			yPos = this.deltaHeight * d.getContinuousVerticalAlignment();
+		}
+		return new Point2D.Double(xPos, yPos);
 	}
 
 	@Override
 	protected void scaleText(CGMDisplay d, FontMetrics fontMetrics, GlyphVector glyphVector, double width, double height) {
 		Graphics2D g2d = d.getGraphics2D();
-		
+
 		double scaleX = 1;
 		double scaleY = 1;
-		
+
 		if (TextPath.Type.DOWN.equals(d.getTextPath()) || TextPath.Type.UP.equals(d.getTextPath())) {
 			Point2D glyphPosition = glyphVector.getGlyphPosition(1);
 			scaleX = this.deltaWidth / glyphPosition.getX();
@@ -285,62 +282,66 @@ public class RestrictedText extends TextCommand {
 			else if (this.type.equals(RestrictedTextType.Type.JUSTIFIED)) {
 			}
 		}
-		
+
 		g2d.scale(scaleX, scaleY);
 	}
-	
+
 	@Override
 	public void paint(CGMDisplay d) {
-    	if (this.string.length() == 0) {
-    		// ignore empty strings
-    		return;
-    	}
-    	
+		if (this.string.length() == 0) {
+			// ignore empty strings
+			return;
+		}
+
 		Graphics2D g2d = d.getGraphics2D();
-		
+
 		// save the transformation since we are going to apply another one that
 		// is specific to this string
-        AffineTransform savedTransform = g2d.getTransform();
-        
-        AffineTransform coordinateSystemTransformation = d.getCoordinateSystemTransformation(
-        	this.position,
-        	d.getCharacterOrientationBaselineVector(), d.getCharacterOrientationUpVector());
-        
-        AffineTransform textTransform = d.getTextTransform();
-        coordinateSystemTransformation.concatenate(textTransform);
+		AffineTransform savedTransform = g2d.getTransform();
 
-        g2d.transform(coordinateSystemTransformation);
-        
-        Point2D.Double textOrigin = getTextOffset(d);
-        g2d.translate(textOrigin.x, textOrigin.y);
+		AffineTransform coordinateSystemTransformation = d.getCoordinateSystemTransformation(
+				this.position,
+				d.getCharacterOrientationBaselineVector(), d.getCharacterOrientationUpVector());
 
-        // DEBUG: draw the outline
-//        g2d.setColor(Color.MAGENTA);
-//        g2d.draw(new Rectangle2D.Double(0, -this.deltaHeight,
-//        	this.deltaWidth, this.deltaHeight));
-        
-        g2d.setColor(d.getTextColor());
-        
-    	String decodedString = d.useSymbolEncoding() ?
-        		SymbolDecoder.decode(this.string) : this.string;
-        		
-        // the text path left is easy: just flip the string
-        if (TextPath.Type.LEFT.equals(d.getTextPath())) {
-        	decodedString = flipString(decodedString);
-        }
-        		
-        Font font = g2d.getFont();
-        
-        // adjust the size of the font depending on the extent. If the extent is
+		AffineTransform textTransform = d.getTextTransform();
+		coordinateSystemTransformation.concatenate(textTransform);
+
+		g2d.transform(coordinateSystemTransformation);
+
+		Point2D.Double textOrigin = getTextOffset(d);
+		g2d.translate(textOrigin.x, textOrigin.y);
+
+		// DEBUG: draw the outline
+		//        g2d.setColor(Color.MAGENTA);
+		//        g2d.draw(new Rectangle2D.Double(0, -this.deltaHeight,
+		//        	this.deltaWidth, this.deltaHeight));
+
+		g2d.setColor(d.getTextColor());
+
+		String decodedString = d.useSymbolEncoding() ? SymbolDecoder.decode(this.string) : this.string;
+
+		// the text path left is easy: just flip the string
+		if (TextPath.Type.LEFT.equals(d.getTextPath())) {
+			decodedString = flipString(decodedString); 
+		}
+
+		Font font = g2d.getFont();
+		Font adjustedFont = font;
+
+		// FIXME: remove those magic values
+		// adjust the size of the font depending on the extent. If the extent is
 		// very big, having small font sizes may create problems
-        Point2D.Double[] extent = d.getExtent();
-        Font adjustedFont = font.deriveFont((float) (Math.abs(extent[0].y - extent[1].y) / 100));
-        g2d.setFont(adjustedFont);
-    	FontRenderContext fontRenderContext = g2d.getFontRenderContext();
+		Point2D.Double[] extent = d.getExtent();
+		if (Math.abs(extent[0].y - extent[1].y) > 1000) {
+			adjustedFont = font.deriveFont((float) (Math.abs(extent[0].y - extent[1].y) / 100));
+			g2d.setFont(adjustedFont);
+		}
+
+		FontRenderContext fontRenderContext = g2d.getFontRenderContext();
 		GlyphVector glyphVector = adjustedFont.createGlyphVector(fontRenderContext, decodedString);
 		Rectangle2D logicalBounds = glyphVector.getLogicalBounds();
-		
-    	FontMetrics fontMetrics = g2d.getFontMetrics(adjustedFont);
+
+		FontMetrics fontMetrics = g2d.getFontMetrics(adjustedFont);
 		// XXX: unfortunately, getAscent() does not return correct values, 
 		// see http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=6623223
 		// so we are always going to be a bit off
@@ -353,19 +354,19 @@ public class RestrictedText extends TextCommand {
 		else {
 			screenResolution = Toolkit.getDefaultToolkit().getScreenResolution();
 		}
-    	double height = fontMetrics.getAscent() * 72 / screenResolution;
-		
-    	scaleText(d, fontMetrics, glyphVector, logicalBounds.getWidth(), height);
-    	
-    	if (TextPath.Type.UP.equals(d.getTextPath()) || TextPath.Type.DOWN.equals(d.getTextPath())) {
-    		applyTextPath(d, glyphVector);
-    	}
-		
+		double height = fontMetrics.getAscent() * 72 / screenResolution;
+
+		scaleText(d, fontMetrics, glyphVector, logicalBounds.getWidth(), height);
+
+		if (TextPath.Type.UP.equals(d.getTextPath()) || TextPath.Type.DOWN.equals(d.getTextPath())) {
+			applyTextPath(d, glyphVector);
+		}
+
 		g2d.drawGlyphVector(glyphVector, 0, 0);
-		
-        // restore the transformation that existed before painting the string
-        g2d.setTransform(savedTransform);
-    }
+
+		// restore the transformation that existed before painting the string
+		g2d.setTransform(savedTransform);
+	}
 
 }
 
