@@ -7,7 +7,7 @@
 <project name="jcgm" default="jar">
 	
 	<!-- The core package -->
-	<property name="version-core" value="0.2.0"/>
+	<property name="version-core" value="0.3.0"/>
 	<property name="package-name-core" value="jcgm-core-${version-core}"/>
 	<property name="jar-name-core" value="${package-name-core}.jar"/>
 	<property name="package-name-core-bin" value="${package-name-core}-bin"/>
@@ -31,7 +31,7 @@
 	
 	<target name="compile" description="Compiles all java source files">
 		<mkdir dir="build/classes"/>
-		<javac srcdir="src" destdir="build/classes" source="1.6" target="1.6" debug="true"
+		<javac srcdir="src" destdir="build/classes" source="1.8" target="1.8" debug="true"
 			includeantruntime="false"/>
 	</target>
 	
@@ -99,12 +99,5 @@
 		<delete file="${package-name-src}.zip"/>
 		<delete file="${package-name-core-bin}.zip"/>
 	</target>
-
-	<!-- Web site -->
-	<!-- FORREST_HOME must be set as an environment variable -->
-	<property environment="env"/>
-	<property name="forrest.home" value="${env.FORREST_HOME}"/>
-	<!-- This will import a "site" task -->
-	<import file="${env.FORREST_HOME}/main/forrest.build.xml"/>
 
 </project>

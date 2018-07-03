@@ -32,9 +32,9 @@ public class Message {
 	private final int elementClass;
 	private final int elementId;
 	private final String commandDescription;
-	
-	enum Severity { INFO, UNSUPPORTED, UNIMPLEMENTED, FATAL }
-	
+
+	public enum Severity { INFO, UNSUPPORTED, UNIMPLEMENTED, FATAL }
+
 	/**
 	 * Builds a message
 	 * 
@@ -57,20 +57,20 @@ public class Message {
 		this.message = message;
 		this.commandDescription = commandDescription;
 	}
-	
+
 	public final int getElementClass() {
-		return elementClass;
+		return this.elementClass;
 	}
-	
+
 	public final int getElementCode() {
-		return elementId;
+		return this.elementId;
 	}
-	
+
 	@Override
 	public String toString() {
 		StringBuilder sb = new StringBuilder();
 		sb.append(ElementClass.getElementClass(this.elementClass)).append(" ");
-		sb.append(ElementClass.getElement(elementClass, elementId)).append(" ");
+		sb.append(ElementClass.getElement(this.elementClass, this.elementId)).append(" ");
 		sb.append(this.severity).append(" ").append(this.message);
 		if (this.commandDescription != null) {
 			sb.append(" {").append(this.commandDescription).append("}");

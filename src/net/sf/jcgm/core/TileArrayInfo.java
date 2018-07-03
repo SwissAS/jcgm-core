@@ -46,11 +46,19 @@ public class TileArrayInfo {
 	/** current position of tile */
 	private final Point2D.Double currentPosition;
 
+	/** number of pixels (width) */
+	private final int nCellsPerTileInPathDirection;
+	/** number of pixels (height) */
+	private final int nCellsPerTileInLineDirection;
+
 	TileArrayInfo(Double startPosition, int nTilesInPathDirection,
+			int nCellsPerTileInPathDirection, int nCellsPerTileInLineDirection,
 			double tileSizeInPathDirection, double tileSizeInLineDirection) {
 		this.startPosition = startPosition;
 		this.currentPosition = new Point2D.Double(startPosition.x, startPosition.y);
 		this.nTilesInPathDirection = nTilesInPathDirection;
+		this.nCellsPerTileInPathDirection = nCellsPerTileInPathDirection;
+		this.nCellsPerTileInLineDirection = nCellsPerTileInLineDirection;
 		this.tileSizeInPathDirection = tileSizeInPathDirection;
 		this.tileSizeInLineDirection = tileSizeInLineDirection;
 	}
@@ -61,6 +69,20 @@ public class TileArrayInfo {
 
 	int getCurrentLineIndex() {
 		return this.lineIndex;
+	}
+
+	/**
+	 * @return Tile width in pixels
+	 */
+	int getNCellsPerTileInPathDirection() {
+		return this.nCellsPerTileInPathDirection;
+	}
+
+	/**
+	 * @return Tile height in pixels
+	 */
+	int getNCellsPerTileInLineDirection() {
+		return this.nCellsPerTileInLineDirection;
 	}
 
 	double getTileSizeInPathDirection() {

@@ -87,7 +87,8 @@ public class BeginTileArray extends Command {
 		double tileSizeInPathDirection = boundingBoxSizeInPathDirection / this.nTilesInPathDirection;
 		double tileSizeInLineDirection = boundingBoxSizeInLineDirection / this.nTilesInLineDirection;
 
-		d.setTileArrayInfo(new TileArrayInfo(startPosition, this.nTilesInPathDirection, tileSizeInPathDirection, tileSizeInLineDirection));
+		d.setTileArrayInfo(new TileArrayInfo(startPosition, this.nTilesInPathDirection, this.nCellsPerTileInPathDirection,
+				this.nCellsPerTileInLineDirection, tileSizeInPathDirection, tileSizeInLineDirection));
 	}
 
 	@Override
