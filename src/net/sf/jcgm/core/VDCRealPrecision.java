@@ -48,7 +48,7 @@ public class VDCRealPrecision extends Command {
             throws IOException {
 
         super(ec, eid, l, in);
-        int p1 = makeInt();
+        int p1 = makeEnum();
         int p2 = makeInt();
         int p3 = makeInt();
 

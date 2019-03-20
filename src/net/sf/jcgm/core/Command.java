@@ -244,10 +244,10 @@ public class Command implements Cloneable {
 			return makeSignedInt16();
 		}
 		if (precision == 24) {
-			makeSignedInt24();
+			return makeSignedInt24();
 		}
 		if (precision == 32) {
-			makeSignedInt32();
+			return makeSignedInt32();
 		}
 
 		unsupported("unsupported integer precision "+precision);

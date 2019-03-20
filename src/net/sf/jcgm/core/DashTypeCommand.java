@@ -34,7 +34,7 @@ public class DashTypeCommand extends Command {
     
     public DashTypeCommand(int ec, int eid, int l, DataInput in) throws IOException {
         super(ec, eid, l, in);
-        this.type = makeInt();
+        this.type = makeIndex();
     }
 }
 
