@@ -36,7 +36,7 @@ public class TextFontIndex extends Command {
     public TextFontIndex(int ec, int eid, int l, DataInput in)
             throws IOException {
         super(ec, eid, l, in);
-        this.fontIndex = makeInt();
+        this.fontIndex = makeIndex();
     }
 
 	@Override
