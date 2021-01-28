@@ -812,14 +812,19 @@ public class Command implements Cloneable {
 			return new Command(ec, eid, l, in);
 
 		case APPLICATION_STRUCTURE_ELEMENTS: // 9
-			unsupported(ec, eid);
-			return new Command(ec, eid, l, in);
+			/*unsupported(ec, eid);
+			return new Command(ec, eid, l, in);*/
+			return readAPS(in, ec, eid, l);
 
 		default:
 			assert (10 <= ec && ec <= 15) : "unsupported element class";
 			unsupported(ec, eid);
 			return new Command(ec, eid, l, in);
 		}
+	}
+
+	private static Command readAPS(DataInput in, int ec, int eid, int l) throws IOException {
+		return new ApplicationStructureAttribute(ec, eid, l, in);
 	}
 
 	// Class: 0
