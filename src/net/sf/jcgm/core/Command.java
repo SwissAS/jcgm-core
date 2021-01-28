@@ -888,9 +888,8 @@ public class Command implements Cloneable {
 			return new EndTileArray(ec, eid, l, in);
 
 			// 0, 21
-		case BEGIN_APPLICATION_STRUCTURE:
-			unsupported(ec, eid);
-			return new Command(ec, eid, l, in);
+		case BEGIN_APPLICATION_STRUCTURE:			
+			return new BeginApplicationStructure(ec, eid, l, in);
 
 			// 0, 22
 		case BEGIN_APPLICATION_STRUCTURE_BODY:

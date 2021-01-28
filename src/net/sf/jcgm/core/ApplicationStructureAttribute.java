@@ -17,25 +17,8 @@ public class ApplicationStructureAttribute extends Command {
 
 	public ApplicationStructureAttribute(int ec, int eid, int l, DataInput in) throws IOException {
 		super(ec, eid, l, in);
-
-		int length = this.args[this.currentArg];
-
-		if(length == 255) {
-			//non géré
-		}else {
-
-			for(int i=0;i<length;i++) {
-				this.currentArg++;
-				this.attributeType = this.attributeType + (char)this.args[this.currentArg];
-			}
-			this.currentArg++;
-
-
-			this.structuredDataRecord = makeSDR();
-		}
-
-
-
+		this.attributeType = makeString();
+		this.structuredDataRecord = makeSDR();
 	}
 
 
