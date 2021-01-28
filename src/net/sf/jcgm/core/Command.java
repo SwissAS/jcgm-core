@@ -21,12 +21,8 @@
  */
 package net.sf.jcgm.core;
 
-import net.sf.jcgm.core.ColourModel.Model;
-import net.sf.jcgm.core.RealPrecision.Precision;
-import net.sf.jcgm.core.StructuredDataRecord.StructuredDataType;
-import net.sf.jcgm.core.VDCRealPrecision.Type;
-
-import java.awt.*;
+import java.awt.Color;
+import java.awt.Shape;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.PathIterator;
 import java.awt.geom.Point2D;
@@ -37,6 +33,11 @@ import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+
+import net.sf.jcgm.core.ColourModel.Model;
+import net.sf.jcgm.core.RealPrecision.Precision;
+import net.sf.jcgm.core.StructuredDataRecord.StructuredDataType;
+import net.sf.jcgm.core.VDCRealPrecision.Type;
 
 /**
  * Base class for all the CGM commands.
@@ -812,8 +813,6 @@ public class Command implements Cloneable {
 			return new Command(ec, eid, l, in);
 
 		case APPLICATION_STRUCTURE_ELEMENTS: // 9
-			/*unsupported(ec, eid);
-			return new Command(ec, eid, l, in);*/
 			return readAPS(in, ec, eid, l);
 
 		default:

@@ -7,7 +7,6 @@ import java.io.IOException;
 /**
  * Class=9, Element=1
  * @author jpprade (Jean-Philippe Prade)
- * @author BBNT Solutions
  * @version $Id$
  */
 public class ApplicationStructureAttribute extends Command {
