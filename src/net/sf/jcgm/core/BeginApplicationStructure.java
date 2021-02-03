@@ -31,4 +31,16 @@ public class BeginApplicationStructure extends Command {
 		return sb.toString();
 	}
 
+
+	public String getIdentifier() {
+		return this.identifier;
+	}
+
+
+	public String getType() {
+		return this.type;
+	}
+
+
+
 }

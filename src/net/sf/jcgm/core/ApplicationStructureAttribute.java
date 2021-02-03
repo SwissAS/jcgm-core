@@ -1,7 +1,12 @@
 package net.sf.jcgm.core;
 
+import java.awt.Graphics2D;
+import java.awt.geom.GeneralPath;
+import java.awt.geom.Point2D;
 import java.io.DataInput;
 import java.io.IOException;
+import java.util.List;
+
 
 
 /**
@@ -31,5 +36,19 @@ public class ApplicationStructureAttribute extends Command {
 		sb.append("]");
 		return sb.toString();
 	}
+
+
+
+
+	public String getAttributeType() {
+		return this.attributeType;
+	}
+
+	public StructuredDataRecord getStructuredDataRecord() {
+		return this.structuredDataRecord;
+	}
+
+	
+
 
 }
