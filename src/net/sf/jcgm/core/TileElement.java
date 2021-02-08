@@ -56,7 +56,7 @@ abstract class TileElement extends Command {
 	protected int rowPaddingIndicator;
 	protected StructuredDataRecord sdr;
 	protected BufferedImage bufferedImage = null;
-	private ByteBuffer bytes;
+	protected ByteBuffer bytes;
 
 	protected TileElement(int ec, int eid, int l, DataInput in) throws IOException {
 		super(ec, eid, l, in);
@@ -96,7 +96,7 @@ abstract class TileElement extends Command {
 		}
 	}
 
-	private ByteBuffer readBytes() {
+	protected ByteBuffer readBytes() {
 		ByteBuffer buffer = ByteBuffer.allocate(this.args.length - this.currentArg);
 		while (this.currentArg < this.args.length) {
 			buffer.put(makeByte());

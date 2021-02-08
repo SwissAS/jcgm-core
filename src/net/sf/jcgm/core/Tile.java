@@ -27,6 +27,10 @@
  */
 package net.sf.jcgm.core;
 
+import java.awt.Graphics2D;
+import java.awt.geom.AffineTransform;
+import java.awt.geom.Point2D;
+import java.awt.image.BufferedImage;
 import java.io.DataInput;
 import java.io.IOException;
 
@@ -59,7 +63,42 @@ public class Tile extends TileElement {
 
 	@Override
 	protected void readBitmap() {
-		unsupported("BITMAP for Tile");
+		this.bytes = readBytes();
+
+	}
+
+	@Override
+	public void paint(CGMDisplay d) {		
+		TileArrayInfo tileArrayInfo = d.getTileArrayInfo();
+		int width = tileArrayInfo.getNCellsPerTileInPathDirection();
+		int height = tileArrayInfo.getNCellsPerTileInLineDirection();
+		BufferedImage imageOut = new BufferedImage(width, height, BufferedImage.TYPE_3BYTE_BGR);
+
+		byte[] imgdata = this.bytes.array();
+
+		int x = 0;
+		int y = 0;
+		for(int i=0;i<imgdata.length;i=i+3) {
+			byte r = imgdata[i];
+			byte g = imgdata[i+1];
+			byte b = imgdata[i+2];
+			imageOut.setRGB(x, y, (r <<16) | (g <<8) | b);			
+			x=x+1;
+			if(x>=width) {
+				x=0;
+				y++;
+			}			
+		}
+		Graphics2D g2d = d.getGraphics2D();
+		Point2D.Double position = tileArrayInfo.getCurrentTilePosition();
+
+
+		AffineTransform xform = AffineTransform.getTranslateInstance(position.x, position.y);
+		xform.scale(tileArrayInfo.getTileSizeInPathDirection() / width,
+				-tileArrayInfo.getTileSizeInLineDirection() / height);
+		g2d.drawImage(imageOut, xform, null);
+
+
 	}
 
 	@Override
