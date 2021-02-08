@@ -42,6 +42,7 @@ import java.io.IOException;
  * @since Oct 5, 2010
  */
 public class Tile extends TileElement {
+
 	Tile(int ec, int eid, int l, DataInput in) throws IOException {
 		super(ec, eid, l, in);
 
@@ -72,31 +73,44 @@ public class Tile extends TileElement {
 		TileArrayInfo tileArrayInfo = d.getTileArrayInfo();
 		int width = tileArrayInfo.getNCellsPerTileInPathDirection();
 		int height = tileArrayInfo.getNCellsPerTileInLineDirection();
-		BufferedImage imageOut = new BufferedImage(width, height, BufferedImage.TYPE_3BYTE_BGR);
+		if(this.bytes!=null && this.compressionType==CompressionType.BITMAP) {
+			BufferedImage imageOut = new BufferedImage(width, height, BufferedImage.TYPE_3BYTE_BGR);
 
-		byte[] imgdata = this.bytes.array();
+			byte[] imgdata = this.bytes.array();
 
-		int x = 0;
-		int y = 0;
-		for(int i=0;i<imgdata.length;i=i+3) {
-			byte r = imgdata[i];
-			byte g = imgdata[i+1];
-			byte b = imgdata[i+2];
-			imageOut.setRGB(x, y, (r <<16) | (g <<8) | b);			
-			x=x+1;
-			if(x>=width) {
-				x=0;
-				y++;
-			}			
+			int x = 0;
+			int y = 0;
+			for(int i=0;i<imgdata.length;i=i+3) {
+				byte r = imgdata[i];
+				byte g = imgdata[i+1];
+				byte b = imgdata[i+2];
+				imageOut.setRGB(x, y, (r <<16) | (g <<8) | b);			
+				x=x+1;
+				if(x>=width) {
+					x=0;
+					y++;
+				}			
+			}
+			Graphics2D g2d = d.getGraphics2D();
+			Point2D.Double position = tileArrayInfo.getCurrentTilePosition();
+
+
+			AffineTransform xform = AffineTransform.getTranslateInstance(position.x, position.y);
+			xform.scale(tileArrayInfo.getTileSizeInPathDirection() / width,
+					-tileArrayInfo.getTileSizeInLineDirection() / height);
+			g2d.drawImage(imageOut, xform, null);
+		}else {
+			super.paint(d);
 		}
-		Graphics2D g2d = d.getGraphics2D();
-		Point2D.Double position = tileArrayInfo.getCurrentTilePosition();
-
-
-		AffineTransform xform = AffineTransform.getTranslateInstance(position.x, position.y);
-		xform.scale(tileArrayInfo.getTileSizeInPathDirection() / width,
-				-tileArrayInfo.getTileSizeInLineDirection() / height);
-		g2d.drawImage(imageOut, xform, null);
+		/*if(this.bytes!=null && this.compressionType==CompressionType.BASELINE_JPEG) {
+			Path path = Paths.get("C:/temp/picture"+imgcount+".jpg");
+			try {
+				Files.write(path, this.bytes.array());
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}*/
 
 
 	}
