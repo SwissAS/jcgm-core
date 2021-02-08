@@ -27,9 +27,6 @@
  */
 package net.sf.jcgm.core;
 
-import java.awt.Graphics2D;
-import java.awt.geom.AffineTransform;
-import java.awt.geom.Point2D;
 import java.awt.image.BufferedImage;
 import java.io.DataInput;
 import java.io.IOException;
@@ -91,26 +88,13 @@ public class Tile extends TileElement {
 					y++;
 				}			
 			}
-			Graphics2D g2d = d.getGraphics2D();
-			Point2D.Double position = tileArrayInfo.getCurrentTilePosition();
 
-
-			AffineTransform xform = AffineTransform.getTranslateInstance(position.x, position.y);
-			xform.scale(tileArrayInfo.getTileSizeInPathDirection() / width,
-					-tileArrayInfo.getTileSizeInLineDirection() / height);
-			g2d.drawImage(imageOut, xform, null);
+			this.bufferedImage=imageOut;
+			super.paint(d);
 		}else {
 			super.paint(d);
 		}
-		/*if(this.bytes!=null && this.compressionType==CompressionType.BASELINE_JPEG) {
-			Path path = Paths.get("C:/temp/picture"+imgcount+".jpg");
-			try {
-				Files.write(path, this.bytes.array());
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-		}*/
+
 
 
 	}
