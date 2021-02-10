@@ -32,10 +32,12 @@ import java.awt.geom.AffineTransform;
 import java.awt.geom.Point2D;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.DataInput;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.util.Iterator;
+import java.util.List;
 
 import javax.imageio.ImageIO;
 import javax.imageio.ImageReader;
@@ -75,7 +77,33 @@ abstract class TileElement extends Command {
 				// the first one will do
 				ImageReader reader = imageReaders.next();
 
-				ByteBuffer buffer = readBytes();
+				ByteBuffer buffer = readBytes();				
+
+
+				if(this.compressionType == CompressionType.PNG) {
+					ByteArrayOutputStream baos = new ByteArrayOutputStream();
+					byte[] pngSignature = new byte[] { (byte)0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a };
+					baos.write(pngSignature);
+					//the PNG chunks are a in the SDR as bit stream we have to merge it
+					List<Member> members = this.sdr.getMembers();
+					if(members!=null) {
+						for(Member member: members) {
+							for(int i = 0; i < member.getCount();i++) {
+								Object data = member.getData().get(i);
+								if(data!=null && data instanceof byte[]) {
+									baos.write((byte[])data);
+								}
+							}
+						}
+					}
+					baos.write(buffer.array());
+					buffer = ByteBuffer.allocate(baos.size());
+					buffer.put(baos.toByteArray());
+
+				}
+
+
+				//debugByte(buffer.array(),"img","png");
 
 				ByteArrayInputStream input = new ByteArrayInputStream(buffer.array());
 				ImageInputStream imageInputStream = ImageIO.createImageInputStream(input);
@@ -186,5 +214,68 @@ abstract class TileElement extends Command {
 			this.bytes = null;
 		}
 	}
+
+	@Override
+	protected Object bitStream() {
+
+		if(this.compressionType == CompressionType.PNG) {
+			//translated in java from : https://github.com/BhaaLseN/CgmInfo			
+
+			byte[] dataLength = new byte[4];
+			for (int i = 0; i < dataLength.length; i++)
+				dataLength[i] = makeByte();
+
+			int length = 0;
+
+			//length = java.nio.ByteBuffer.wrap(dataLength).order(java.nio.ByteOrder.LITTLE_ENDIAN).getInt();
+			length = java.nio.ByteBuffer.wrap(dataLength).getInt();
+
+			byte[] type = new byte[4];
+			for (int i = 0; i < dataLength.length; i++)
+				type[i] = makeByte();
+
+			byte[] data = new byte[length];
+			for (int i = 0; i < data.length; i++)
+				data[i] = makeByte();
+
+			byte[] crc = new byte[4];
+			for (int i = 0; i < dataLength.length; i++)
+				crc[i] = makeByte();
+
+			// bitstream is a series of unsigned integer at fixed 16-bit precision [ISO/IEC 8632-3 7, Table 1, BS / Note 15]
+			// 16 bits per entry is chosen for portability reasons and need not be filled completely; the remainder is set to 0.
+			// we'll have to advance the stream to be aligned at a 16-bit boundary before we leave.
+			if (length % 2 != 0)
+			{
+				byte shouldBeZero = makeByte();
+
+			}
+
+			byte[] result = new byte[dataLength.length + type.length + data.length + crc.length];
+
+			System.arraycopy(dataLength, 0, result, 0, dataLength.length);
+			System.arraycopy(type, 0, result, dataLength.length, type.length);
+			System.arraycopy(data, 0, result, dataLength.length + type.length, data.length);
+			System.arraycopy(crc, 0, result, dataLength.length + type.length + data.length, crc.length);
+
+			return result;
+		}else {
+			return null;
+		}
+	}
+
+
+	/*private void debugByte(byte[] data, String name,String type) {
+		try (FileOutputStream fos = new FileOutputStream("c:/temp/name_"+UUID.randomUUID().toString()+"."+type)) {
+			fos.write(data);
+
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}*/
 
 }

@@ -717,6 +717,7 @@ public class Command implements Cloneable {
 					data.add(makeUInt32());
 					break;
 				case BS:
+					data.add(bitStream());
 					// bit stream? XXX how do we know how many bits to read?
 					break;
 				case CL:
@@ -733,6 +734,10 @@ public class Command implements Cloneable {
 			ret.add(dataType, dataCount, data);
 		}
 		return ret;
+	}
+
+	protected Object bitStream() {
+		return null;//see subimplementation
 	}
 
 	/**
