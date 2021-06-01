@@ -867,9 +867,9 @@ public class Command implements Cloneable {
 		case END_SEGMENT:
 			// 0, 8
 		case BEGIN_FIGURE:
-			// 0, 9
+			return new BeginFigure(ec, eid, l, in);
 		case END_FIGURE:
-			// 0, 13
+			return new EndFigure(ec, eid, l, in);
 		case BEGIN_PROTECTION_REGION:
 			// 0, 14
 		case END_PROTECTION_REGION:

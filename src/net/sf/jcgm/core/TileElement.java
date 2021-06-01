@@ -204,6 +204,9 @@ abstract class TileElement extends Command {
 					reader.setInput(imageInputStream);
 					this.bufferedImage = reader.read(0);
 				}
+			}else {
+				Messages.getInstance()
+				.add(new Message(Severity.UNSUPPORTED, getElementClass(), getElementCode(), "No tiff support found add jai-core to classpath", toString()));
 			}
 		} catch (IOException | CgmException e) {
 			Messages.getInstance()
