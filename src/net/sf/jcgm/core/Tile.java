@@ -71,7 +71,7 @@ public class Tile extends TileElement {
 		int width = tileArrayInfo.getNCellsPerTileInPathDirection();
 		int height = tileArrayInfo.getNCellsPerTileInLineDirection();
 		if(this.bytes!=null && this.compressionType==CompressionType.BITMAP) {
-			BufferedImage imageOut = new BufferedImage(width, height, BufferedImage.TYPE_3BYTE_BGR);
+			BufferedImage imageOut = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
 
 			byte[] imgdata = this.bytes.array();
 
@@ -81,7 +81,7 @@ public class Tile extends TileElement {
 				byte r = imgdata[i];
 				byte g = imgdata[i+1];
 				byte b = imgdata[i+2];
-				imageOut.setRGB(x, y, (r <<16) | (g <<8) | b);			
+				imageOut.setRGB(x, y, (r <<16) + (g <<8) + b);			
 				x=x+1;
 				if(x>=width) {
 					x=0;
