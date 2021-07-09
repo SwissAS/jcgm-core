@@ -118,6 +118,9 @@ abstract class TileElement extends Command {
 			case T6:
 				readT6();
 				break;
+			case RUN_LENGTH:
+				this.bytes = readBytes();
+				break;
 			default:
 				unsupported("unsupported compression type " + this.compressionType);
 			}
