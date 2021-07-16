@@ -30,8 +30,8 @@ import java.awt.font.FontRenderContext;
 import java.awt.font.GlyphVector;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Point2D;
-import java.awt.geom.Rectangle2D;
 import java.awt.geom.Point2D.Double;
+import java.awt.geom.Rectangle2D;
 import java.io.DataInput;
 import java.io.IOException;
 
@@ -44,14 +44,14 @@ public abstract class TextCommand extends Command {
 
 	/** The string to display */
 	protected String string;
-	
+
 	/** The position at which the string should be displayed */
 	protected Point2D.Double position;
 
 	public TextCommand(int ec, int eid, int l, DataInput in) throws IOException {
 		super(ec, eid, l, in);
 	}
-	
+
 	/**
 	 * Returns an offset to apply to the defined text position
 	 * @param d
@@ -95,50 +95,50 @@ public abstract class TextCommand extends Command {
 		String decodedString = d.useSymbolEncoding() ? SymbolDecoder
 				.decode(this.string) : this.string;
 
-		// the text path left is easy: just flip the string
-		if (TextPath.Type.LEFT.equals(d.getTextPath())) {
-			decodedString = flipString(decodedString);
-		}
+				// the text path left is easy: just flip the string
+				if (TextPath.Type.LEFT.equals(d.getTextPath())) {
+					decodedString = flipString(decodedString);
+				}
 
-		Font font = g2d.getFont();
+				Font font = g2d.getFont();
 
-		// adjust the size of the font depending on the extent. If the extent is
-		// very big, having small font sizes may create problems
-		Point2D.Double[] extent = d.getExtent();
-		Font adjustedFont = font.deriveFont((float) (Math.abs(extent[0].y
-				- extent[1].y) / 100));
-		g2d.setFont(adjustedFont);
-		FontRenderContext fontRenderContext = g2d.getFontRenderContext();
-		GlyphVector glyphVector = adjustedFont.createGlyphVector(
-				fontRenderContext, decodedString);
-		Rectangle2D logicalBounds = glyphVector.getLogicalBounds();
+				// adjust the size of the font depending on the extent. If the extent is
+				// very big, having small font sizes may create problems
+				Point2D.Double[] extent = d.getExtent();
+				Font adjustedFont = font.deriveFont((float) (Math.abs(extent[0].y
+						- extent[1].y) / 100));
+				g2d.setFont(adjustedFont);
+				FontRenderContext fontRenderContext = g2d.getFontRenderContext();
+				GlyphVector glyphVector = adjustedFont.createGlyphVector(
+						fontRenderContext, decodedString);
+				Rectangle2D logicalBounds = glyphVector.getLogicalBounds();
 
-		FontMetrics fontMetrics = g2d.getFontMetrics(adjustedFont);
-		// XXX: unfortunately, getAscent() does not return correct values,
-		// see http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=6623223
-		// so we are always going to be a bit off
-		int screenResolution;
-		if (GraphicsEnvironment.isHeadless()) {
-			// if we're in a headless environment, assume 96 dots per inch
-			// (default setting for Windows XP)
-			screenResolution = 96;
-		} else {
-			screenResolution = Toolkit.getDefaultToolkit()
-					.getScreenResolution();
-		}
-		double height = fontMetrics.getAscent() * 72 / (double) screenResolution;
+				FontMetrics fontMetrics = g2d.getFontMetrics(adjustedFont);
+				// XXX: unfortunately, getAscent() does not return correct values,
+				// see http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=6623223
+				// so we are always going to be a bit off
+				int screenResolution;
+				if (GraphicsEnvironment.isHeadless()) {
+					// if we're in a headless environment, assume 96 dots per inch
+					// (default setting for Windows XP)
+					screenResolution = 96;
+				} else {
+					screenResolution = Toolkit.getDefaultToolkit()
+							.getScreenResolution();
+				}
+				double height = fontMetrics.getAscent() * 72 / (double) screenResolution;
 
-		scaleText(d, fontMetrics, glyphVector, logicalBounds.getWidth(), height);
+				scaleText(d, fontMetrics, glyphVector, logicalBounds.getWidth(), height);
 
-		if (TextPath.Type.UP.equals(d.getTextPath())
-				|| TextPath.Type.DOWN.equals(d.getTextPath())) {
-			applyTextPath(d, glyphVector);
-		}
+				if (TextPath.Type.UP.equals(d.getTextPath())
+						|| TextPath.Type.DOWN.equals(d.getTextPath())) {
+					applyTextPath(d, glyphVector);
+				}
 
-		g2d.drawGlyphVector(glyphVector, 0, 0);
+				g2d.drawGlyphVector(glyphVector, 0, 0);
 
-		// restore the transformation that existed before painting the string
-		g2d.setTransform(savedTransform);
+				// restore the transformation that existed before painting the string
+				g2d.setTransform(savedTransform);
 	}
 
 	/**
@@ -159,10 +159,10 @@ public abstract class TextCommand extends Command {
 	 */
 	protected void applyTextPath(CGMDisplay d, GlyphVector glyphVector) {
 		double height = glyphVector.getLogicalBounds().getHeight();
-		
+
 		if (TextPath.Type.DOWN.equals(d.getTextPath())) {
 			float[] glyphPositions = glyphVector.getGlyphPositions(0, glyphVector.getNumGlyphs(), null);
-			
+
 			int glyphIndex = 0;
 			for (int i = 0; i < (glyphPositions.length / 2); i++) {
 				Point2D.Float newPos = new Point2D.Float(glyphPositions[0], (float)(i*height));
@@ -170,11 +170,15 @@ public abstract class TextCommand extends Command {
 			}
 		}
 		else if (TextPath.Type.DOWN.equals(d.getTextPath())) {
-			
+
 		}
 	}
 
-    public String getString() {
-        return string;
-    }
+	public String getString() {
+		return this.string;
+	}
+
+	public void appendString(String toAppend) {
+		this.string = this.string + toAppend;
+	}
 }
