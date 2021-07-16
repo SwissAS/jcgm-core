@@ -86,7 +86,10 @@ public class Tile extends TileElement {
 				if(x>=width) {
 					x=0;
 					y++;
-				}			
+				}
+				if(y>=height) {
+					break;
+				}
 			}
 
 			this.bufferedImage=imageOut;
