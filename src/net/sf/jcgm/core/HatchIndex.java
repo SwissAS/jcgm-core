@@ -32,33 +32,39 @@ import java.io.IOException;
  * @since Jun 10, 2009
  */
 public class HatchIndex extends Command {
-	enum HatchType {
+	public enum HatchType {
 		HORIZONTAL_LINES, VERTICAL_LINES, POSITIVE_SLOPE_LINES, NEGATIVE_SLOPE_LINES,
 		HORIZONTAL_VERTICAL_CROSSHATCH, POSITIVE_NEGATIVE_CROSSHATCH
 	}
-	
+
 	HatchType type = HatchType.HORIZONTAL_LINES;
 
 	public HatchIndex(int ec, int eid, int l, DataInput in) throws IOException {
 		super(ec, eid, l, in);
-		
+
 		int index = makeIndex();
 		switch (index) {
+		case -1:
 		case 1:
 			this.type = HatchType.HORIZONTAL_LINES;
 			break;
+		case -2:
 		case 2:
 			this.type = HatchType.VERTICAL_LINES;
 			break;
+		case -3:
 		case 3:
 			this.type = HatchType.POSITIVE_SLOPE_LINES;
 			break;
+		case -4:
 		case 4:
 			this.type = HatchType.NEGATIVE_SLOPE_LINES;
 			break;
+		case -5:
 		case 5:
 			this.type = HatchType.HORIZONTAL_VERTICAL_CROSSHATCH;
 			break;
+		case -6:
 		case 6:
 			this.type = HatchType.POSITIVE_NEGATIVE_CROSSHATCH;
 			break;

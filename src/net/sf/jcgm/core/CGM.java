@@ -85,6 +85,12 @@ public class CGM implements Cloneable {
 			Command c = Command.read(in);
 			if (c == null)
 				break;
+			if(c instanceof AppendText) {
+				Command lastCommand = this.commands.get(this.commands.size()-1);
+				if(lastCommand instanceof TextCommand ) {
+					((TextCommand)lastCommand).appendString(((AppendText) c).getString());
+				}
+			}
 
 			for (ICommandListener listener : this.commandListeners) {
 				listener.commandProcessed(c);

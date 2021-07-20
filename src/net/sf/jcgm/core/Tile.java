@@ -27,6 +27,7 @@
  */
 package net.sf.jcgm.core;
 
+import java.awt.image.BufferedImage;
 import java.io.DataInput;
 import java.io.IOException;
 
@@ -38,6 +39,7 @@ import java.io.IOException;
  * @since Oct 5, 2010
  */
 public class Tile extends TileElement {
+
 	Tile(int ec, int eid, int l, DataInput in) throws IOException {
 		super(ec, eid, l, in);
 
@@ -59,7 +61,68 @@ public class Tile extends TileElement {
 
 	@Override
 	protected void readBitmap() {
-		unsupported("BITMAP for Tile");
+		this.bytes = readBytes();
+
+	}
+
+	@Override
+	public void paint(CGMDisplay d) {		
+		TileArrayInfo tileArrayInfo = d.getTileArrayInfo();
+		int width = tileArrayInfo.getNCellsPerTileInPathDirection();
+		int height = tileArrayInfo.getNCellsPerTileInLineDirection();
+		if(this.bytes!=null && this.compressionType==CompressionType.BITMAP) {
+			BufferedImage imageOut = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
+
+			byte[] imgdata = this.bytes.array();
+
+			int x = 0;
+			int y = 0;
+			for(int i=0;i<imgdata.length;i=i+3) {
+				byte r = imgdata[i];
+				byte g = imgdata[i+1];
+				byte b = imgdata[i+2];
+				imageOut.setRGB(x, y, (r <<16) + (g <<8) + b);			
+				x=x+1;
+				if(x>=width) {
+					x=0;
+					y++;
+				}
+				if(y>=height) {
+					break;
+				}
+			}
+
+			this.bufferedImage=imageOut;
+			super.paint(d);
+		}else if(this.bytes!=null && this.compressionType==CompressionType.RUN_LENGTH) {
+			BufferedImage imageOut = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
+			byte[] imgdata = this.bytes.array();
+			int x = 0;
+			int y = 0;
+			for(int i=0;i<imgdata.length;i=i+5) {
+				int nbpixel =  (imgdata[i] <<8) + unsignedToBytes(imgdata[i+1]);
+				byte r = imgdata[i+2];
+				byte g = imgdata[i+3];
+				byte b = imgdata[i+4];
+				for(int j=0;j<nbpixel;j++) {
+					imageOut.setRGB(x, y, (r <<16) + (g <<8) + b);
+					x=x+1;
+					if(x>=width) {
+						x=0;
+						y++;
+					}	
+				}
+			}
+
+			this.bufferedImage=imageOut;
+			super.paint(d);
+		} else {
+			super.paint(d);
+		}
+	}
+
+	public static int unsignedToBytes(byte b) {
+		return b & 0xFF;
 	}
 
 	@Override

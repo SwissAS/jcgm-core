@@ -231,6 +231,7 @@ public class RestrictedText extends TextCommand {
 		}
 		else if (VerticalAlignment.CAP.equals(verticalAlignment)) {
 			// TODO
+			yPos = this.deltaHeight;
 		}
 		else if (VerticalAlignment.HALF.equals(verticalAlignment)) {
 			yPos = this.deltaHeight/2;

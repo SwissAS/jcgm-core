@@ -36,45 +36,69 @@ import java.io.IOException;
  */
 public class Polyline extends Command {
 	private final Path2D.Double path;
+	private Point2D.Double firstPoint = null;
+	private Point2D.Double secondPoint  = null;
 
-    public Polyline(int ec, int eid, int l, DataInput in)
-            throws IOException {
-        super(ec, eid, l, in);
+	private Point2D.Double beforelastPoint = null;
+	private Point2D.Double lastPoint  = null;
 
-        int n = this.args.length / sizeOfPoint();
+	public Polyline(int ec, int eid, int l, DataInput in)
+			throws IOException {
+		super(ec, eid, l, in);
 
-        this.path = new Path2D.Double();
+		int n = this.args.length / sizeOfPoint();
 
-        for (int i = 0; i < n; i++) {
-        	Point2D.Double point = makePoint();
-        	if (i == 0) {
-        		this.path.moveTo(point.x, point.y);
-        	}
-        	else {
-        		this.path.lineTo(point.x, point.y);
-        	}
-        }
+		this.path = new Path2D.Double();
 
-        // make sure all the arguments were read
-        assert (this.currentArg == this.args.length);
-    }
+		for (int i = 0; i < n; i++) {
+			Point2D.Double point = makePoint();
+			if (i == 0) {
+				this.path.moveTo(point.x, point.y);
+			}
+			else {
+				this.path.lineTo(point.x, point.y);
+			}
+			if(i==0)
+				this.firstPoint=point;
+			if(i==1)
+				this.secondPoint=point;
+			if(i==n-2)
+				this.beforelastPoint=point;
+			if(i==n-1) 
+				this.lastPoint=point;
 
-    @Override
+		}
+
+		// make sure all the arguments were read
+		assert (this.currentArg == this.args.length);
+	}
+
+	@Override
 	public String toString() {
-    	StringBuilder sb = new StringBuilder();
-    	sb.append("Polyline [");
-    	sb.append(printShape(this.path));
-        sb.append("]");
-        return sb.toString();
-    }
+		StringBuilder sb = new StringBuilder();
+		sb.append("Polyline [");
+		sb.append(printShape(this.path));
+		sb.append("]");
+		return sb.toString();
+	}
 
-    @Override
+	@Override
 	public void paint(CGMDisplay d) {
-        Graphics2D g2d = d.getGraphics2D();
+		Graphics2D g2d = d.getGraphics2D();
 		g2d.setColor(d.getLineColor());
 		g2d.setStroke(d.getLineStroke());
 		g2d.draw(this.path);
-    }
+
+
+
+		if(d.getLineType() == DashType.SINGLE_ARROW) {
+			d.drawArrow(this.lastPoint,this.beforelastPoint);
+		}
+		if(d.getLineType() == DashType.DOUBLE_ARROW) {
+			d.drawArrow(this.lastPoint,this.beforelastPoint);
+			d.drawArrow(this.firstPoint,this.secondPoint);
+		}
+	}
 }
 
 /*

@@ -30,6 +30,7 @@ import java.awt.Shape;
 import java.awt.Stroke;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Line2D;
+import java.awt.geom.Path2D;
 import java.awt.geom.Point2D;
 import java.awt.geom.Point2D.Double;
 import java.awt.geom.Rectangle2D;
@@ -100,7 +101,7 @@ public class CGMDisplay {
 
 	private VerticalAlignment verticalTextAlignment = VerticalAlignment.NORMAL_VERTICAL;
 
-	private final Map<Integer, float[]> lineDashes;
+	protected final Map<Integer, float[]> lineDashes;
 
 	/** The color table */
 	private Color[] colorTable;
@@ -144,6 +145,8 @@ public class CGMDisplay {
 
 	private boolean isTransparent = false;
 
+	protected int lineType = DashType.SOLID;
+
 	/**
 	 * Whether the view has been cleared. FIXME: how the view is cleared depends
 	 * on the profile we're using. We are not supporting profiles at this point,
@@ -160,6 +163,9 @@ public class CGMDisplay {
 		this.lineDashes.put(DashType.DOT,			new float[] { 13, 13 }); // dot
 		this.lineDashes.put(DashType.DASH_DOT,		new float[] { 55, 20, 13, 20  }); // dash-dot
 		this.lineDashes.put(DashType.DASH_DOT_DOT,	new float[] { 55, 20, 13, 20, 13, 20  }); // dash-dot-dot
+		//seems visualy good :
+		this.lineDashes.put(DashType.STITCH_LINE,	new float[] {2, 2 });
+		this.lineDashes.put(DashType.CENTER_LINE,	new float[] { 4, 1, 1.3f, 1 }); //  https://www.aircraftsystemstech.com/2019/11/lines-and-drawing-symbols-aircraft.html
 
 		if (VDCType.getType().equals(VDCType.Type.INTEGER)) {
 			this.extent = new Point2D.Double[] { new Point2D.Double(0, 0), new Point2D.Double(32767, 32767) };
@@ -515,8 +521,8 @@ public class CGMDisplay {
 
 		this.characterHeight = 32;
 		this.additionalInterCharacterSpace = 0;
-		this.lineStroke = new BasicStroke(1.0f, BasicStroke.CAP_BUTT, BasicStroke.JOIN_MITER);
-		this.edgeStroke = new BasicStroke(1.0f, BasicStroke.CAP_BUTT, BasicStroke.JOIN_MITER);
+		this.lineStroke = new BasicStroke(0.1f, BasicStroke.CAP_BUTT, BasicStroke.JOIN_MITER);
+		this.edgeStroke = new BasicStroke(0.1f, BasicStroke.CAP_BUTT, BasicStroke.JOIN_MITER);
 		this.drawEdge = false;
 		this.hatchType = HatchType.HORIZONTAL_LINES;
 		setInteriorStyle(Style.HOLLOW);
@@ -592,6 +598,11 @@ public class CGMDisplay {
 				this.lineStroke.getMiterLimit(),
 				this.lineDashes.get(type),
 				this.lineStroke.getDashPhase());
+		this.lineType=type;
+	}
+
+	public int getLineType() {
+		return this.lineType;
 	}
 
 	public BasicStroke getLineStroke() {
@@ -837,7 +848,127 @@ public class CGMDisplay {
 		}
 	}
 
-	private void drawHatch(Shape s) {
+	protected void drawArrow(Point2D.Double dest,Point2D.Double source) {
+
+		double arrowHeight = Math.sqrt(2);
+		double arrowLength = 4.0f;
+
+		double vx= source.x - dest.x;
+		double vy= source.y - dest.y;
+
+		Point2D.Double arrowVectorInv = new Point2D.Double(vx, vy);
+
+		Point2D.Double intersec =  getCoordinate(arrowVectorInv,arrowLength,dest);
+
+		/*double length = Math.sqrt((intersec.x - dest.x) * (intersec.x - dest.x)  + (intersec.y - dest.y) * (intersec.y - dest.y));
+		System.out.println("taille " + length);*/
+
+
+		Point2D.Double arrowVectorBase = new Point2D.Double(-1 * arrowVectorInv.y, arrowVectorInv.x);
+		Point2D.Double arrowVectorBaseNegatif = new Point2D.Double(arrowVectorInv.y, -1 * arrowVectorInv.x);
+
+		Point2D.Double base1 =  getCoordinate(arrowVectorBase,arrowHeight / 2 ,intersec);
+		Point2D.Double base2 =  getCoordinate(arrowVectorBaseNegatif,arrowHeight / 2 ,intersec);
+
+		Path2D.Float path = new Path2D.Float();
+
+
+
+		path.moveTo ( dest.x, dest.y );
+		path.lineTo ( base1.x, base1.y );
+		path.lineTo ( base2.x, base2.y );
+		path.lineTo ( dest.x, dest.y );
+
+
+		//this.g2d.draw ( path );
+		this.g2d.fill(path);
+
+
+		/*
+		AffineTransform tx = new AffineTransform();
+		Line2D.Double line = new Line2D.Double(source.x,source.y,dest.x,dest.y);
+
+		Polygon arrowHead = new Polygon();  
+		arrowHead.addPoint( 0,5);
+		arrowHead.addPoint( -5, -5);
+		arrowHead.addPoint( 5,-5);
+
+		tx.setToIdentity();
+		double angle = Math.atan2(line.y2-line.y1, line.x2-line.x1);
+		tx.translate(line.x2, line.y2);
+		tx.rotate((angle-Math.PI/2d));  
+
+		Graphics2D g = (Graphics2D) this.g2d.create();		
+
+		if( line.x2< 20)
+			g.setColor(Color.BLUE);
+		else if( line.x2< 100)
+			g.setColor(Color.RED);
+		else if( line.x2< 200)
+			g.setColor(Color.YELLOW);
+		g.setTransform(tx);   
+		g.fill(arrowHead);
+		 */
+
+
+		/*BasicStroke stroke = getLineStroke();
+
+		double endX = point.x;
+
+		double veeX;
+
+		switch ( stroke.getLineJoin() ) {
+		case BasicStroke.JOIN_BEVEL:
+			// IIRC, bevel varies system to system, this is approximate
+			veeX = endX - stroke.getLineWidth() * 0.25f;
+			break;
+		default:
+		case BasicStroke.JOIN_MITER:
+			veeX = endX - stroke.getLineWidth() * 0.5f / arrowRatio;
+			break;
+		case BasicStroke.JOIN_ROUND:
+			veeX = endX - stroke.getLineWidth() * 0.5f;
+			break;
+		}
+
+		// vee
+		Path2D.Float path = new Path2D.Float();
+
+		double startX = veeX - arrowLength;
+		double startY = point.y + -arrowRatio*arrowLength;
+
+		path.moveTo ( startX, startY );
+		path.lineTo ( veeX, point.y );
+		path.lineTo ( veeX - arrowLength, point.y + arrowRatio*arrowLength );
+		path.lineTo ( startX, startY );
+
+
+		this.g2d.draw ( path );*/
+
+	}
+
+	private Point2D.Double getCoordinate(Point2D.Double vector, double distance,Point2D.Double source){
+		double bs = distance * distance  / (    ((vector.y * vector.y) / (vector.x * vector.x)) +1  );
+		double as = distance * distance - bs;
+
+		double b = Math.sqrt(bs);
+		double a = Math.sqrt(as);
+
+		if(vector.x < 0) {
+			b = b * -1;
+		}
+
+		if(vector.y < 0) {
+			a = a * -1;
+		}
+		System.out.println(Math.sqrt(bs + as));
+
+		Point2D.Double db = new Point2D.Double(source.x + b, source.y + a);
+
+		return db;
+	}
+
+	protected void drawHatch(Shape s) {
 		// remember the clip and the stroke since we're overwriting them here
 		Shape previousClippingArea = this.g2d.getClip();
 		Stroke previousStroke = this.g2d.getStroke();
@@ -879,19 +1010,19 @@ public class CGMDisplay {
 		this.g2d.setStroke(previousStroke);
 	}
 
-	private void drawVerticalLines(Rectangle2D bounds, final double stepX) {
+	protected void drawVerticalLines(Rectangle2D bounds, final double stepX) {
 		for (double x = bounds.getX(); x < bounds.getX() + bounds.getWidth(); x += stepX) {
 			this.g2d.draw(new Line2D.Double(x, bounds.getY(), x, bounds.getY() + bounds.getHeight()));
 		}
 	}
 
-	private void drawHorizontalLines(Rectangle2D bounds, final double stepY) {
+	protected void drawHorizontalLines(Rectangle2D bounds, final double stepY) {
 		for (double y = bounds.getY(); y < bounds.getY() + bounds.getHeight(); y += stepY) {
 			this.g2d.draw(new Line2D.Double(bounds.getX(), y, bounds.getX() + bounds.getWidth(), y));
 		}
 	}
 
-	private void drawPositiveSlopeLines(Rectangle2D bounds, final double slopeStep) {
+	protected void drawPositiveSlopeLines(Rectangle2D bounds, final double slopeStep) {
 		Point2D.Double currentBegin = new Point2D.Double(bounds.getX(), bounds.getY() + bounds.getHeight());
 		Point2D.Double currentEnd = currentBegin;
 
@@ -925,7 +1056,7 @@ public class CGMDisplay {
 		}
 	}
 
-	private void drawNegativeSlopeLines(Rectangle2D bounds, final double slopeStep) {
+	protected void drawNegativeSlopeLines(Rectangle2D bounds, final double slopeStep) {
 		Point2D.Double currentBegin = new Point2D.Double(bounds.getX(), bounds.getY());
 		Point2D.Double currentEnd = currentBegin;
 
@@ -966,6 +1097,10 @@ public class CGMDisplay {
 		this.hatchType = type;
 	}
 
+	public HatchType getHatchType() {
+		return this.hatchType;
+	}
+
 	/**
 	 * @param flag
 	 */
@@ -1001,6 +1136,10 @@ public class CGMDisplay {
 
 	public void setViewCleared(boolean b) {
 		this.isViewCleared = b;
+	}
+
+	public Graphics2D getG2d() {
+		return this.g2d;
 	}
 
 }

@@ -28,6 +28,7 @@
 package net.sf.jcgm.core;
 
 import java.awt.Color;
+import java.awt.image.BufferedImage;
 import java.io.DataInput;
 import java.io.IOException;
 
@@ -69,7 +70,51 @@ public class BitonalTile extends TileElement {
 
 	@Override
 	protected void readBitmap() {
-		unsupported("BITMAP for BitonalTile");
+		this.bytes = readBytes();
+
+	}
+
+	@Override
+	public void paint(CGMDisplay d) {
+		TileArrayInfo tileArrayInfo = d.getTileArrayInfo();
+		int width = tileArrayInfo.getNCellsPerTileInPathDirection();
+		int height = tileArrayInfo.getNCellsPerTileInLineDirection();
+
+
+		if(this.bytes!=null && this.compressionType==CompressionType.BITMAP) {
+			BufferedImage imageOut = new BufferedImage(width  , height, BufferedImage.TYPE_BYTE_BINARY);
+
+			byte[] imgdata = this.bytes.array();
+
+			int x = 0;
+			int y = 0;
+			for(int i=0;i<imgdata.length;i++) {				
+				byte rgb2 = imgdata[i];
+
+				for(int j=7;j>=0;j--) {
+					byte colorIndex = getBit(rgb2, j);
+					Color color = d.getIndexedColor(colorIndex);
+					imageOut.setRGB(x, y, color.getRGB());
+					x=x+1;
+				}
+
+				if(x>=width) {
+					x=0;
+					y++;
+				}			
+			}
+
+			this.bufferedImage=imageOut;
+
+			super.paint(d);
+		}else {
+			super.paint(d);
+		}
+	}
+
+	public byte getBit(byte octect, int position)
+	{
+		return (byte) ((octect >> position) & 1);
 	}
 
 	@Override

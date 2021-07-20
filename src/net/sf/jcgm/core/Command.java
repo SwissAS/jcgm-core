@@ -21,12 +21,8 @@
  */
 package net.sf.jcgm.core;
 
-import net.sf.jcgm.core.ColourModel.Model;
-import net.sf.jcgm.core.RealPrecision.Precision;
-import net.sf.jcgm.core.StructuredDataRecord.StructuredDataType;
-import net.sf.jcgm.core.VDCRealPrecision.Type;
-
-import java.awt.*;
+import java.awt.Color;
+import java.awt.Shape;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.PathIterator;
 import java.awt.geom.Point2D;
@@ -37,6 +33,11 @@ import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+
+import net.sf.jcgm.core.ColourModel.Model;
+import net.sf.jcgm.core.RealPrecision.Precision;
+import net.sf.jcgm.core.StructuredDataRecord.StructuredDataType;
+import net.sf.jcgm.core.VDCRealPrecision.Type;
 
 /**
  * Base class for all the CGM commands.
@@ -716,6 +717,7 @@ public class Command implements Cloneable {
 					data.add(makeUInt32());
 					break;
 				case BS:
+					data.add(bitStream());
 					// bit stream? XXX how do we know how many bits to read?
 					break;
 				case CL:
@@ -732,6 +734,10 @@ public class Command implements Cloneable {
 			ret.add(dataType, dataCount, data);
 		}
 		return ret;
+	}
+
+	protected Object bitStream() {
+		return null;//see subimplementation
 	}
 
 	/**
@@ -812,14 +818,17 @@ public class Command implements Cloneable {
 			return new Command(ec, eid, l, in);
 
 		case APPLICATION_STRUCTURE_ELEMENTS: // 9
-			unsupported(ec, eid);
-			return new Command(ec, eid, l, in);
+			return readAPS(in, ec, eid, l);
 
 		default:
 			assert (10 <= ec && ec <= 15) : "unsupported element class";
 			unsupported(ec, eid);
 			return new Command(ec, eid, l, in);
 		}
+	}
+
+	private static Command readAPS(DataInput in, int ec, int eid, int l) throws IOException {
+		return new ApplicationStructureAttribute(ec, eid, l, in);
 	}
 
 	// Class: 0
@@ -858,9 +867,9 @@ public class Command implements Cloneable {
 		case END_SEGMENT:
 			// 0, 8
 		case BEGIN_FIGURE:
-			// 0, 9
+			return new BeginFigure(ec, eid, l, in);
 		case END_FIGURE:
-			// 0, 13
+			return new EndFigure(ec, eid, l, in);
 		case BEGIN_PROTECTION_REGION:
 			// 0, 14
 		case END_PROTECTION_REGION:
@@ -884,9 +893,8 @@ public class Command implements Cloneable {
 			return new EndTileArray(ec, eid, l, in);
 
 			// 0, 21
-		case BEGIN_APPLICATION_STRUCTURE:
-			unsupported(ec, eid);
-			return new Command(ec, eid, l, in);
+		case BEGIN_APPLICATION_STRUCTURE:			
+			return new BeginApplicationStructure(ec, eid, l, in);
 
 			// 0, 22
 		case BEGIN_APPLICATION_STRUCTURE_BODY:
@@ -1093,8 +1101,7 @@ public class Command implements Cloneable {
 			return new RestrictedText(ec, eid, l, in);
 
 		case APPEND_TEXT: // 6
-			unsupported(ec, eid);
-			return new Command(ec, eid, l, in);
+			return new AppendText(ec, eid, l, in);
 
 		case POLYGON: // 7
 			return new PolygonElement(ec, eid, l, in);
