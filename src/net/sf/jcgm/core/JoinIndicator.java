@@ -28,11 +28,11 @@ import java.awt.BasicStroke;
  * @version $Id$
  */
 public enum JoinIndicator {
-	UNSPECIFIED(BasicStroke.JOIN_MITER),
+	UNSPECIFIED(BasicStroke.JOIN_BEVEL),
 	MITRE(BasicStroke.JOIN_MITER),
 	ROUND(BasicStroke.JOIN_ROUND),
 	BEVEL(BasicStroke.JOIN_BEVEL);
-	
+
 	private int basicStrokeConstant;
 
 	JoinIndicator(int basicStrokeConstant) {

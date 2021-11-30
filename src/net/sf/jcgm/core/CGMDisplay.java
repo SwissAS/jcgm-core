@@ -515,8 +515,8 @@ public class CGMDisplay {
 
 		this.characterHeight = 32;
 		this.additionalInterCharacterSpace = 0;
-		this.lineStroke = new BasicStroke(1.0f, BasicStroke.CAP_BUTT, BasicStroke.JOIN_MITER);
-		this.edgeStroke = new BasicStroke(1.0f, BasicStroke.CAP_BUTT, BasicStroke.JOIN_MITER);
+		this.lineStroke = new BasicStroke(1.0f, BasicStroke.CAP_BUTT, BasicStroke.JOIN_BEVEL);
+		this.edgeStroke = new BasicStroke(1.0f, BasicStroke.CAP_BUTT, BasicStroke.JOIN_BEVEL);
 		this.drawEdge = false;
 		this.hatchType = HatchType.HORIZONTAL_LINES;
 		setInteriorStyle(Style.HOLLOW);
