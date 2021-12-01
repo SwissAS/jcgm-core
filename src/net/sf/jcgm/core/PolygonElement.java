@@ -73,11 +73,11 @@ public class PolygonElement extends Command {
 	public void paint(CGMDisplay d) {
     	Graphics2D g2d = d.getGraphics2D();
 
+		g2d.setStroke(d.getEdgeStroke());
     	d.fill(this.polygon);
 
     	if (d.drawEdge()) {
     		g2d.setColor(d.getEdgeColor());
-    		g2d.setStroke(d.getEdgeStroke());
     		g2d.draw(this.polygon);
     	}
     }
