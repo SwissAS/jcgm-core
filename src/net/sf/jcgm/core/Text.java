@@ -37,17 +37,12 @@ import java.io.IOException;
  * @version $Id$
  */
 public class Text extends TextCommand {
-	
-	
 	public Text(int ec, int eid, int l, DataInput in) throws IOException {
 		super(ec, eid, l, in);
-		
-		// point (P)
 		this.position = makePoint();
-		// flag (E)
-		this.finalFlag = makeEnum() >= 1;
-		setStringComplete(this.finalFlag);
-		// string (S)
+
+		int finalNotFinal = makeEnum();
+
 		this.string = makeString();
 
 		// make sure all the arguments were read

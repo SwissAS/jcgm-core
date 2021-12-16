@@ -7,11 +7,10 @@
 <project name="jcgm" default="jar">
 	
 	<!-- The core package -->
-	<property name="version-core" 			value="0.3.2"/>
-	<property name="package-name-core" 		value="jcgm-core-${version-core}"/>
-	<property name="jar-name-core" 			value="${package-name-core}.jar"/>
-	<property name="jar-name-core-sources" 	value="${package-name-core}-sources.jar"/>
-	<property name="package-name-core-bin" 	value="${package-name-core}-bin"/>
+	<property name="version-core" value="0.3.2"/>
+	<property name="package-name-core" value="jcgm-core-${version-core}"/>
+	<property name="jar-name-core" value="${package-name-core}.jar"/>
+	<property name="package-name-core-bin" value="${package-name-core}-bin"/>
 
 	<!-- Source code only distributed in one package -->
 	<property name="package-name-src" value="jcgm-src"/>
@@ -29,12 +28,6 @@
 			includes="net/sf/jcgm/core/**"
 		/>
     </target>
-
-	<target name="jar-sources" depends="compile">
-		<jar destfile="build/${jar-name-core-sources}">
-			<fileset dir="src" includes="**/*.java"/>
-		</jar>
-	</target>
 	
 	<target name="compile" description="Compiles all java source files">
 		<mkdir dir="build/classes"/>

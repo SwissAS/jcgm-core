@@ -1093,7 +1093,8 @@ public class Command implements Cloneable {
 			return new RestrictedText(ec, eid, l, in);
 
 		case APPEND_TEXT: // 6
-			return new AppendText(ec, eid, l, in);
+			unsupported(ec, eid);
+			return new Command(ec, eid, l, in);
 
 		case POLYGON: // 7
 			return new PolygonElement(ec, eid, l, in);
