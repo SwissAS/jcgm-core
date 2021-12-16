@@ -48,6 +48,22 @@ public abstract class TextCommand extends Command {
 	/** The position at which the string should be displayed */
 	protected Point2D.Double position;
 
+	/**
+	 * {@code true} if "the string parameter constitutes the entire string to be displayed", 
+	 * i.e. no other text is to be appended;<br>  
+	 * {@code false} if some additional text should be appended
+	 */
+	protected boolean finalFlag;
+	
+	/**
+	 * {@code true} if the string is complete and ready to be printed;<br>
+	 * {@code false} if all following {@link AppendText} have been executed and the string complete 
+	 */
+	protected boolean stringComplete = true;
+
+	/** Last {@link TextCommand} string, concatenated with the following {@link AppendText} string (if there are). */
+	private StringBuilder sb = new StringBuilder();
+
 	public TextCommand(int ec, int eid, int l, DataInput in) throws IOException {
 		super(ec, eid, l, in);
 	}
@@ -59,11 +75,16 @@ public abstract class TextCommand extends Command {
 	 */
 	abstract Double getTextOffset(CGMDisplay d);
 
-	protected void scaleText(CGMDisplay d, FontMetrics fontMetrics,
-			GlyphVector glyphVector, double width, double height) {
-		// default: do not scale
-	}
+	protected abstract void scaleText(CGMDisplay d, FontMetrics fontMetrics, GlyphVector glyphVector, double width, double height);
 
+	protected Font getAdjustedFont(Font font, CGMDisplay d) {
+		// adjust the size of the font depending on the extent. If the extent is
+		// very big, having small font sizes may create problems
+		Point2D.Double[] extent = d.getExtent();
+
+		return font.deriveFont((float) (Math.abs(extent[0].y - extent[1].y) / 100));
+	}
+	
 	@Override
 	public void paint(CGMDisplay d) {
 		if (this.string.length() == 0) {
@@ -73,14 +94,30 @@ public abstract class TextCommand extends Command {
 
 		Graphics2D g2d = d.getGraphics2D();
 
+		String decodedString = d.useSymbolEncoding() ? SymbolDecoder.decode(this.string) : this.string;
+
+		d.setTextCommand(this);
+		if (this.finalFlag) {
+			// if there is nothing else that the param string to append
+			this.sb = new StringBuilder();
+			d.appendText(decodedString);
+		}
+		else if (!this.stringComplete) {
+			 // if there is some additional text to append then keep track of the data and handover to "AppendText" cmd
+			 d.appendText(decodedString);
+			return;
+		}
+		
+		String completeString = this.sb.toString();
+
 		// save the transformation since we are going to apply another one that
 		// is specific to this string
 		AffineTransform savedTransform = g2d.getTransform();
 
-		AffineTransform coordinateSystemTransformation = d
-				.getCoordinateSystemTransformation(this.position, d
-						.getCharacterOrientationBaselineVector(), d
-						.getCharacterOrientationUpVector());
+		AffineTransform coordinateSystemTransformation = d.getCoordinateSystemTransformation(
+				this.position,
+				d.getCharacterOrientationBaselineVector(), d.getCharacterOrientationUpVector()
+		);
 
 		AffineTransform textTransform = d.getTextTransform();
 		coordinateSystemTransformation.concatenate(textTransform);
@@ -90,27 +127,22 @@ public abstract class TextCommand extends Command {
 		Point2D.Double textOrigin = getTextOffset(d);
 		g2d.translate(textOrigin.x, textOrigin.y);
 
-		g2d.setColor(d.getTextColor());
+		// DEBUG: draw the outline
+		//        g2d.setColor(Color.MAGENTA);
+		//        g2d.draw(new Rectangle2D.Double(0, -this.deltaHeight, this.deltaWidth, this.deltaHeight));
 
-		String decodedString = d.useSymbolEncoding() ? SymbolDecoder
-				.decode(this.string) : this.string;
+		g2d.setColor(d.getTextColor());
 
 		// the text path left is easy: just flip the string
 		if (TextPath.Type.LEFT.equals(d.getTextPath())) {
-			decodedString = flipString(decodedString);
+			completeString = flipString(completeString);
 		}
 
-		Font font = g2d.getFont();
+		Font adjustedFont = getAdjustedFont(g2d.getFont(), d);
 
-		// adjust the size of the font depending on the extent. If the extent is
-		// very big, having small font sizes may create problems
-		Point2D.Double[] extent = d.getExtent();
-		Font adjustedFont = font.deriveFont((float) (Math.abs(extent[0].y
-				- extent[1].y) / 100));
 		g2d.setFont(adjustedFont);
 		FontRenderContext fontRenderContext = g2d.getFontRenderContext();
-		GlyphVector glyphVector = adjustedFont.createGlyphVector(
-				fontRenderContext, decodedString);
+		GlyphVector glyphVector = adjustedFont.createGlyphVector(fontRenderContext, completeString);
 		Rectangle2D logicalBounds = glyphVector.getLogicalBounds();
 
 		FontMetrics fontMetrics = g2d.getFontMetrics(adjustedFont);
@@ -122,16 +154,15 @@ public abstract class TextCommand extends Command {
 			// if we're in a headless environment, assume 96 dots per inch
 			// (default setting for Windows XP)
 			screenResolution = 96;
-		} else {
-			screenResolution = Toolkit.getDefaultToolkit()
-					.getScreenResolution();
+		}
+		else {
+			screenResolution = Toolkit.getDefaultToolkit().getScreenResolution();
 		}
 		double height = fontMetrics.getAscent() * 72 / screenResolution;
 
 		scaleText(d, fontMetrics, glyphVector, logicalBounds.getWidth(), height);
 
-		if (TextPath.Type.UP.equals(d.getTextPath())
-				|| TextPath.Type.DOWN.equals(d.getTextPath())) {
+		if (TextPath.Type.UP.equals(d.getTextPath()) || TextPath.Type.DOWN.equals(d.getTextPath())) {
 			applyTextPath(d, glyphVector);
 		}
 
@@ -139,6 +170,10 @@ public abstract class TextCommand extends Command {
 
 		// restore the transformation that existed before painting the string
 		g2d.setTransform(savedTransform);
+
+		// reset params to ensure text is not appended several times
+		setStringComplete(true);
+		d.resetTextCommand();
 	}
 
 	/**
@@ -174,7 +209,17 @@ public abstract class TextCommand extends Command {
 		}
 	}
 
-    public String getString() {
-        return string;
-    }
+	/**
+	 * Appends the given text string to the string builder.
+	 *
+	 * @param text the text to append
+	 */
+	public void appendText(String text) {
+		this.sb.append(text);
+	}
+	
+	public void setStringComplete(boolean stringComplete) {
+		this.stringComplete = stringComplete;
+	}
+
 }

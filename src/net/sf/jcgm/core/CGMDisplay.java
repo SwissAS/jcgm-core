@@ -151,6 +151,9 @@ public class CGMDisplay {
 	 */
 	private boolean isViewCleared= false;
 
+	/** Cached {@link TextCommand} that if set means that some text is still being appended to the string. */
+	private TextCommand textCommand;
+	
 	public CGMDisplay(CGM cgm) {
 		reset();
 		this.lineDashes = new HashMap<Integer, float[]>();
@@ -1003,6 +1006,30 @@ public class CGMDisplay {
 		this.isViewCleared = b;
 	}
 
+	/**
+	 * Appends the given text string to the string builder.
+	 * 
+	 * @param text the text to append
+	 */
+	public void appendText(String text) {
+		TextCommand textCommand = getTextCommand();
+		if (textCommand == null) {
+			throw new IllegalArgumentException("cannot append text if there is no previous TextCommand");
+		}
+		textCommand.appendText(text);
+	}
+	
+	public void setTextCommand(TextCommand textCommand) {
+		this.textCommand = textCommand;
+	}
+
+	public TextCommand getTextCommand() {
+		return this.textCommand;
+	}
+	
+	public void resetTextCommand() {
+		this.textCommand = null;
+	}
 }
 
 /*
