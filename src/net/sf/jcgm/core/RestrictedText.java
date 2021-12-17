@@ -24,13 +24,8 @@ package net.sf.jcgm.core;
 import java.awt.Font;
 import java.awt.FontMetrics;
 import java.awt.Graphics2D;
-import java.awt.GraphicsEnvironment;
-import java.awt.Toolkit;
-import java.awt.font.FontRenderContext;
 import java.awt.font.GlyphVector;
-import java.awt.geom.AffineTransform;
 import java.awt.geom.Point2D;
-import java.awt.geom.Rectangle2D;
 import java.io.DataInput;
 import java.io.IOException;
 
@@ -53,14 +48,18 @@ public class RestrictedText extends TextCommand {
 			throws IOException {
 		super(ec, eid, l, in);
 
+		// (2VDC)
 		this.deltaWidth = makeVdc();
 		this.deltaHeight = makeVdc();
+		
+		// point (P)
 		this.position = makePoint();
-
-		/* int finalNotFinal = */ makeEnum();
-
+		// flag (E)
+		this.finalFlag = makeEnum() >= 1;
+		setStringComplete(this.finalFlag);
+		// string (S)
 		this.string = makeString();
-
+		
 		this.type = RestrictedTextType.getType();
 
 		// make sure all the arguments were read
@@ -287,85 +286,16 @@ public class RestrictedText extends TextCommand {
 	}
 
 	@Override
-	public void paint(CGMDisplay d) {
-		if (this.string.length() == 0) {
-			// ignore empty strings
-			return;
-		}
-
-		Graphics2D g2d = d.getGraphics2D();
-
-		// save the transformation since we are going to apply another one that
-		// is specific to this string
-		AffineTransform savedTransform = g2d.getTransform();
-
-		AffineTransform coordinateSystemTransformation = d.getCoordinateSystemTransformation(
-				this.position,
-				d.getCharacterOrientationBaselineVector(), d.getCharacterOrientationUpVector());
-
-		AffineTransform textTransform = d.getTextTransform();
-		coordinateSystemTransformation.concatenate(textTransform);
-
-		g2d.transform(coordinateSystemTransformation);
-
-		Point2D.Double textOrigin = getTextOffset(d);
-		g2d.translate(textOrigin.x, textOrigin.y);
-
-		// DEBUG: draw the outline
-		//        g2d.setColor(Color.MAGENTA);
-		//        g2d.draw(new Rectangle2D.Double(0, -this.deltaHeight,
-		//        	this.deltaWidth, this.deltaHeight));
-
-		g2d.setColor(d.getTextColor());
-
-		String decodedString = d.useSymbolEncoding() ? SymbolDecoder.decode(this.string) : this.string;
-
-		// the text path left is easy: just flip the string
-		if (TextPath.Type.LEFT.equals(d.getTextPath())) {
-			decodedString = flipString(decodedString); 
-		}
-
-		Font font = g2d.getFont();
-		Font adjustedFont = font;
-
+	protected Font getAdjustedFont(Font font, CGMDisplay d) {
 		// FIXME: remove those magic values
 		// adjust the size of the font depending on the extent. If the extent is
 		// very big, having small font sizes may create problems
 		Point2D.Double[] extent = d.getExtent();
 		if (Math.abs(extent[0].y - extent[1].y) > 1000) {
-			adjustedFont = font.deriveFont((float) (Math.abs(extent[0].y - extent[1].y) / 100));
-			g2d.setFont(adjustedFont);
+			return font.deriveFont((float) (Math.abs(extent[0].y - extent[1].y) / 100));
 		}
-
-		FontRenderContext fontRenderContext = g2d.getFontRenderContext();
-		GlyphVector glyphVector = adjustedFont.createGlyphVector(fontRenderContext, decodedString);
-		Rectangle2D logicalBounds = glyphVector.getLogicalBounds();
-
-		FontMetrics fontMetrics = g2d.getFontMetrics(adjustedFont);
-		// XXX: unfortunately, getAscent() does not return correct values, 
-		// see http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=6623223
-		// so we are always going to be a bit off
-		int screenResolution;
-		if (GraphicsEnvironment.isHeadless()) {
-			// if we're in a headless environment, assume 96 dots per inch
-			// (default setting for Windows XP)
-			screenResolution = 96;
-		}
-		else {
-			screenResolution = Toolkit.getDefaultToolkit().getScreenResolution();
-		}
-		double height = fontMetrics.getAscent() * 72 / screenResolution;
-
-		scaleText(d, fontMetrics, glyphVector, logicalBounds.getWidth(), height);
-
-		if (TextPath.Type.UP.equals(d.getTextPath()) || TextPath.Type.DOWN.equals(d.getTextPath())) {
-			applyTextPath(d, glyphVector);
-		}
-
-		g2d.drawGlyphVector(glyphVector, 0, 0);
-
-		// restore the transformation that existed before painting the string
-		g2d.setTransform(savedTransform);
+		
+		return font;
 	}
 
 }
