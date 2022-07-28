@@ -78,6 +78,11 @@ public class RectangleElement extends Command {
 
     @Override
 	public void paint(CGMDisplay d) {
+        if (d.isWithinApplicationStructureBody()){
+            //TODO: get rid of this check once the "ApplicationStructure"-related commands are supported
+            return;
+        }
+        
     	d.fill(this.shape);
     	
     	Graphics2D g2d = d.getGraphics2D();

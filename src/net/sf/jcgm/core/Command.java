@@ -812,8 +812,7 @@ public class Command implements Cloneable {
 			return new Command(ec, eid, l, in);
 
 		case APPLICATION_STRUCTURE_ELEMENTS: // 9
-			unsupported(ec, eid);
-			return new Command(ec, eid, l, in);
+			return readApplicationStructureDescriptorElements(in, ec, eid, l);
 
 		default:
 			assert (10 <= ec && ec <= 15) : "unsupported element class";
@@ -886,7 +885,7 @@ public class Command implements Cloneable {
 			// 0, 21
 		case BEGIN_APPLICATION_STRUCTURE:
 			unsupported(ec, eid);
-			return new Command(ec, eid, l, in);
+			return new BeginApplicationStructure(ec, eid, l, in);
 
 			// 0, 22
 		case BEGIN_APPLICATION_STRUCTURE_BODY:
@@ -1321,6 +1320,17 @@ public class Command implements Cloneable {
 		default:
 			unsupported(ec, eid);
 			return new Command(ec, eid, l, in);
+		}
+	}
+	
+	// Class: 9
+	private static Command readApplicationStructureDescriptorElements(DataInput in, int ec, int eid, int l) throws IOException {
+		switch (ApplicationStructureDescriptorElement.getElement(eid)) {
+			case APPLICATION_STRUCTURE_ATTRIBUTE:
+				return new ApplicationStructureAttribute(ec, eid, l, in);
+			default:
+				unsupported(ec, eid);
+				return new Command(ec, eid, l, in);
 		}
 	}
 

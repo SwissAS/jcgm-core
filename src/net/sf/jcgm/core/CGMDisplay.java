@@ -153,6 +153,14 @@ public class CGMDisplay {
 
 	/** Cached {@link TextCommand} that if set means that some text is still being appended to the string. */
 	private TextCommand textCommand;
+
+	/**
+	 * //TODO: get rid of this boolean once the "ApplicationStructure"-related commands are supported
+	 * 
+	 * {@code true} if we are currently parsing commands within an ApplicationStructure;
+	 * i.e. between {@link BeginApplicationStructure} and {@link EndApplicationStructure} commands.
+	 */
+	private boolean isWithinApplicationStructureBody = false;
 	
 	public CGMDisplay(CGM cgm) {
 		reset();
@@ -1029,6 +1037,14 @@ public class CGMDisplay {
 	
 	public void resetTextCommand() {
 		this.textCommand = null;
+	}
+
+	public boolean isWithinApplicationStructureBody() {
+		return this.isWithinApplicationStructureBody;
+	}
+
+	public void setWithinApplicationStructureBody(boolean withinApplicationStructureBody) {
+		this.isWithinApplicationStructureBody = withinApplicationStructureBody;
 	}
 }
 

@@ -21,6 +21,11 @@ public class EndApplicationStructure extends Command {
 	}
 
 	@Override
+	public void paint(CGMDisplay d) {
+		d.setWithinApplicationStructureBody(false);
+	}
+
+	@Override
 	public String toString() {
 		return "EndApplicationStructure";
 	}
