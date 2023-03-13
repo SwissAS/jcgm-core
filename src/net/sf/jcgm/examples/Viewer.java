@@ -48,8 +48,8 @@ public class Viewer extends JFrame {
 	private JButton nextButton;
 
 	public Viewer() {
-		this.testDir = new File("d:/software/webcgm21-ts/static10");
-		this.referenceDir = new File("d:/software/webcgm21-ts/static10/images");
+		this.testDir = new File("C:/Users/diaa/Desktop/temp/jcgm-debug/images");
+		this.referenceDir = new File("C:/Users/diaa/Desktop/temp/jcgm-debug");
 		this.currentIndex = 0;
 
 		initCgmFiles();
@@ -125,7 +125,7 @@ public class Viewer extends JFrame {
 		this.cgmFiles = this.testDir.listFiles(new FilenameFilter() {
 			@Override
 			public boolean accept(File dir, String name) {
-				return name.endsWith(".cgm") || name.endsWith(".cgm.gz");
+				return name.endsWith(".cgm") || name.endsWith(".cgm.gz") || name.endsWith(".CGM");
 			}
 		});
 
@@ -167,7 +167,7 @@ public class Viewer extends JFrame {
 		gb.weightx = 100;
 		gb.gridx++;
 		this.dumpCommandFileField = new JTextField(50);
-		this.dumpCommandFileField.setText("c:\\Documents and Settings\\xphc\\Desktop\\ammcommands.txt");
+		this.dumpCommandFileField.setText("c:\\Documents and Settings\\diaa\\Desktop\\temp\\jcgm-debug\\ammcommands.txt");
 		topPanel.add(this.dumpCommandFileField, gb);
 
 		gb.weightx = 1;

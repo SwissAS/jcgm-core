@@ -87,8 +87,25 @@ public class BeginTileArray extends Command {
 		double tileSizeInPathDirection = boundingBoxSizeInPathDirection / this.nTilesInPathDirection;
 		double tileSizeInLineDirection = boundingBoxSizeInLineDirection / this.nTilesInLineDirection;
 
+		// ONLY FOR T6 COMPRESSED TILES:
+		// it can happen (this is true for some T6 compressed samples at least)
+		// that the nCellsInLineDirection is higher than the (amount of lines * nCellsPerTileInLineDirection);
+		// i.e. that each line does NOT have the same height; 
+		// therefore, always compute the height of the last tile so the TiffWritter is well set up  
+		int amountOfLastLineCellsInLineDirection =
+				// total height
+				this.nCellsInLineDirection
+						// sum of height of the first lines
+						- (this.nTilesInLineDirection - 1) * this.nCellsPerTileInLineDirection;
+
+		if (amountOfLastLineCellsInLineDirection != this.nCellsPerTileInLineDirection) {
+			Messages.getInstance().add(new Message(Message.Severity.INFO, getElementClass(), getElementCode(), 
+					"the amount of cells of the last line is different than the given amount of cells per line", toString()));
+		}
+		
 		d.setTileArrayInfo(new TileArrayInfo(startPosition, this.nTilesInPathDirection, this.nCellsPerTileInPathDirection,
-				this.nCellsPerTileInLineDirection, tileSizeInPathDirection, tileSizeInLineDirection));
+				this.nCellsPerTileInLineDirection, tileSizeInPathDirection, tileSizeInLineDirection, 
+				this.nTilesInLineDirection, amountOfLastLineCellsInLineDirection));
 	}
 
 	@Override

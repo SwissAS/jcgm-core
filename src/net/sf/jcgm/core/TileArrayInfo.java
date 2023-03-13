@@ -36,6 +36,8 @@ public class TileArrayInfo {
 	private final int nTilesInPathDirection;
 	private final double tileSizeInPathDirection;
 	private final double tileSizeInLineDirection;
+	private final int nTilesInLineDirection;
+	private final int amountOfLastLineCellsInLineDirection;
 
 	/** current index in path direction */
 	private int pathIndex = 0;
@@ -52,8 +54,9 @@ public class TileArrayInfo {
 	private final int nCellsPerTileInLineDirection;
 
 	TileArrayInfo(Double startPosition, int nTilesInPathDirection,
-			int nCellsPerTileInPathDirection, int nCellsPerTileInLineDirection,
-			double tileSizeInPathDirection, double tileSizeInLineDirection) {
+				  int nCellsPerTileInPathDirection, int nCellsPerTileInLineDirection,
+				  double tileSizeInPathDirection, double tileSizeInLineDirection,
+				  int nTilesInLineDirection, int amountOfLastLineCellsInLineDirection) {
 		this.startPosition = startPosition;
 		this.currentPosition = new Point2D.Double(startPosition.x, startPosition.y);
 		this.nTilesInPathDirection = nTilesInPathDirection;
@@ -61,6 +64,8 @@ public class TileArrayInfo {
 		this.nCellsPerTileInLineDirection = nCellsPerTileInLineDirection;
 		this.tileSizeInPathDirection = tileSizeInPathDirection;
 		this.tileSizeInLineDirection = tileSizeInLineDirection;
+		this.nTilesInLineDirection = nTilesInLineDirection;
+		this.amountOfLastLineCellsInLineDirection = amountOfLastLineCellsInLineDirection;
 	}
 
 	int getCurrentPathIndex() {
@@ -97,6 +102,14 @@ public class TileArrayInfo {
 		return this.currentPosition;
 	}
 
+	public int getAmountOfLastLineCellsInLineDirection() {
+		return this.amountOfLastLineCellsInLineDirection;
+	}
+
+	boolean isLastLine() {
+		return this.lineIndex == this.nTilesInLineDirection - 1 ;
+	}
+	
 	/**
 	 * This will update the current position for the next tile.
 	 */

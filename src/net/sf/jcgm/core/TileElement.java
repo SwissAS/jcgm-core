@@ -161,7 +161,13 @@ abstract class TileElement extends Command {
 			}
 			TiffWriter writer = new TiffWriter();
 			writer.setImageWidth(tileArrayInfo.getNCellsPerTileInPathDirection());
-			writer.setImageHeight(tileArrayInfo.getNCellsPerTileInLineDirection());
+			int imageHeight = tileArrayInfo.getNCellsPerTileInLineDirection();
+			// it can happen that the nCellsInLineDirection is higher than the (amount of lines * nCellsPerTileInLineDirection)
+			// i.e. that each line does NOT have the same height; in that case get the correct height of the last tile	
+			if (tileArrayInfo.isLastLine()) {
+				imageHeight = tileArrayInfo.getAmountOfLastLineCellsInLineDirection();
+			} 
+			writer.setImageHeight(imageHeight);
 			writer.setCompressionType(CompressionType.T6);
 			writer.setImageData(this.bytes.array());
 			byte[] tiffBytes = writer.writeImage();
