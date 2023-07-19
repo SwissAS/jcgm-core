@@ -31,34 +31,21 @@ import java.io.*;
  * @version $Id$
  */
 public class IntegerPrecision extends Command {
-    private static int precision;
-    
-    static {
-    	reset();
-    }
     
     public IntegerPrecision(int ec, int eid, int l, DataInput in, CGM cgm)
             throws IOException {
 
         super(ec, eid, l, in, cgm);
-        IntegerPrecision.precision = makeInt();
+		int precision = makeInt();
+		cgm.setIntegerPrecision(precision);
         
-        assert (IntegerPrecision.precision == 8 || IntegerPrecision.precision == 16 ||
-				IntegerPrecision.precision == 24 || IntegerPrecision.precision == 32) : "unsupported INTEGER PRECISION";
+        assert precision == 8 || precision == 16 ||
+				precision == 24 || precision == 32 : "unsupported INTEGER PRECISION";
     }
     
-    public static void reset() {
-    	precision = 16;
-	}
-
-	static int getPrecision() {
-    	return IntegerPrecision.precision;
-    }
-
     @Override
 	public String toString() {
-        String s = "IntegerPrecision " + String.valueOf(IntegerPrecision.precision);
-        return s;
+	    return "IntegerPrecision " + this.cgm.getIntegerPrecision();
     }
 }
 

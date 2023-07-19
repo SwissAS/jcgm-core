@@ -222,12 +222,12 @@ public class Command implements Cloneable {
 	}
 
 	final protected int makeInt() {
-		int precision = IntegerPrecision.getPrecision();
+		int precision = this.cgm.getIntegerPrecision();
 		return makeInt(precision);
 	}
 
 	final protected int sizeOfInt() {
-		int precision = IntegerPrecision.getPrecision();
+		int precision = this.cgm.getIntegerPrecision();
 		return precision / 8;
 	}
 
