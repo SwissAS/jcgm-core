@@ -58,7 +58,9 @@ public class CGM implements Cloneable {
 	private int colourPrecision = 8;
 	private ColourModel.Model colourModel = ColourModel.Model.RGB;
 	private ColourSelectionMode.Type colourSelectionMode = ColourSelectionMode.Type.INDEXED;
-
+	private int[] minimumColorValueRGB = new int[] { 0, 0, 0 };
+	private int[] maximumColorValueRGB = new int[] { 255, 255, 255 };
+	
 	private final List<ICommandListener> commandListeners = new ArrayList<ICommandListener>();
 
 	private final static int INITIAL_NUM_COMMANDS = 500;
@@ -292,7 +294,7 @@ public class CGM implements Cloneable {
 		resetColourModel();
 		resetColourPrecision();
 		resetColourSelectionMode();
-		ColourValueExtent.reset();
+		resetColourValueExtents();
 		EdgeWidthSpecificationMode.reset();
 		IndexPrecision.reset();
 		IntegerPrecision.reset();
@@ -374,6 +376,29 @@ public class CGM implements Cloneable {
 	
 	private void resetColourSelectionMode() {
 		setColourSelectionMode(ColourSelectionMode.Type.INDEXED);
+	}
+	// endregion
+	
+	// region COLOUR VALUE EXTENT
+	int[] getMinimumColorValueRGB() {
+		return this.minimumColorValueRGB;
+	}
+	
+	void setMinimumColorValueRGB(int[] minimumColorValueRGB) {
+		this.minimumColorValueRGB = minimumColorValueRGB;
+	}
+	
+	int[] getMaximumColorValueRGB() {
+		return this.maximumColorValueRGB;
+	}
+	
+	void setMaximumColorValueRGB(int[] maximumColorValueRGB) {
+		this.maximumColorValueRGB = maximumColorValueRGB;
+	}
+	
+	private void resetColourValueExtents() {
+		setMinimumColorValueRGB(new int[]{0, 0, 0});
+		setMaximumColorValueRGB(new int[]{255, 255, 255});
 	}
 	// endregion
 	

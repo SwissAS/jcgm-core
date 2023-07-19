@@ -609,8 +609,8 @@ public class Command implements Cloneable {
 	}
 
 	private int[] scaleColorValueRGB(int r, int g, int b) {
-		int[] min = ColourValueExtent.getMinimumColorValueRGB();
-		int[] max = ColourValueExtent.getMaximumColorValueRGB();
+		int[] min = this.cgm.getMinimumColorValueRGB();
+		int[] max = this.cgm.getMaximumColorValueRGB();
 
 		r = clamp(r, min[0], max[0]);
 		g = clamp(g, min[0], max[0]);

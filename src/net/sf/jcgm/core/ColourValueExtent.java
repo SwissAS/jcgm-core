@@ -33,16 +33,10 @@ import net.sf.jcgm.core.ColourModel.Model;
  * @version $Id$
  */
 public class ColourValueExtent extends Command {
-    static private int[] minimumColorValueRGB;
-	static private int[] maximumColorValueRGB;
 	private double firstComponentScale;
 	private double secondComponentScale;
 	private double thirdComponentScale;
 	
-	static {
-		reset();
-	}
-
 	public ColourValueExtent(int ec, int eid, int l, DataInput in, CGM cgm)
             throws IOException {
         super(ec, eid, l, in, cgm);
@@ -52,8 +46,8 @@ public class ColourValueExtent extends Command {
         	int precision = this.cgm.getColourPrecision();
         	
         	if (colorModel.equals(Model.RGB)) {
-        		ColourValueExtent.minimumColorValueRGB = new int[] { makeUInt(precision), makeUInt(precision), makeUInt(precision) };
-        		ColourValueExtent.maximumColorValueRGB = new int[] { makeUInt(precision), makeUInt(precision), makeUInt(precision) };
+		        cgm.setMinimumColorValueRGB(new int[]{makeUInt(precision), makeUInt(precision), makeUInt(precision)});
+		        cgm.setMaximumColorValueRGB(new int[]{makeUInt(precision), makeUInt(precision), makeUInt(precision)});
         	}
         	else {
         		unsupported("unsupported color model "+colorModel, this.cgm);
@@ -73,19 +67,6 @@ public class ColourValueExtent extends Command {
         // make sure all the arguments were read
         assert (this.currentArg == this.args.length);
     }
-	
-	public static void reset() {
-		minimumColorValueRGB = new int[] { 0, 0, 0 };
-		maximumColorValueRGB = new int[] { 255, 255, 255 };
-	}
-	
-	static int[] getMinimumColorValueRGB() {
-		return minimumColorValueRGB;
-	}
-	
-	static int[] getMaximumColorValueRGB() {
-		return maximumColorValueRGB;
-	}
 
     @Override
 	public String toString() {
@@ -93,11 +74,13 @@ public class ColourValueExtent extends Command {
     	sb.append("ColourValueExtent");
 	    final Model colourModel = this.cgm.getColourModel();
 	    if (ColourModel.Model.RGB.equals(colourModel)) {
-        	sb.append(" min RGB=(").append(ColourValueExtent.minimumColorValueRGB[0]).append(",");
-        	sb.append(minimumColorValueRGB[1]).append(",");
-        	sb.append(minimumColorValueRGB[2]).append(")");
-        	
-        	sb.append(" max RGB=(").append(ColourValueExtent.maximumColorValueRGB[0]).append(",");
+		    final int[] minimumColorValueRGB = this.cgm.getMinimumColorValueRGB();
+		    sb.append(" min RGB=(").append(minimumColorValueRGB[0]).append(",");
+		    sb.append(minimumColorValueRGB[1]).append(",");
+		    sb.append(minimumColorValueRGB[2]).append(")");
+		    
+		    final int[] maximumColorValueRGB = this.cgm.getMaximumColorValueRGB();
+		    sb.append(" max RGB=(").append(maximumColorValueRGB[0]).append(",");
         	sb.append(maximumColorValueRGB[1]).append(",");
         	sb.append(maximumColorValueRGB[2]).append(")");
         }
