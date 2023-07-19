@@ -60,7 +60,7 @@ public class RestrictedText extends TextCommand {
 		// string (S)
 		this.string = makeString();
 		
-		this.type = RestrictedTextType.getType();
+		this.type = cgm.getRestrictedTextType();
 
 		// make sure all the arguments were read
 		assert (this.currentArg == this.args.length);

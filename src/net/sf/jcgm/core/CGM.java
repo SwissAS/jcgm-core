@@ -68,6 +68,7 @@ public class CGM implements Cloneable {
 	private RealPrecision.Precision realPrecision = RealPrecision.Precision.FIXED_32;
 	/** Flag to tell us whether a real precision command has already been processed or not. */
 	private boolean realPrecisionProcessed = false;
+	private RestrictedTextType.Type restrictedTextType = RestrictedTextType.Type.BASIC;
 	
 	private final List<ICommandListener> commandListeners = new ArrayList<ICommandListener>();
 
@@ -309,7 +310,7 @@ public class CGM implements Cloneable {
 		resetLineWidthSpecificationMode();
 		resetMarkerSizeSpecificationMode();
 		resetRealPrecision();
-		RestrictedTextType.reset();
+		resetRestrictedTextType();
 		VDCIntegerPrecision.reset();
 		VDCRealPrecision.reset();
 		VDCType.reset();
@@ -500,6 +501,20 @@ public class CGM implements Cloneable {
 	private void resetRealPrecision() {
 		setRealPrecision(RealPrecision.Precision.FIXED_32);
 		setRealPrecisionProcessed(false);
+	}
+	// endregion
+	
+	// region RESTRICTED TEXT TYPE
+	RestrictedTextType.Type getRestrictedTextType() {
+		return this.restrictedTextType;
+	}
+	
+	void setRestrictedTextType(RestrictedTextType.Type restrictedTextType) {
+		this.restrictedTextType = restrictedTextType;
+	}
+	
+	private void resetRestrictedTextType() {
+		setRestrictedTextType(RestrictedTextType.Type.BASIC);	
 	}
 	// endregion
 	
