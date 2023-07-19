@@ -424,7 +424,7 @@ public class Command implements Cloneable {
 	}
 
 	final protected double makeVc() {
-		switch (DeviceViewportSpecificationMode.getMode()) {
+		switch (this.cgm.getDeviceViewportSpecificationMode()) {
 		case MillimetersWithScaleFactor:
 		case PhysicalDeviceCoordinates:
 			return makeInt();

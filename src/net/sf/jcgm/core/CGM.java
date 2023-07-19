@@ -73,6 +73,7 @@ public class CGM implements Cloneable {
 	/** Flag to tell us whether a real precision command has already been processed or not. */
 	private boolean realPrecisionProcessed = false;
 	private RestrictedTextType.Type restrictedTextType = RestrictedTextType.Type.BASIC;
+	private DeviceViewportSpecificationMode.Mode deviceViewportSpecificationMode = DeviceViewportSpecificationMode.Mode.FractionOfDrawingSurface;
 	
 	private final List<ICommandListener> commandListeners = new ArrayList<ICommandListener>();
 
@@ -319,6 +320,7 @@ public class CGM implements Cloneable {
 		resetVdcRealPrecision();
 		resetVdcType();
 		resetNamePrecision();
+		resetDeviceViewportSpecificationMode();
 	
 		resetMessages();
 	}
@@ -576,6 +578,20 @@ public class CGM implements Cloneable {
 	
 	private void resetRestrictedTextType() {
 		setRestrictedTextType(RestrictedTextType.Type.BASIC);	
+	}
+	// endregion
+	
+	// region DEVICE VIEWPORT SPECIFICATION MODE
+	DeviceViewportSpecificationMode.Mode getDeviceViewportSpecificationMode() {
+		return this.deviceViewportSpecificationMode;
+	}
+	
+	void setDeviceViewportSpecificationMode(DeviceViewportSpecificationMode.Mode deviceViewportSpecificationMode) {
+		this.deviceViewportSpecificationMode = deviceViewportSpecificationMode;
+	}
+	
+	private void resetDeviceViewportSpecificationMode() {
+		setDeviceViewportSpecificationMode(DeviceViewportSpecificationMode.Mode.FractionOfDrawingSurface);
 	}
 	// endregion
 	
