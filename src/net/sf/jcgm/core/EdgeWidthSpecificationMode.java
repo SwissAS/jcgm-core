@@ -31,31 +31,18 @@ import java.io.*;
  * @version $Id$
  */
 public class EdgeWidthSpecificationMode extends Command {
-    static private SpecificationMode mode;
-    
-    static {
-    	reset();
-    }
 
     public EdgeWidthSpecificationMode(int ec, int eid, int l, DataInput in, CGM cgm)
             throws IOException {
         super(ec, eid, l, in, cgm);
 
         int mode = makeEnum();
-        EdgeWidthSpecificationMode.mode = SpecificationMode.getMode(mode);
+		cgm.setEdgeWidthSpecificationMode(SpecificationMode.getMode(mode));
     }
-
-    public static void reset() {
-    	mode = SpecificationMode.ABSOLUTE; 
-	}
-
-	public static SpecificationMode getMode() {
-		return mode;
-	}
 
 	@Override
 	public String toString() {
-        return "EdgeWidthSpecificationMode " + mode;
+        return "EdgeWidthSpecificationMode " + this.cgm.getEdgeWidthSpecificationMode();
     }
 }
 

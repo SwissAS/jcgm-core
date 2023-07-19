@@ -36,7 +36,7 @@ public class EdgeWidth extends Command {
     public EdgeWidth(int ec, int eid, int l, DataInput in, CGM cgm)
             throws IOException {
         super(ec, eid, l, in, cgm);
-        this.width = makeSizeSpecification(EdgeWidthSpecificationMode.getMode());
+        this.width = makeSizeSpecification(cgm.getEdgeWidthSpecificationMode());
     }
 
     @Override

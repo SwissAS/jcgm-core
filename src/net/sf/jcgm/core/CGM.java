@@ -60,6 +60,7 @@ public class CGM implements Cloneable {
 	private ColourSelectionMode.Type colourSelectionMode = ColourSelectionMode.Type.INDEXED;
 	private int[] minimumColorValueRGB = new int[] { 0, 0, 0 };
 	private int[] maximumColorValueRGB = new int[] { 255, 255, 255 };
+	private SpecificationMode edgeWidthSpecificationMode = SpecificationMode.ABSOLUTE;
 	
 	private final List<ICommandListener> commandListeners = new ArrayList<ICommandListener>();
 
@@ -295,7 +296,7 @@ public class CGM implements Cloneable {
 		resetColourPrecision();
 		resetColourSelectionMode();
 		resetColourValueExtents();
-		EdgeWidthSpecificationMode.reset();
+		resetEdgeWidthSpecificationMode();
 		IndexPrecision.reset();
 		IntegerPrecision.reset();
 		LineWidthSpecificationMode.reset();
@@ -399,6 +400,20 @@ public class CGM implements Cloneable {
 	private void resetColourValueExtents() {
 		setMinimumColorValueRGB(new int[]{0, 0, 0});
 		setMaximumColorValueRGB(new int[]{255, 255, 255});
+	}
+	// endregion
+	
+	// region EDGE WIDTH SPECIFICATION MODE
+	SpecificationMode getEdgeWidthSpecificationMode() {
+		return this.edgeWidthSpecificationMode;
+	}
+	
+	void setEdgeWidthSpecificationMode(SpecificationMode edgeWidthSpecificationMode) {
+		this.edgeWidthSpecificationMode = edgeWidthSpecificationMode;
+	}
+	
+	private void resetEdgeWidthSpecificationMode() {
+		setEdgeWidthSpecificationMode(SpecificationMode.ABSOLUTE);
 	}
 	// endregion
 	

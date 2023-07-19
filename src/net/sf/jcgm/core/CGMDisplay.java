@@ -761,7 +761,7 @@ public class CGMDisplay {
 	}
 
 	public void setEdgeWidth(double width) {
-		SpecificationMode mode = EdgeWidthSpecificationMode.getMode();
+		SpecificationMode mode = this.Cgm.getEdgeWidthSpecificationMode();
 		this.edgeStroke = new BasicStroke((float) scaleWidth(width, mode),
 				this.edgeStroke.getEndCap(),
 				this.edgeStroke.getLineJoin(),
