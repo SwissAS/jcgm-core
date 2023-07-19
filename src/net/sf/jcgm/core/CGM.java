@@ -40,7 +40,6 @@ import java.nio.channels.FileChannel;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.PrimitiveIterator;
 import java.util.zip.GZIPInputStream;
 
 import net.sf.jcgm.core.ScalingMode.Mode;
@@ -66,6 +65,9 @@ public class CGM implements Cloneable {
 	private SpecificationMode markerSizeSpecificationMode = SpecificationMode.ABSOLUTE;
 	private int indexPrecision = 16;
 	private int integerPrecision = 16;
+	private RealPrecision.Precision realPrecision = RealPrecision.Precision.FIXED_32;
+	/** Flag to tell us whether a real precision command has already been processed or not. */
+	private boolean realPrecisionProcessed = false;
 	
 	private final List<ICommandListener> commandListeners = new ArrayList<ICommandListener>();
 
@@ -306,7 +308,7 @@ public class CGM implements Cloneable {
 		resetIntegerPrecision();
 		resetLineWidthSpecificationMode();
 		resetMarkerSizeSpecificationMode();
-		RealPrecision.reset();
+		resetRealPrecision();
 		RestrictedTextType.reset();
 		VDCIntegerPrecision.reset();
 		VDCRealPrecision.reset();
@@ -475,6 +477,29 @@ public class CGM implements Cloneable {
 	
 	private void resetIntegerPrecision() {
 		setIntegerPrecision(16);
+	}
+	// endregion
+	
+	// region REAL PRECISION
+	RealPrecision.Precision getRealPrecision() {
+		return this.realPrecision;
+	}
+	
+	void setRealPrecision(RealPrecision.Precision realPrecision) {
+		this.realPrecision = realPrecision;
+	}
+	
+	boolean hasRealPrecisionBeenProcessed() {
+		return this.realPrecisionProcessed;
+	}
+	
+	void setRealPrecisionProcessed(boolean realPrecisionProcessed) {
+		this.realPrecisionProcessed = realPrecisionProcessed;
+	}
+	
+	private void resetRealPrecision() {
+		setRealPrecision(RealPrecision.Precision.FIXED_32);
+		setRealPrecisionProcessed(false);
 	}
 	// endregion
 	

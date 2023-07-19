@@ -434,7 +434,7 @@ public class Command implements Cloneable {
 	}
 
 	final protected double makeReal() {
-		Precision precision = RealPrecision.getPrecision();
+		Precision precision = this.cgm.getRealPrecision();
 		if (precision.equals(RealPrecision.Precision.FIXED_32)) {
 			return makeFixedPoint32();
 		}
@@ -454,7 +454,7 @@ public class Command implements Cloneable {
 	}
 
 	final protected double makeFixedPoint() {
-		Precision precision = RealPrecision.getPrecision();
+		Precision precision = this.cgm.getRealPrecision();
 		if (precision.equals(RealPrecision.Precision.FIXED_32)) {
 			return makeFixedPoint32();
 		}
@@ -467,7 +467,7 @@ public class Command implements Cloneable {
 	}
 
 	final protected double makeFloatingPoint() {
-		Precision precision = RealPrecision.getPrecision();
+		Precision precision = this.cgm.getRealPrecision();
 		if (precision.equals(RealPrecision.Precision.FLOATING_32)) {
 			return makeFloatingPoint32();
 		}

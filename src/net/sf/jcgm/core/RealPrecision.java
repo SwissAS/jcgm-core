@@ -33,17 +33,7 @@ import java.io.IOException;
  */
 public class RealPrecision extends Command {
 	enum Precision { FLOATING_32, FLOATING_64, FIXED_32, FIXED_64 }
-	static private Precision precision;
-	/**
-	 * Flag to tell us whether a real precision command has already been
-	 * processed or not
-	 */
-	static boolean realPrecisionProcessed;
 	
-	static {
-		reset();
-	}
-    
     public RealPrecision(int ec, int eid, int l, DataInput in, CGM cgm)
             throws IOException {
 
@@ -51,6 +41,7 @@ public class RealPrecision extends Command {
         int representation = makeEnum();
         int p2 = makeInt();
         int p3 = makeInt();
+		Precision precision = Precision.FIXED_32;
         if (representation == 0) {
         	if (p2 == 9 && p3 == 23) {
         		precision = Precision.FLOATING_32;
@@ -77,32 +68,13 @@ public class RealPrecision extends Command {
         	assert false : "unsupported representation";
         }
         
-        realPrecisionProcessed = true;
+		cgm.setRealPrecision(precision);
+		cgm.setRealPrecisionProcessed(true);
     }
-    
-    public static void reset() {
-    	precision = Precision.FIXED_32;
-    	realPrecisionProcessed = false;
-	}
-
-	static public Precision getPrecision() {
-    	return RealPrecision.precision;
-    }
-
-	/**
-	 * Returns a flag to tell us if we encountered a real precision command
-	 * already or not
-	 * 
-	 * @return
-	 */
-	static public boolean hasRealPrecisionBeenProcessed() {
-		return realPrecisionProcessed;
-	}
 	
     @Override
 	public String toString() {
-        String s = "RealPrecision " + String.valueOf(RealPrecision.precision);
-        return s;
+	    return "RealPrecision " + this.cgm.getRealPrecision();
     }
 
 }

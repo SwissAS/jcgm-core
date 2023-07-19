@@ -68,7 +68,7 @@ public class DeviceViewportSpecificationMode extends Command {
 			unsupported("unsupported mode " + e, this.cgm);
 		}
 
-		if (RealPrecision.hasRealPrecisionBeenProcessed()) {
+		if (cgm.hasRealPrecisionBeenProcessed()) {
 			this.metricScaleFactor = makeReal();
 		}
 		else {
