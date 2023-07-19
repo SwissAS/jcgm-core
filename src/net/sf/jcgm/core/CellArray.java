@@ -68,7 +68,7 @@ public class CellArray extends Command {
 				localColorPrecision = cgm.getColourIndexPrecision();
 			}
 			else {
-				localColorPrecision = ColourPrecision.getPrecision();
+				localColorPrecision = this.cgm.getColourPrecision();
 			}
 		}
 

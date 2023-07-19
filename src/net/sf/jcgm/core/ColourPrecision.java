@@ -30,34 +30,20 @@ import java.io.*;
  * @version $Id$
  */
 public class ColourPrecision extends Command {
-    static int precision;
-    
-    static {
-    	reset();
-    }
     
     public ColourPrecision(int ec, int eid, int l, DataInput in, CGM cgm)
             throws IOException {
 
         super(ec, eid, l, in, cgm);
-        ColourPrecision.precision = makeInt();
+		this.cgm.setColourPrecision(makeInt());
 
         // make sure all the arguments were read
         assert (this.currentArg == this.args.length);
     }
     
-    public static void reset() {
-		precision = 8;
-	}
-
-	static int getPrecision() {
-    	return precision;
-    }
-
     @Override
 	public String toString() {
-        String s = "ColourPrecision " + String.valueOf(ColourPrecision.precision);
-        return s;
+	    return "ColourPrecision " + this.cgm.getColourPrecision();
     }
 }
 

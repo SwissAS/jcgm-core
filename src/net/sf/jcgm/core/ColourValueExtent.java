@@ -49,7 +49,7 @@ public class ColourValueExtent extends Command {
         
         Model colorModel = cgm.getColourModel();
 		if (colorModel.equals(ColourModel.Model.RGB) || colorModel.equals(ColourModel.Model.CMYK)) {
-        	int precision = ColourPrecision.getPrecision();
+        	int precision = this.cgm.getColourPrecision();
         	
         	if (colorModel.equals(Model.RGB)) {
         		ColourValueExtent.minimumColorValueRGB = new int[] { makeUInt(precision), makeUInt(precision), makeUInt(precision) };

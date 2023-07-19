@@ -50,7 +50,7 @@ public class Tile extends TileElement {
 				cellColorPrecision = cgm.getColourIndexPrecision();
 			}
 			else {
-				cellColorPrecision = ColourPrecision.getPrecision();
+				cellColorPrecision = this.cgm.getColourPrecision();
 			}
 		}
 
