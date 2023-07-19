@@ -38,12 +38,6 @@ public class VDCRealPrecision extends Command {
 		FIXED_POINT_64BIT,
 	}
 
-	private static Type precision;
-	
-	static {
-		reset();
-	}
-    
     public VDCRealPrecision(int ec, int eid, int l, DataInput in, CGM cgm)
             throws IOException {
 
@@ -52,46 +46,41 @@ public class VDCRealPrecision extends Command {
         int p2 = makeInt();
         int p3 = makeInt();
 
+		Type precision = Type.FIXED_POINT_32BIT;
+		
         if (p1 == 0) {
         	if (p2 == 9 && p3 == 23) {
-        		VDCRealPrecision.precision = Type.FLOATING_POINT_32BIT;
+        		precision = Type.FLOATING_POINT_32BIT;
         	}
         	else if (p2 == 12 && p3 == 52) {
-        		VDCRealPrecision.precision = Type.FLOATING_POINT_64BIT;
+        		precision = Type.FLOATING_POINT_64BIT;
         	}
         	else {
         		// use default
         		unsupported("unsupported real precision", this.cgm);
-        		VDCRealPrecision.precision = Type.FIXED_POINT_32BIT;
+        		precision = Type.FIXED_POINT_32BIT;
         	}
         }
         else if (p1 == 1) {
         	if (p2 == 16 && p3 == 16) {
-        		VDCRealPrecision.precision = Type.FIXED_POINT_32BIT;
+        		precision = Type.FIXED_POINT_32BIT;
         	}
         	else if (p2 == 32 && p3 == 32) {
-        		VDCRealPrecision.precision = Type.FIXED_POINT_64BIT;
+        		precision = Type.FIXED_POINT_64BIT;
         	}
         	else {
         		// use default
         		unsupported("unsupported real precision", this.cgm);
-        		VDCRealPrecision.precision = Type.FIXED_POINT_32BIT;
+        		precision = Type.FIXED_POINT_32BIT;
         	}
         }
+		
+		cgm.setVdcRealPrecision(precision);
     }
     
-    public static void reset() {
-    	precision = Type.FIXED_POINT_32BIT;
-	}
-
-	public static Type getPrecision() {
-    	return VDCRealPrecision.precision;
-    }
-
     @Override
 	public String toString() {
-        String s = "VDCRealPrecision " + String.valueOf(VDCRealPrecision.precision);
-        return s;
+	    return "VDCRealPrecision " + this.cgm.getVdcRealPrecision();
     }
 }
 
