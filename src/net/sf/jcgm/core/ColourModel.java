@@ -31,17 +31,13 @@ import java.io.*;
  */
 public class ColourModel extends Command {
 	enum Model { RGB, CIELAB, CIELUV, CMYK, RGB_RELATED }
-	private static Model model;
-	
-	static {
-		reset();
-	}
-	
+
     public ColourModel(int ec, int eid, int l, DataInput in, CGM cgm)
             throws IOException {
         super(ec, eid, l, in, cgm);
         
         int index = makeIndex();
+		Model model;
         switch (index) {
         case 1:
         	model = Model.RGB;
@@ -62,22 +58,15 @@ public class ColourModel extends Command {
         	unsupported("unsupported color mode "+index, this.cgm);
         	model = Model.RGB;
         }
+		this.cgm.setColourModel(model);
         
         // make sure all the arguments were read
         assert (this.currentArg == this.args.length);
    }
-    
-    public static Model getModel() {
-    	return model;
-    }
-    
-    public static void reset() {
-    	model = Model.RGB;
-    }
-
-    @Override
-	public String toString() {
-        return "ColourModel "+model;
+   
+	@Override
+    public String toString() {
+	    return "ColourModel " + this.cgm.getColourModel();
     }
 }
 

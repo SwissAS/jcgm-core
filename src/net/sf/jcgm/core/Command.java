@@ -551,7 +551,7 @@ public class Command implements Cloneable {
 
 	final protected Color makeDirectColor() {
 		int precision = ColourPrecision.getPrecision();
-		Model model = ColourModel.getModel();
+		Model model = this.cgm.getColourModel();
 
 		if (model.equals(Model.RGB)) {
 			int[] scaled = scaleColorValueRGB(makeUInt(precision), makeUInt(precision), makeUInt(precision));
@@ -598,7 +598,7 @@ public class Command implements Cloneable {
 
 	final protected int sizeOfDirectColor() {
 		int precision = ColourPrecision.getPrecision();
-		Model model = ColourModel.getModel();
+		Model model = this.cgm.getColourModel();
 
 		if (model.equals(Model.RGB)) {
 			return 3 * precision / 8;

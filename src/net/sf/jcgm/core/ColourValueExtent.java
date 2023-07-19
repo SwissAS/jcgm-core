@@ -47,7 +47,7 @@ public class ColourValueExtent extends Command {
             throws IOException {
         super(ec, eid, l, in, cgm);
         
-        Model colorModel = ColourModel.getModel();
+        Model colorModel = cgm.getColourModel();
 		if (colorModel.equals(ColourModel.Model.RGB) || colorModel.equals(ColourModel.Model.CMYK)) {
         	int precision = ColourPrecision.getPrecision();
         	
@@ -91,7 +91,8 @@ public class ColourValueExtent extends Command {
 	public String toString() {
     	StringBuilder sb = new StringBuilder();
     	sb.append("ColourValueExtent");
-        if (ColourModel.getModel().equals(ColourModel.Model.RGB)) {
+	    final Model colourModel = this.cgm.getColourModel();
+	    if (ColourModel.Model.RGB.equals(colourModel)) {
         	sb.append(" min RGB=(").append(ColourValueExtent.minimumColorValueRGB[0]).append(",");
         	sb.append(minimumColorValueRGB[1]).append(",");
         	sb.append(minimumColorValueRGB[2]).append(")");
@@ -100,12 +101,12 @@ public class ColourValueExtent extends Command {
         	sb.append(maximumColorValueRGB[1]).append(",");
         	sb.append(maximumColorValueRGB[2]).append(")");
         }
-        else if (ColourModel.getModel().equals(ColourModel.Model.CMYK)) {
+        else if (ColourModel.Model.CMYK.equals(colourModel)) {
         	// unsupported
         }
-        else if (ColourModel.getModel().equals(ColourModel.Model.CIELAB) || 
-        		ColourModel.getModel().equals(ColourModel.Model.CIELUV) ||
-        		ColourModel.getModel().equals(ColourModel.Model.RGB_RELATED)) {
+        else if (ColourModel.Model.CIELAB.equals(colourModel) ||
+			    ColourModel.Model.CIELUV.equals(colourModel) ||
+			    ColourModel.Model.RGB_RELATED.equals(colourModel)) {
         	sb.append(" first=").append(this.firstComponentScale);
         	sb.append(" second=").append(this.secondComponentScale);
         	sb.append(" third=").append(this.thirdComponentScale);
