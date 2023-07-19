@@ -361,7 +361,7 @@ public class Command implements Cloneable {
 	}
 
 	final protected double makeVdc() {
-		if (VDCType.getType().equals(VDCType.Type.REAL)) {
+		if (this.cgm.getVdcType().equals(VDCType.Type.REAL)) {
 			Type precision = this.cgm.getVdcRealPrecision();
 			if (precision.equals(Type.FIXED_POINT_32BIT)) {
 				return makeFixedPoint32();
@@ -399,12 +399,13 @@ public class Command implements Cloneable {
 	}
 
 	final protected int sizeOfVdc() {
-		if (VDCType.getType().equals(VDCType.Type.INTEGER)) {
+		final VDCType.Type vdcType = this.cgm.getVdcType();
+		if (vdcType.equals(VDCType.Type.INTEGER)) {
 			int precision = this.cgm.getVdcIntegerPrecision();
 			return (precision / 8);
 		}
 
-		if (VDCType.getType().equals(VDCType.Type.REAL)) {
+		if (vdcType.equals(VDCType.Type.REAL)) {
 			Type precision = this.cgm.getVdcRealPrecision();
 			if (precision.equals(Type.FIXED_POINT_32BIT)) {
 				return sizeOfFixedPoint32();

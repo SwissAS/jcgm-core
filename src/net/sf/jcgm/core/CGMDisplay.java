@@ -171,11 +171,12 @@ public class CGMDisplay {
 		this.lineDashes.put(DashType.DOT,			new float[] { 13, 13 }); // dot
 		this.lineDashes.put(DashType.DASH_DOT,		new float[] { 55, 20, 13, 20  }); // dash-dot
 		this.lineDashes.put(DashType.DASH_DOT_DOT,	new float[] { 55, 20, 13, 20, 13, 20  }); // dash-dot-dot
-
-		if (VDCType.getType().equals(VDCType.Type.INTEGER)) {
+		
+		final VDCType.Type vdcType = cgm.getVdcType();
+		if (vdcType.equals(VDCType.Type.INTEGER)) {
 			this.extent = new Point2D.Double[] { new Point2D.Double(0, 0), new Point2D.Double(32767, 32767) };
 		}
-		else if (VDCType.getType().equals(VDCType.Type.REAL)) {
+		else if (vdcType.equals(VDCType.Type.REAL)) {
 			this.extent = new Point2D.Double[] { new Point2D.Double(0, 0), new Point2D.Double(1.0, 1.0) };
 		}
 		else

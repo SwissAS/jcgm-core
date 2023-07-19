@@ -35,38 +35,25 @@ public class VDCType extends Command {
 		INTEGER,
 		REAL
 	}
-	
-	/** Default is INTEGER */
-    private static Type type = Type.INTEGER;
-    
-    static {
-    	reset();
-    }
 
     public VDCType(int ec, int eid, int l, DataInput in, CGM cgm)
             throws IOException {
         super(ec, eid, l, in, cgm);
         int p1 = makeInt();
+		Type type = Type.INTEGER;
         if (p1 == 0)
         	type = Type.INTEGER;
         else if (p1 == 1)
         	type = Type.REAL;
         else
         	unsupported("VDC Type "+p1, this.cgm);
+		
+		cgm.setVdcType(type);
     }
-
-    public static void reset() {
-    	// default is integer
-		type = Type.INTEGER;
-	}
 
 	@Override
 	public String toString() {
-        return "VDCType [" + String.valueOf(type) + "]";
-    }
-    
-    public static Type getType() {
-    	return type;
+        return "VDCType [" + this.cgm.getVdcType() + "]";
     }
 }
 
