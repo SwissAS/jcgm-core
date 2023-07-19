@@ -232,7 +232,7 @@ public class Command implements Cloneable {
 	}
 
 	final protected int makeIndex() {
-		int precision = IndexPrecision.getPrecision();
+		final int precision = this.cgm.getIndexPrecision();
 		return makeInt(precision);
 	}
 
