@@ -542,8 +542,7 @@ public class Command implements Cloneable {
 	}
 
 	final protected int makeColorIndex() {
-		int precision = ColourIndexPrecision.getPrecision();
-		return makeUInt(precision);
+		return makeUInt(this.cgm.getColourIndexPrecision());
 	}
 
 	final protected int makeColorIndex(int precision) {

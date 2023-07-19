@@ -54,6 +54,7 @@ public class CGM implements Cloneable {
 	private List<Command> commands;
 	
 	private final ArrayList<Message> messages = new ArrayList<>();
+	private int colourIndexPrecision = 8;
 
 	private final List<ICommandListener> commandListeners = new ArrayList<ICommandListener>();
 
@@ -284,7 +285,7 @@ public class CGM implements Cloneable {
 	 * All the command classes with static data need to be reset here
 	 */
 	private void reset() {
-		ColourIndexPrecision.reset();
+		resetColourIndexPrecision();
 		ColourModel.reset();
 		ColourPrecision.reset();
 		ColourSelectionMode.reset();
@@ -317,6 +318,20 @@ public class CGM implements Cloneable {
 	}
 	// endregion
 
+	// region COLOUR INDEX PRECISION
+	public int getColourIndexPrecision() {
+		return this.colourIndexPrecision;
+	}
+	
+	public void setColourIndexPrecision(int colourIndexPrecision) {
+		this.colourIndexPrecision = colourIndexPrecision;
+	}
+	
+	private void resetColourIndexPrecision() {
+		setColourIndexPrecision(8);
+	}
+	// endregion
+	
 	public void paint(CGMDisplay d) {
 		for (Command c : this.commands) {
 			if (filter(c)) {

@@ -47,7 +47,7 @@ public class Tile extends TileElement {
 		int cellColorPrecision = makeInt();
 		if (cellColorPrecision == 0) {
 			if (ColourSelectionMode.getType() == ColourSelectionMode.Type.INDEXED) {
-				cellColorPrecision = ColourIndexPrecision.getPrecision();
+				cellColorPrecision = cgm.getColourIndexPrecision();
 			}
 			else {
 				cellColorPrecision = ColourPrecision.getPrecision();
@@ -59,7 +59,7 @@ public class Tile extends TileElement {
 
 	@Override
 	protected void readBitmap() {
-		unsupported("BITMAP for Tile", cgm);
+		unsupported("BITMAP for Tile", this.cgm);
 	}
 
 	@Override
