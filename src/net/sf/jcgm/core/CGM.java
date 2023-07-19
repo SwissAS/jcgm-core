@@ -63,6 +63,7 @@ public class CGM implements Cloneable {
 	private int[] maximumColorValueRGB = new int[] { 255, 255, 255 };
 	private SpecificationMode edgeWidthSpecificationMode = SpecificationMode.ABSOLUTE;
 	private SpecificationMode lineWidthSpecificationMode = SpecificationMode.ABSOLUTE;
+	private SpecificationMode markerSizeSpecificationMode = SpecificationMode.ABSOLUTE;
 	private int indexPrecision = 16;
 	private int integerPrecision = 16;
 	
@@ -304,7 +305,7 @@ public class CGM implements Cloneable {
 		resetIndexPrecision();
 		resetIntegerPrecision();
 		resetLineWidthSpecificationMode();
-		MarkerSizeSpecificationMode.reset();
+		resetMarkerSizeSpecificationMode();
 		RealPrecision.reset();
 		RestrictedTextType.reset();
 		VDCIntegerPrecision.reset();
@@ -432,6 +433,20 @@ public class CGM implements Cloneable {
 	
 	private void resetLineWidthSpecificationMode() {
 		setLineWidthSpecificationMode(SpecificationMode.ABSOLUTE);
+	}
+	// endregion
+	
+	// region MARKER SIZE SPECIFICATION MODE
+	SpecificationMode getMarkerSizeSpecificationMode() {
+		return this.markerSizeSpecificationMode;
+	}
+	
+	void setMarkerSizeSpecificationMode(SpecificationMode markerSizeSpecificationMode) {
+		this.markerSizeSpecificationMode = markerSizeSpecificationMode;
+	}
+	
+	private void resetMarkerSizeSpecificationMode() {
+		setMarkerSizeSpecificationMode(SpecificationMode.ABSOLUTE);
 	}
 	// endregion
 	

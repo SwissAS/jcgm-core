@@ -543,16 +543,17 @@ public class CGMDisplay {
 		this.textColor = null;
 		this.textColorIndex = 1;
 		this.markerType = MarkerType.Type.ASTERISK;
-		if (SpecificationMode.ABSOLUTE.equals(MarkerSizeSpecificationMode.getMode())) {
-			this.markerSize = 32767 / 100;
+		final SpecificationMode markerSizeSpecificationMode = this.Cgm.getMarkerSizeSpecificationMode();
+		if (SpecificationMode.ABSOLUTE.equals(markerSizeSpecificationMode)) {
+			this.markerSize = (double) 32767 / 100;
 		}
-		else if (SpecificationMode.SCALED.equals(MarkerSizeSpecificationMode.getMode())) {
+		else if (SpecificationMode.SCALED.equals(markerSizeSpecificationMode)) {
 			this.markerSize = 1.0;
 		}
-		else if (SpecificationMode.FRACTIONAL.equals(MarkerSizeSpecificationMode.getMode())) {
+		else if (SpecificationMode.FRACTIONAL.equals(markerSizeSpecificationMode)) {
 			this.markerSize = 0.01;
 		}
-		else if (SpecificationMode.MM.equals(MarkerSizeSpecificationMode.getMode())) {
+		else if (SpecificationMode.MM.equals(markerSizeSpecificationMode)) {
 			this.markerSize = 2.50;
 		}
 
@@ -815,7 +816,7 @@ public class CGMDisplay {
 	}
 
 	public void setMarkerSize(double width) {
-		this.markerSize = scaleWidth(width, MarkerSizeSpecificationMode.getMode());
+		this.markerSize = scaleWidth(width, this.Cgm.getMarkerSizeSpecificationMode());
 	}
 
 	public double getMarkerSize() {
