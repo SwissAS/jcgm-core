@@ -312,7 +312,7 @@ public class CGM implements Cloneable {
 		return Collections.unmodifiableList(this.messages);
 	}
 	
-	public void addMessage(Message m) {
+	void addMessage(Message m) {
 		this.messages.add(m);
 	}
 	
@@ -326,7 +326,7 @@ public class CGM implements Cloneable {
 		return this.colourIndexPrecision;
 	}
 	
-	public void setColourIndexPrecision(int colourIndexPrecision) {
+	void setColourIndexPrecision(int colourIndexPrecision) {
 		this.colourIndexPrecision = colourIndexPrecision;
 	}
 	
@@ -340,7 +340,7 @@ public class CGM implements Cloneable {
 		return this.colourModel;
 	}
 	
-	public void setColourModel(ColourModel.Model colourModel) {
+	void setColourModel(ColourModel.Model colourModel) {
 		this.colourModel = colourModel;
 	}
 	
@@ -350,11 +350,11 @@ public class CGM implements Cloneable {
 	// endregion
 	
 	// region COLOUR PRECISION
-	public int getColourPrecision() {
+	int getColourPrecision() {
 		return this.colourPrecision;
 	}
 	
-	public void setColourPrecision(int colourPrecision) {
+	void setColourPrecision(int colourPrecision) {
 		this.colourPrecision = colourPrecision;
 	}
 	
