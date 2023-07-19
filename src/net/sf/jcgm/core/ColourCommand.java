@@ -36,11 +36,12 @@ public class ColourCommand extends Command {
     public ColourCommand(int ec, int eid, int l, DataInput in, CGM cgm)
             throws IOException {
         super(ec, eid, l, in, cgm);
-        
-        if (ColourSelectionMode.getType().equals(ColourSelectionMode.Type.DIRECT)) {
+	    
+	    final ColourSelectionMode.Type colourSelectionMode = cgm.getColourSelectionMode();
+	    if (colourSelectionMode.equals(ColourSelectionMode.Type.DIRECT)) {
         	this.color = makeDirectColor();
         }
-        else if (ColourSelectionMode.getType().equals(ColourSelectionMode.Type.INDEXED)) {
+        else if (colourSelectionMode.equals(ColourSelectionMode.Type.INDEXED)) {
         	this.colorIndex = makeColorIndex();
         }
     }

@@ -49,18 +49,19 @@ public class BitonalTile extends TileElement {
 
 		this.compressionType = CompressionType.get(makeIndex());
 		this.rowPaddingIndicator = makeInt();
-
-		if (ColourSelectionMode.getType().equals(ColourSelectionMode.Type.DIRECT)) {
+		
+		final ColourSelectionMode.Type colourSelectionMode = cgm.getColourSelectionMode();
+		if (colourSelectionMode.equals(ColourSelectionMode.Type.DIRECT)) {
 			this.backgroundColor = makeDirectColor();
 		}
-		else if (ColourSelectionMode.getType().equals(ColourSelectionMode.Type.INDEXED)) {
+		else if (colourSelectionMode.equals(ColourSelectionMode.Type.INDEXED)) {
 			this.backgroundColorIndex = makeColorIndex();
 		}
 
-		if (ColourSelectionMode.getType().equals(ColourSelectionMode.Type.DIRECT)) {
+		if (colourSelectionMode.equals(ColourSelectionMode.Type.DIRECT)) {
 			this.foregroundColor = makeDirectColor();
 		}
-		else if (ColourSelectionMode.getType().equals(ColourSelectionMode.Type.INDEXED)) {
+		else if (colourSelectionMode.equals(ColourSelectionMode.Type.INDEXED)) {
 			this.foregroundColorIndex = makeColorIndex();
 		}
 

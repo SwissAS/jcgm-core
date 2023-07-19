@@ -57,6 +57,7 @@ public class CGM implements Cloneable {
 	private int colourIndexPrecision = 8;
 	private int colourPrecision = 8;
 	private ColourModel.Model colourModel = ColourModel.Model.RGB;
+	private ColourSelectionMode.Type colourSelectionMode = ColourSelectionMode.Type.INDEXED;
 
 	private final List<ICommandListener> commandListeners = new ArrayList<ICommandListener>();
 
@@ -290,7 +291,7 @@ public class CGM implements Cloneable {
 		resetColourIndexPrecision();
 		resetColourModel();
 		resetColourPrecision();
-		ColourSelectionMode.reset();
+		resetColourSelectionMode();
 		ColourValueExtent.reset();
 		EdgeWidthSpecificationMode.reset();
 		IndexPrecision.reset();
@@ -349,7 +350,6 @@ public class CGM implements Cloneable {
 	// endregion
 	
 	// region COLOUR PRECISION
-	
 	public int getColourPrecision() {
 		return this.colourPrecision;
 	}
@@ -360,6 +360,20 @@ public class CGM implements Cloneable {
 	
 	private void resetColourPrecision() {
 		setColourPrecision(8);
+	}
+	// endregion
+	
+	// region COLOUR SELECTION MODE
+	ColourSelectionMode.Type getColourSelectionMode() {
+		return this.colourSelectionMode;
+	}
+	
+	void setColourSelectionMode(ColourSelectionMode.Type colourSelectionMode) {
+		this.colourSelectionMode = colourSelectionMode;
+	}
+	
+	private void resetColourSelectionMode() {
+		setColourSelectionMode(ColourSelectionMode.Type.INDEXED);
 	}
 	// endregion
 	

@@ -46,7 +46,7 @@ public class Tile extends TileElement {
 
 		int cellColorPrecision = makeInt();
 		if (cellColorPrecision == 0) {
-			if (ColourSelectionMode.getType() == ColourSelectionMode.Type.INDEXED) {
+			if (this.cgm.getColourSelectionMode() == ColourSelectionMode.Type.INDEXED) {
 				cellColorPrecision = cgm.getColourIndexPrecision();
 			}
 			else {

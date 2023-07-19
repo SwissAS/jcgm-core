@@ -32,40 +32,29 @@ import java.io.*;
 public class ColourSelectionMode extends Command {
 	enum Type { INDEXED, DIRECT }
 
-	static private Type type;
-	
-	static {
-		reset();
-	}
-
     public ColourSelectionMode(int ec, int eid, int l, DataInput in, CGM cgm)
             throws IOException {
         super(ec, eid, l, in, cgm);
         int e = makeEnum();
+		Type type;
         if (e == 0)
-        	ColourSelectionMode.type = Type.INDEXED;
+        	type = Type.INDEXED;
         else if (e == 1)
-        	ColourSelectionMode.type = Type.DIRECT;
+        	type = Type.DIRECT;
         else {
-        	ColourSelectionMode.type = Type.INDEXED;
+        	type = Type.INDEXED;
         	unsupported("color selection mode "+e, this.cgm);
         }
         
+		cgm.setColourSelectionMode(type);
+		
         // make sure all the arguments were read
         assert (this.currentArg == this.args.length);
-    }
-    
-	public static void reset() {
-		type = Type.INDEXED;
-	}
-
-	public static Type getType() {
-    	return type;
     }
 
     @Override
 	public String toString() {
-        return "ColourSelectionMode " + type;
+        return "ColourSelectionMode " + this.cgm.getColourSelectionMode();
     }
 }
 

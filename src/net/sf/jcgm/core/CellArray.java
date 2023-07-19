@@ -63,8 +63,9 @@ public class CellArray extends Command {
 		this.ny = makeInt(); // number of rows
 
 		int localColorPrecision = makeInt();
+		final ColourSelectionMode.Type colourSelectionMode = cgm.getColourSelectionMode();
 		if (localColorPrecision == 0) {
-			if (ColourSelectionMode.getType() == ColourSelectionMode.Type.INDEXED) {
+			if (colourSelectionMode == ColourSelectionMode.Type.INDEXED) {
 				localColorPrecision = cgm.getColourIndexPrecision();
 			}
 			else {
@@ -75,7 +76,7 @@ public class CellArray extends Command {
 		this.representationFlag = makeEnum();
 
 		int nColor = this.nx * this.ny;
-		if (ColourSelectionMode.getType().equals(ColourSelectionMode.Type.DIRECT)) {
+		if (colourSelectionMode.equals(ColourSelectionMode.Type.DIRECT)) {
 			this.colors = new Color[nColor];
 
 			if (this.representationFlag == 0) {
@@ -114,7 +115,7 @@ public class CellArray extends Command {
 				unsupported("unsupported representation flag "+this.representationFlag, this.cgm);
 			}
 		}
-		else if (ColourSelectionMode.getType().equals(ColourSelectionMode.Type.INDEXED)) {
+		else if (colourSelectionMode.equals(ColourSelectionMode.Type.INDEXED)) {
 			this.colorIndexes = new int[nColor];
 
 			if (this.representationFlag == 0) {
@@ -154,7 +155,7 @@ public class CellArray extends Command {
 			}
 		}
 		else {
-			unsupported("unsupported color selection mode "+ColourSelectionMode.getType(), this.cgm);
+			unsupported("unsupported color selection mode "+ colourSelectionMode, this.cgm);
 		}
 
 		// make sure all the arguments were read
