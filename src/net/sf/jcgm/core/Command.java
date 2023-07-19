@@ -237,7 +237,7 @@ public class Command implements Cloneable {
 	}
 
 	final protected int makeName() {
-		int precision = NamePrecision.getPrecision();
+		int precision = this.cgm.getNamePrecision();
 		return makeInt(precision);
 	}
 

@@ -65,6 +65,7 @@ public class CGM implements Cloneable {
 	private SpecificationMode markerSizeSpecificationMode = SpecificationMode.ABSOLUTE;
 	private int indexPrecision = 16;
 	private int integerPrecision = 16;
+	private int namePrecision = 16;
 	private int vdcIntegerPrecision = 16;
 	private VDCRealPrecision.Type vdcRealPrecision = VDCRealPrecision.Type.FIXED_POINT_32BIT;
 	private VDCType.Type vdcType = VDCType.Type.INTEGER;
@@ -317,6 +318,7 @@ public class CGM implements Cloneable {
 		resetVdcIntegerPrecision();
 		resetVdcRealPrecision();
 		resetVdcType();
+		resetNamePrecision();
 	
 		resetMessages();
 	}
@@ -481,6 +483,20 @@ public class CGM implements Cloneable {
 	
 	private void resetIntegerPrecision() {
 		setIntegerPrecision(16);
+	}
+	// endregion
+	
+	// region NAME PRECISION
+	int getNamePrecision() {
+		return this.namePrecision;
+	}
+	
+	void setNamePrecision(int namePrecision) {
+		this.namePrecision = namePrecision;
+	}
+	
+	private void resetNamePrecision() {
+		setNamePrecision(16);
 	}
 	// endregion
 	
