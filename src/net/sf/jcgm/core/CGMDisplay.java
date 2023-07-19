@@ -544,7 +544,9 @@ public class CGMDisplay {
 		this.textColor = null;
 		this.textColorIndex = 1;
 		this.markerType = MarkerType.Type.ASTERISK;
-		final SpecificationMode markerSizeSpecificationMode = this.Cgm.getMarkerSizeSpecificationMode();
+		final SpecificationMode markerSizeSpecificationMode = this.Cgm != null
+						? this.Cgm.getMarkerSizeSpecificationMode()
+						: SpecificationMode.ABSOLUTE;
 		if (SpecificationMode.ABSOLUTE.equals(markerSizeSpecificationMode)) {
 			this.markerSize = (double) 32767 / 100;
 		}
