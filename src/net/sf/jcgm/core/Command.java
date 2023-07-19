@@ -382,7 +382,7 @@ public class Command implements Cloneable {
 
 		// defaults to integer
 		// if (VDCType.getType().equals(VDCType.Type.INTEGER)) {
-		int precision = VDCIntegerPrecision.getPrecision();
+		int precision = this.cgm.getVdcIntegerPrecision();
 		if (precision == 16) {
 			return makeSignedInt16();
 		}
@@ -400,7 +400,7 @@ public class Command implements Cloneable {
 
 	final protected int sizeOfVdc() {
 		if (VDCType.getType().equals(VDCType.Type.INTEGER)) {
-			int precision = VDCIntegerPrecision.getPrecision();
+			int precision = this.cgm.getVdcIntegerPrecision();
 			return (precision / 8);
 		}
 

@@ -65,6 +65,7 @@ public class CGM implements Cloneable {
 	private SpecificationMode markerSizeSpecificationMode = SpecificationMode.ABSOLUTE;
 	private int indexPrecision = 16;
 	private int integerPrecision = 16;
+	private int vdcIntegerPrecision = 16;
 	private RealPrecision.Precision realPrecision = RealPrecision.Precision.FIXED_32;
 	/** Flag to tell us whether a real precision command has already been processed or not. */
 	private boolean realPrecisionProcessed = false;
@@ -311,7 +312,7 @@ public class CGM implements Cloneable {
 		resetMarkerSizeSpecificationMode();
 		resetRealPrecision();
 		resetRestrictedTextType();
-		VDCIntegerPrecision.reset();
+		resetVdcIntegerPrecision();
 		VDCRealPrecision.reset();
 		VDCType.reset();
 	
@@ -478,6 +479,20 @@ public class CGM implements Cloneable {
 	
 	private void resetIntegerPrecision() {
 		setIntegerPrecision(16);
+	}
+	// endregion
+	
+	// region INTEGER PRECISION
+	int getVdcIntegerPrecision() {
+		return this.vdcIntegerPrecision;
+	}
+	
+	void setVdcIntegerPrecision(int vdcIntegerPrecision) {
+		this.vdcIntegerPrecision = vdcIntegerPrecision;
+	}
+	
+	private void resetVdcIntegerPrecision() {
+		setVdcIntegerPrecision(16);
 	}
 	// endregion
 	
