@@ -42,9 +42,9 @@ public class EllipticalArc extends EllipseElement {
     protected double endVectorDeltaX;
     protected double endVectorDeltaY;
 
-	public EllipticalArc(int ec, int eid, int l, DataInput in)
+	public EllipticalArc(int ec, int eid, int l, DataInput in, CGM cgm)
             throws IOException {
-        super(ec, eid, l, in);
+        super(ec, eid, l, in, cgm);
         
         this.startVectorDeltaX = makeVdc();
         this.startVectorDeltaY = makeVdc();

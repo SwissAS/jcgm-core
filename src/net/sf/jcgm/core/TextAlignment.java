@@ -39,9 +39,9 @@ public class TextAlignment extends Command {
 	private double continuousHorizontalAlignment;
 	private double continuousVerticalAlignment;
 	
-    public TextAlignment(int ec, int eid, int l, DataInput in)
+    public TextAlignment(int ec, int eid, int l, DataInput in, CGM cgm)
             throws IOException {
-        super(ec, eid, l, in);
+        super(ec, eid, l, in, cgm);
         
         int horiz = makeEnum();
         switch (horiz) {
@@ -62,7 +62,7 @@ public class TextAlignment extends Command {
         	break;
         default:
         	this.horizontalAlignment = HorizontalAlignment.NORMAL_HORIZONTAL;
-        	unsupported("unsupported horizontal alignment "+horiz);
+        	unsupported("unsupported horizontal alignment "+horiz, this.cgm);
         }
         
         int vert = makeEnum();
@@ -90,7 +90,7 @@ public class TextAlignment extends Command {
         	break;
         default:
         	this.verticalAlignment = VerticalAlignment.NORMAL_VERTICAL;
-        	unsupported("unsupported vertical alignment "+vert);
+        	unsupported("unsupported vertical alignment "+vert, this.cgm);
         }
         
         this.continuousHorizontalAlignment = makeReal();

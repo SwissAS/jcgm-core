@@ -69,9 +69,9 @@ public class FontList extends Command {
 		fontMapping.put("symbol",					new FontWrapper(new Font(Font.SERIF, Font.PLAIN, DEFAULT_FONT_SIZE), true));
 	}
 
-	public FontList(int ec, int eid, int l, DataInput in)
+	public FontList(int ec, int eid, int l, DataInput in, CGM cgm)
 			throws IOException {
-		super(ec, eid, l, in);
+		super(ec, eid, l, in, cgm);
 		int count = 0, i = 0;
 		while (i < this.args.length) {
 			count++;

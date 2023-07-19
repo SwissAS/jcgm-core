@@ -35,8 +35,8 @@ public class MarkerType extends Command {
 	enum Type { DOT, PLUS, ASTERISK, CIRCLE, CROSS }
 	private Type type = Type.ASTERISK;
 
-	public MarkerType(int ec, int eid, int l, DataInput in) throws IOException {
-		super(ec, eid, l, in);
+	public MarkerType(int ec, int eid, int l, DataInput in, CGM cgm) throws IOException {
+		super(ec, eid, l, in, cgm);
 		
 		int typ = makeIndex();
 		switch (typ) {

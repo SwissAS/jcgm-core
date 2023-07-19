@@ -34,9 +34,9 @@ import java.io.IOException;
 public class BeginMetafile extends Command {
     private final String fileName;
 
-    public BeginMetafile(int ec, int eid, int l, DataInput in)
+    public BeginMetafile(int ec, int eid, int l, DataInput in, CGM cgm)
             throws IOException {
-        super(ec, eid, l, in);
+        super(ec, eid, l, in, cgm);
         this.fileName =  l > 0 ? makeString() : "";
         
         // make sure all the arguments were read

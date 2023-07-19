@@ -36,6 +36,7 @@ import java.io.DataInput;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.util.Iterator;
+import java.util.List;
 
 import javax.imageio.ImageIO;
 import javax.imageio.ImageReader;
@@ -58,8 +59,8 @@ abstract class TileElement extends Command {
 	protected BufferedImage bufferedImage = null;
 	private ByteBuffer bytes;
 
-	protected TileElement(int ec, int eid, int l, DataInput in) throws IOException {
-		super(ec, eid, l, in);
+	protected TileElement(int ec, int eid, int l, DataInput in, CGM cgm) throws IOException {
+		super(ec, eid, l, in, cgm);
 	}
 
 	protected void readSdrAndBitStream() throws IOException {
@@ -91,7 +92,7 @@ abstract class TileElement extends Command {
 				readT6();
 				break;
 			default:
-				unsupported("unsupported compression type " + this.compressionType);
+				unsupported("unsupported compression type " + this.compressionType, this.cgm);
 			}
 		}
 	}
@@ -130,7 +131,7 @@ abstract class TileElement extends Command {
 		// .getTileSizeInLineDirection()));
 
 		if (this.bufferedImage == null) {
-			readImageDelayed(tileArrayInfo);
+			readImageDelayed(tileArrayInfo, d.getCGM());
 		}
 		if (this.bufferedImage != null) {
 			int imageWidth = this.bufferedImage.getWidth();
@@ -151,10 +152,11 @@ abstract class TileElement extends Command {
 	/**
 	 * Wraps the previously read bytes into a TIFF file and uses ImageIO to read
 	 * that file.
-	 * 
+	 *
 	 * @param tileArrayInfo Provides image information such as size
+	 * @param messages
 	 */
-	private void readImageDelayed(TileArrayInfo tileArrayInfo) {
+	private void readImageDelayed(TileArrayInfo tileArrayInfo, CGM cgm) {
 		try {
 			if (this.bytes == null || this.compressionType != CompressionType.T6) {
 				return;
@@ -184,8 +186,7 @@ abstract class TileElement extends Command {
 				}
 			}
 		} catch (IOException | CgmException e) {
-			Messages.getInstance()
-			.add(new Message(Severity.FATAL, getElementClass(), getElementCode(), e.getMessage(), toString()));
+			cgm.addMessage(new Message(Severity.FATAL, getElementClass(), getElementCode(), e.getMessage(), toString()));
 		} finally {
 			// we will only try once to read the image. Since this method is called over and
 			// over again in the paint method, clear the bytes to not try again.

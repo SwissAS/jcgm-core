@@ -37,10 +37,10 @@ import java.io.IOException;
 public class PolygonElement extends Command {
 	private final Path2D.Double polygon;
 
-    public PolygonElement(int ec, int eid, int l, DataInput in)
+    public PolygonElement(int ec, int eid, int l, DataInput in, CGM cgm)
             throws IOException {
 
-        super(ec, eid, l, in);
+        super(ec, eid, l, in, cgm);
 
         assert (this.args.length - this.currentArg) % sizeOfPoint() == 0;
         int n = (this.args.length - this.currentArg) / sizeOfPoint();

@@ -43,9 +43,9 @@ public class ColourValueExtent extends Command {
 		reset();
 	}
 
-	public ColourValueExtent(int ec, int eid, int l, DataInput in)
+	public ColourValueExtent(int ec, int eid, int l, DataInput in, CGM cgm)
             throws IOException {
-        super(ec, eid, l, in);
+        super(ec, eid, l, in, cgm);
         
         Model colorModel = ColourModel.getModel();
 		if (colorModel.equals(ColourModel.Model.RGB) || colorModel.equals(ColourModel.Model.CMYK)) {
@@ -56,7 +56,7 @@ public class ColourValueExtent extends Command {
         		ColourValueExtent.maximumColorValueRGB = new int[] { makeUInt(precision), makeUInt(precision), makeUInt(precision) };
         	}
         	else {
-        		unsupported("unsupported color model "+colorModel);
+        		unsupported("unsupported color model "+colorModel, this.cgm);
         	}
         }
         else if (colorModel.equals(ColourModel.Model.CIELAB) || 
@@ -67,7 +67,7 @@ public class ColourValueExtent extends Command {
         	this.thirdComponentScale = makeReal();
         }
         else {
-    		unsupported("unsupported color model "+colorModel);
+    		unsupported("unsupported color model "+colorModel, this.cgm);
         }
         
         // make sure all the arguments were read

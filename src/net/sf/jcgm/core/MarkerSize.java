@@ -34,14 +34,14 @@ import java.io.IOException;
 public class MarkerSize extends Command {
 	double width;
 
-	public MarkerSize(int ec, int eid, int l, DataInput in) throws IOException {
-		super(ec, eid, l, in);
+	public MarkerSize(int ec, int eid, int l, DataInput in, CGM cgm) throws IOException {
+		super(ec, eid, l, in, cgm);
 		
 		SpecificationMode mode = MarkerSizeSpecificationMode.getMode();
 		this.width = makeSizeSpecification(mode);
 		
 		if (!SpecificationMode.ABSOLUTE.equals(mode) && !SpecificationMode.SCALED.equals(mode)) {
-			unimplemented("MarkerSize specification mode "+mode+" not implemented");
+			unimplemented("MarkerSize specification mode "+mode+" not implemented", this.cgm);
 		}
 	}
 

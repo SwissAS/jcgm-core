@@ -37,9 +37,9 @@ import java.io.IOException;
 public class DisjointPolyline extends Command {
 	private final Line2D.Double[] lines;
 
-    public DisjointPolyline(int ec, int eid, int l, DataInput in)
+    public DisjointPolyline(int ec, int eid, int l, DataInput in, CGM cgm)
             throws IOException {
-        super(ec, eid, l, in);
+        super(ec, eid, l, in, cgm);
 
         int n = this.args.length / sizeOfPoint();
         assert (n % 2 == 0);

@@ -34,25 +34,25 @@ public class MessageCommand extends Command {
     int actionFlag;
     String message;
 
-    public MessageCommand(int ec, int eid, int l, DataInput in)
+    public MessageCommand(int ec, int eid, int l, DataInput in, CGM cgm)
             throws IOException {
-        super(ec, eid, l, in);
-
-        actionFlag = makeEnum();
-        message = makeString();
+        super(ec, eid, l, in, cgm);
+        
+        this.actionFlag = makeEnum();
+        this.message = makeString();
     }
 
     @Override
 	public String toString() {
-        return "MessageCommand: " + actionFlag + " " + this.message;
+        return "MessageCommand: " + this.actionFlag + " " + this.message;
     }
 
     public int getActionFlag() {
-        return actionFlag;
+        return this.actionFlag;
     }
 
     public String getMessage() {
-        return message;
+        return this.message;
     }
 }
 

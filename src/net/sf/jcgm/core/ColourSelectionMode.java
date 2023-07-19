@@ -38,9 +38,9 @@ public class ColourSelectionMode extends Command {
 		reset();
 	}
 
-    public ColourSelectionMode(int ec, int eid, int l, DataInput in)
+    public ColourSelectionMode(int ec, int eid, int l, DataInput in, CGM cgm)
             throws IOException {
-        super(ec, eid, l, in);
+        super(ec, eid, l, in, cgm);
         int e = makeEnum();
         if (e == 0)
         	ColourSelectionMode.type = Type.INDEXED;
@@ -48,7 +48,7 @@ public class ColourSelectionMode extends Command {
         	ColourSelectionMode.type = Type.DIRECT;
         else {
         	ColourSelectionMode.type = Type.INDEXED;
-        	unsupported("color selection mode "+e);
+        	unsupported("color selection mode "+e, this.cgm);
         }
         
         // make sure all the arguments were read

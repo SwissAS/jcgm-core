@@ -41,8 +41,8 @@ public class ClipRectangle extends Command {
 	private Point2D.Double p1;
 	private Point2D.Double p2;
 
-	public ClipRectangle(int ec, int eid, int l, DataInput in) throws IOException {
-		super(ec, eid, l, in);
+	public ClipRectangle(int ec, int eid, int l, DataInput in, CGM cgm) throws IOException {
+		super(ec, eid, l, in, cgm);
 		
 		this.p1 = makePoint();
 		this.p2 = makePoint();

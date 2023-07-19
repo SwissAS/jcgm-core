@@ -35,9 +35,9 @@ import java.io.*;
 public class EllipticalArcClose extends EllipticalArc {
 	private int type;
 
-    public EllipticalArcClose(int ec, int eid, int l, DataInput in)
+    public EllipticalArcClose(int ec, int eid, int l, DataInput in, CGM cgm)
             throws IOException {
-        super(ec, eid, l, in);
+        super(ec, eid, l, in, cgm);
         
         int type = makeEnum();
         if (type == 0) {
@@ -47,7 +47,7 @@ public class EllipticalArcClose extends EllipticalArc {
         	this.type = Arc2D.CHORD;
         }
         else {
-        	unsupported("arc closure type "+type);
+        	unsupported("arc closure type "+type, cgm);
         	this.type = Arc2D.CHORD;
         }
     }

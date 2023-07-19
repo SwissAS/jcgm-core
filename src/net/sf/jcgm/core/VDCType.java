@@ -43,16 +43,16 @@ public class VDCType extends Command {
     	reset();
     }
 
-    public VDCType(int ec, int eid, int l, DataInput in)
+    public VDCType(int ec, int eid, int l, DataInput in, CGM cgm)
             throws IOException {
-        super(ec, eid, l, in);
+        super(ec, eid, l, in, cgm);
         int p1 = makeInt();
         if (p1 == 0)
         	type = Type.INTEGER;
         else if (p1 == 1)
         	type = Type.REAL;
         else
-        	unsupported("VDC Type "+p1);
+        	unsupported("VDC Type "+p1, this.cgm);
     }
 
     public static void reset() {

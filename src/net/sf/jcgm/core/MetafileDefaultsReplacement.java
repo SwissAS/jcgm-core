@@ -33,9 +33,9 @@ import java.io.*;
 public class MetafileDefaultsReplacement extends Command {
 	private Command embeddedCommand;
 
-	public MetafileDefaultsReplacement(int ec, int eid, int l, DataInput in)
+	public MetafileDefaultsReplacement(int ec, int eid, int l, DataInput in, CGM cgm)
             throws IOException {
-        super(ec, eid, l, in);
+        super(ec, eid, l, in, cgm);
         
         int k = makeUInt(16);
         
@@ -60,7 +60,7 @@ public class MetafileDefaultsReplacement extends Command {
         }
         
         this.embeddedCommand = readCommand(new DataInputStream(new ByteArrayInputStream(
-				commandArguments)), elementClass, elementId, commandArguments.length);
+				commandArguments)), elementClass, elementId, commandArguments.length, cgm);
     }
 	
     @Override

@@ -33,9 +33,9 @@ import java.io.*;
 public class InteriorStyleSpecificationMode extends Command {
 	SpecificationMode mode;
 	
-    public InteriorStyleSpecificationMode(int ec, int eid, int l, DataInput in)
+    public InteriorStyleSpecificationMode(int ec, int eid, int l, DataInput in, CGM cgm)
             throws IOException {
-        super(ec, eid, l, in);
+        super(ec, eid, l, in, cgm);
         
         int mod = makeEnum();
         switch (mod) {
@@ -53,10 +53,10 @@ public class InteriorStyleSpecificationMode extends Command {
         	break;
         default:
         	this.mode = SpecificationMode.ABSOLUTE;
-        	unsupported("unsupported specification mode "+mod);
+        	unsupported("unsupported specification mode "+mod, this.cgm);
         }
         
-        unimplemented("InteriorStyleSpecificationMode");
+        unimplemented("InteriorStyleSpecificationMode", this.cgm);
     }
 
     @Override

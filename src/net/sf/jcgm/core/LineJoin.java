@@ -31,9 +31,9 @@ import java.io.*;
  * @version $Id$
  */
 public class LineJoin extends JoinCommand {
-    public LineJoin(int ec, int eid, int l, DataInput in)
+    public LineJoin(int ec, int eid, int l, DataInput in, CGM cgm)
             throws IOException {
-        super(ec, eid, l, in);
+        super(ec, eid, l, in, cgm);
     }
 
     @Override

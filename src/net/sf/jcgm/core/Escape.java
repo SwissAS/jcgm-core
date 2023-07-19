@@ -36,8 +36,8 @@ public class Escape extends Command {
 	private int identifier;
 	private String dataRecord;
 
-	public Escape(int ec, int eid, int l, DataInput in) throws IOException {
-		super(ec, eid, l, in);
+	public Escape(int ec, int eid, int l, DataInput in, CGM cgm) throws IOException {
+		super(ec, eid, l, in, cgm);
 		
 		this.identifier = makeInt();
 		this.dataRecord = makeString();
@@ -45,7 +45,7 @@ public class Escape extends Command {
         // make sure all the arguments were read
         assert (this.currentArg == this.args.length);
 
-        unimplemented("");
+        unimplemented("", this.cgm);
 	}
 
 	@Override

@@ -33,9 +33,9 @@ import java.io.IOException;
 public class JoinCommand extends Command {
 	JoinIndicator type;
 	
-	public JoinCommand(int ec, int eid, int l, DataInput in) 
+	public JoinCommand(int ec, int eid, int l, DataInput in, CGM cgm) 
 		throws IOException {
-        super(ec, eid, l, in);
+        super(ec, eid, l, in, cgm);
         
         int typ = makeIndex();
         switch (typ) {

@@ -52,6 +52,8 @@ import net.sf.jcgm.core.ScalingMode.Mode;
  */
 public class CGM implements Cloneable {
 	private List<Command> commands;
+	
+	private final ArrayList<Message> messages = new ArrayList<>();
 
 	private final List<ICommandListener> commandListeners = new ArrayList<ICommandListener>();
 
@@ -82,7 +84,7 @@ public class CGM implements Cloneable {
 		reset();
 		this.commands = new ArrayList<Command>(INITIAL_NUM_COMMANDS);
 		while (true) {
-			Command c = Command.read(in);
+			Command c = Command.read(in, this);
 			if (c == null)
 				break;
 
@@ -168,9 +170,6 @@ public class CGM implements Cloneable {
 				currentPosition - startPosition);
 		writeFile(byteBuffer, outputDir, extractor
 				.extractFileName(currentFileName));
-		// don't forget to regularly clear the messages that
-		// we're not really using here
-		Messages.getInstance().reset();
 	}
 
 	/**
@@ -241,9 +240,6 @@ public class CGM implements Cloneable {
 		byteBuffer.get(byteArray);
 		extractor.handleExtracted(extractor.extractFileName(currentFileName),
 				new ByteArrayInputStream(byteArray), byteArray.length);
-		// don't forget to regularly clear the messages that
-		// we're not really using here
-		Messages.getInstance().reset();
 	}
 
 	/**
@@ -303,13 +299,23 @@ public class CGM implements Cloneable {
 		VDCIntegerPrecision.reset();
 		VDCRealPrecision.reset();
 		VDCType.reset();
-
-		Messages.getInstance().reset();
+	
+		resetMessages();
 	}
 
+	// region MESSAGES
 	public List<Message> getMessages() {
-		return Messages.getInstance();
+		return Collections.unmodifiableList(this.messages);
 	}
+	
+	public void addMessage(Message m) {
+		this.messages.add(m);
+	}
+	
+	public void resetMessages() {
+		this.messages.clear();
+	}
+	// endregion
 
 	public void paint(CGMDisplay d) {
 		for (Command c : this.commands) {

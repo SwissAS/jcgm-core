@@ -11,9 +11,9 @@ import java.io.IOException;
  */
 public class EndApplicationStructure extends Command {
 
-	EndApplicationStructure(int ec, int eid, int l, DataInput in)
+	EndApplicationStructure(int ec, int eid, int l, DataInput in, CGM cgm)
 			throws IOException {
-		super(ec, eid, l, in);
+		super(ec, eid, l, in, cgm);
 		// no arguments
 
 		// make sure all the arguments were read

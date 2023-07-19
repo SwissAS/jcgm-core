@@ -37,10 +37,10 @@ public class VDCIntegerPrecision extends Command {
 		reset();
 	}
     
-    public VDCIntegerPrecision(int ec, int eid, int l, DataInput in)
+    public VDCIntegerPrecision(int ec, int eid, int l, DataInput in, CGM cgm)
             throws IOException {
 
-        super(ec, eid, l, in);
+        super(ec, eid, l, in, cgm);
         VDCIntegerPrecision.precision = makeInt();
         
         assert (precision == 16 || precision == 24 || precision == 32);

@@ -64,8 +64,8 @@ public abstract class TextCommand extends Command {
 	/** Last {@link TextCommand} string, concatenated with the following {@link AppendText} string (if there are). */
 	private StringBuilder sb = new StringBuilder();
 
-	public TextCommand(int ec, int eid, int l, DataInput in) throws IOException {
-		super(ec, eid, l, in);
+	public TextCommand(int ec, int eid, int l, DataInput in, CGM cgm) throws IOException {
+		super(ec, eid, l, in, cgm);
 	}
 	
 	/**

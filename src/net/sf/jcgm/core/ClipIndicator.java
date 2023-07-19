@@ -36,8 +36,8 @@ public class ClipIndicator extends Command {
 
 	private boolean flag;
 
-	public ClipIndicator(int ec, int eid, int l, DataInput in) throws IOException {
-		super(ec, eid, l, in);
+	public ClipIndicator(int ec, int eid, int l, DataInput in, CGM cgm) throws IOException {
+		super(ec, eid, l, in, cgm);
 		
 		this.flag = makeEnum() == 1;
 

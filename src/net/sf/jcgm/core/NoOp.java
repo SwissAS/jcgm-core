@@ -31,9 +31,9 @@ import java.io.*;
  * @version $Id$
  */
 public class NoOp extends Command {
-    public NoOp(int ec, int eid, int l, DataInput in)
+    public NoOp(int ec, int eid, int l, DataInput in, CGM cgm)
             throws IOException {
-        super(ec, eid, l, in);
+        super(ec, eid, l, in, cgm);
         // arguments used for padding
     }
 

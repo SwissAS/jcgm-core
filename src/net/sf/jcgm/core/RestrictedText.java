@@ -44,9 +44,9 @@ public class RestrictedText extends TextCommand {
 	private final double deltaHeight;
 	private final RestrictedTextType.Type type;
 
-	public RestrictedText(int ec, int eid, int l, DataInput in)
+	public RestrictedText(int ec, int eid, int l, DataInput in, CGM cgm)
 			throws IOException {
-		super(ec, eid, l, in);
+		super(ec, eid, l, in, cgm);
 
 		// (2VDC)
 		this.deltaWidth = makeVdc();

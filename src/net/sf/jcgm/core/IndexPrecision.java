@@ -37,10 +37,10 @@ public class IndexPrecision extends Command {
     	reset();
     }
     
-    public IndexPrecision(int ec, int eid, int l, DataInput in)
+    public IndexPrecision(int ec, int eid, int l, DataInput in, CGM cgm)
             throws IOException {
 
-        super(ec, eid, l, in);
+        super(ec, eid, l, in, cgm);
         IndexPrecision.precision = makeInt();
         
         assert (precision == 8 || precision == 16 || precision == 24 || precision == 32);

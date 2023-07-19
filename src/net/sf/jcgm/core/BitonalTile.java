@@ -44,8 +44,8 @@ public class BitonalTile extends TileElement {
 	private Color foregroundColor = null;
 	private int foregroundColorIndex;
 
-	BitonalTile(int ec, int eid, int l, DataInput in) throws IOException {
-		super(ec, eid, l, in);
+	BitonalTile(int ec, int eid, int l, DataInput in, CGM cgm) throws IOException {
+		super(ec, eid, l, in, cgm);
 
 		this.compressionType = CompressionType.get(makeIndex());
 		this.rowPaddingIndicator = makeInt();
@@ -69,7 +69,7 @@ public class BitonalTile extends TileElement {
 
 	@Override
 	protected void readBitmap() {
-		unsupported("BITMAP for BitonalTile");
+		unsupported("BITMAP for BitonalTile", this.cgm);
 	}
 
 	@Override

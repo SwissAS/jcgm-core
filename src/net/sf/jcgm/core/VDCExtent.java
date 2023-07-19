@@ -35,9 +35,9 @@ public class VDCExtent extends Command {
     Point2D.Double lowerLeftCorner;
 	Point2D.Double upperRightCorner;
 
-    public VDCExtent(int ec, int eid, int l, DataInput in)
+    public VDCExtent(int ec, int eid, int l, DataInput in, CGM cgm)
             throws IOException {
-        super(ec, eid, l, in);
+        super(ec, eid, l, in, cgm);
         this.lowerLeftCorner = makePoint();
         this.upperRightCorner = makePoint();
     }

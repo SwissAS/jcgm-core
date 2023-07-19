@@ -36,9 +36,9 @@ public class LineAndEdgeTypeDefinition extends Command {
 	private final double dashCycleRepeatLength;
 	private final int[] dashElements;
 
-	public LineAndEdgeTypeDefinition(int ec, int eid, int l, DataInput in)
+	public LineAndEdgeTypeDefinition(int ec, int eid, int l, DataInput in, CGM cgm)
             throws IOException {
-        super(ec, eid, l, in);
+        super(ec, eid, l, in, cgm);
         
         this.lineType = makeIndex();
         assert(this.lineType <= 0);

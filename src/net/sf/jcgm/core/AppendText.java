@@ -20,8 +20,8 @@ public class AppendText extends Command {
      */
     private boolean executed = false;
 
-    public AppendText(int ec, int eid, int l, DataInput in) throws IOException {
-        super(ec, eid, l, in);
+    public AppendText(int ec, int eid, int l, DataInput in, CGM cgm) throws IOException {
+        super(ec, eid, l, in, cgm);
 
         this.finalNotFinal = makeEnum() >= 1;
         this.string = makeString();

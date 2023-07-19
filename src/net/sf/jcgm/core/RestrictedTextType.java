@@ -41,8 +41,8 @@ public class RestrictedTextType extends Command {
 		reset();
 	}
 
-	public RestrictedTextType(int ec, int eid, int l, DataInput in) throws IOException {
-		super(ec, eid, l, in);
+	public RestrictedTextType(int ec, int eid, int l, DataInput in, CGM cgm) throws IOException {
+		super(ec, eid, l, in, cgm);
 
 		int typ = makeIndex();
 		switch (typ) {
@@ -66,7 +66,7 @@ public class RestrictedTextType extends Command {
 			break;
 		default:
 			type = Type.BASIC;
-			unsupported("unsupported text type "+typ);
+			unsupported("unsupported text type "+typ, this.cgm);
 		}
 		
         // make sure all the arguments were read

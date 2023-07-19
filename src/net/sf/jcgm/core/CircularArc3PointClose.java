@@ -35,9 +35,9 @@ import java.io.*;
 public class CircularArc3PointClose extends CircularArc3Point {
 	private int type;
 	
-    public CircularArc3PointClose(int ec, int eid, int l, DataInput in)
+    public CircularArc3PointClose(int ec, int eid, int l, DataInput in, CGM cgm)
             throws IOException {
-        super(ec, eid, l, in);
+        super(ec, eid, l, in, cgm);
         
         int type = makeEnum();
         if (type == 0) {
@@ -47,7 +47,7 @@ public class CircularArc3PointClose extends CircularArc3Point {
         	this.type = Arc2D.CHORD;
         }
         else {
-        	unsupported("unsupported closure type "+this.type);
+        	unsupported("unsupported closure type "+this.type, cgm);
         	this.type = Arc2D.CHORD;
         }
     }

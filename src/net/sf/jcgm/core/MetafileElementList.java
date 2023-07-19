@@ -33,9 +33,9 @@ import java.io.*;
 public class MetafileElementList extends Command {
 	String[] metaFileElements; 
 
-    public MetafileElementList(int ec, int eid, int l, DataInput in)
+    public MetafileElementList(int ec, int eid, int l, DataInput in, CGM cgm)
             throws IOException {
-        super(ec, eid, l, in);
+        super(ec, eid, l, in, cgm);
         int nElements = makeInt();
         
         this.metaFileElements = new String[nElements];
@@ -66,7 +66,7 @@ public class MetafileElementList extends Command {
         			this.metaFileElements[i] = "VERSION 4 SET";
         			break;
         		default:
-        			unsupported("unsupported meta file elements set "+code2);
+        			unsupported("unsupported meta file elements set "+code2, this.cgm);
         		}
         	}
         	else {

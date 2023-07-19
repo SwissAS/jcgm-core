@@ -15,8 +15,8 @@ public class ApplicationStructureAttribute extends Command {
     private final String applicationStructureAttributeType;
     private final StructuredDataRecord sdr;
     
-    public ApplicationStructureAttribute(int ec, int eid, int l, DataInput in) throws IOException {
-        super(ec, eid, l, in);
+    public ApplicationStructureAttribute(int ec, int eid, int l, DataInput in, CGM cgm) throws IOException {
+        super(ec, eid, l, in, cgm);
         
         // application structure attribute type (SF)
         this.applicationStructureAttributeType = makeString();

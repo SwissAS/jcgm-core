@@ -42,8 +42,8 @@ import net.sf.jcgm.core.MarkerType.Type;
 public class PolyMarker extends Command {
 	private Point2D.Double[] points;
 
-	public PolyMarker(int ec, int eid, int l, DataInput in) throws IOException {
-		super(ec, eid, l, in);
+	public PolyMarker(int ec, int eid, int l, DataInput in, CGM cgm) throws IOException {
+		super(ec, eid, l, in, cgm);
 		
         int n = this.args.length / sizeOfPoint();
         this.points = new Point2D.Double[n];

@@ -37,9 +37,9 @@ public class MarkerSizeSpecificationMode extends Command {
     	reset();
     }
 
-	public MarkerSizeSpecificationMode(int ec, int eid, int l, DataInput in)
+	public MarkerSizeSpecificationMode(int ec, int eid, int l, DataInput in, CGM cgm)
             throws IOException {
-        super(ec, eid, l, in);
+        super(ec, eid, l, in, cgm);
         
         int mode = makeEnum();
         MarkerSizeSpecificationMode.mode = SpecificationMode.getMode(mode);

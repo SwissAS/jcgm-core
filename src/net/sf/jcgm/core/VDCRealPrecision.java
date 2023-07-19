@@ -44,10 +44,10 @@ public class VDCRealPrecision extends Command {
 		reset();
 	}
     
-    public VDCRealPrecision(int ec, int eid, int l, DataInput in)
+    public VDCRealPrecision(int ec, int eid, int l, DataInput in, CGM cgm)
             throws IOException {
 
-        super(ec, eid, l, in);
+        super(ec, eid, l, in, cgm);
         int p1 = makeEnum();
         int p2 = makeInt();
         int p3 = makeInt();
@@ -61,7 +61,7 @@ public class VDCRealPrecision extends Command {
         	}
         	else {
         		// use default
-        		unsupported("unsupported real precision");
+        		unsupported("unsupported real precision", this.cgm);
         		VDCRealPrecision.precision = Type.FIXED_POINT_32BIT;
         	}
         }
@@ -74,7 +74,7 @@ public class VDCRealPrecision extends Command {
         	}
         	else {
         		// use default
-        		unsupported("unsupported real precision");
+        		unsupported("unsupported real precision", this.cgm);
         		VDCRealPrecision.precision = Type.FIXED_POINT_32BIT;
         	}
         }

@@ -37,16 +37,16 @@ public class CharacterOrientation extends Command {
 	private double xBase;
 	private double yBase;
 
-	public CharacterOrientation(int ec, int eid, int l, DataInput in)
+	public CharacterOrientation(int ec, int eid, int l, DataInput in, CGM cgm)
             throws IOException {
-        super(ec, eid, l, in);
+        super(ec, eid, l, in, cgm);
         
         this.xUp = makeVdc();
         this.yUp = makeVdc();
         this.xBase = makeVdc();
         this.yBase = makeVdc();
         
-        unimplemented("CharacterOrientation");
+        unimplemented("CharacterOrientation", this.cgm);
         
         // make sure all the arguments were read
         assert (this.currentArg == this.args.length);

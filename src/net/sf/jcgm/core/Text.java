@@ -39,8 +39,8 @@ import java.io.IOException;
 public class Text extends TextCommand {
 	
 	
-	public Text(int ec, int eid, int l, DataInput in) throws IOException {
-		super(ec, eid, l, in);
+	public Text(int ec, int eid, int l, DataInput in, CGM cgm) throws IOException {
+		super(ec, eid, l, in, cgm);
 		
 		// point (P)
 		this.position = makePoint();

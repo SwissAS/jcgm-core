@@ -36,10 +36,10 @@ public class ColourPrecision extends Command {
     	reset();
     }
     
-    public ColourPrecision(int ec, int eid, int l, DataInput in)
+    public ColourPrecision(int ec, int eid, int l, DataInput in, CGM cgm)
             throws IOException {
 
-        super(ec, eid, l, in);
+        super(ec, eid, l, in, cgm);
         ColourPrecision.precision = makeInt();
 
         // make sure all the arguments were read

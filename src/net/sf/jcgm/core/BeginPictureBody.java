@@ -31,9 +31,9 @@ import java.io.*;
  * @version $Id$
  */
 public class BeginPictureBody extends Command {
-    public BeginPictureBody(int ec, int eid, int l, DataInput in)
+    public BeginPictureBody(int ec, int eid, int l, DataInput in, CGM cgm)
             throws IOException {
-        super(ec, eid, l, in);
+        super(ec, eid, l, in, cgm);
         // no arguments
         
         // make sure all the arguments were read

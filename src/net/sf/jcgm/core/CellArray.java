@@ -51,9 +51,9 @@ public class CellArray extends Command {
 	private int[] colorIndexes;
 	private BufferedImage bufferedImage = null;
 
-	public CellArray(int ec, int eid, int l, DataInput in)
+	public CellArray(int ec, int eid, int l, DataInput in, CGM cgm)
 			throws IOException {
-		super(ec, eid, l, in);
+		super(ec, eid, l, in, cgm);
 
 		// 3P, 3I, E, CLIST
 		this.p = makePoint();
@@ -111,7 +111,7 @@ public class CellArray extends Command {
 				}
 			}
 			else {
-				unsupported("unsupported representation flag "+this.representationFlag);
+				unsupported("unsupported representation flag "+this.representationFlag, this.cgm);
 			}
 		}
 		else if (ColourSelectionMode.getType().equals(ColourSelectionMode.Type.INDEXED)) {
@@ -150,11 +150,11 @@ public class CellArray extends Command {
 				}
 			}
 			else {
-				unsupported("unsupported representation flag "+this.representationFlag);
+				unsupported("unsupported representation flag "+this.representationFlag, this.cgm);
 			}
 		}
 		else {
-			unsupported("unsupported color selection mode "+ColourSelectionMode.getType());
+			unsupported("unsupported color selection mode "+ColourSelectionMode.getType(), this.cgm);
 		}
 
 		// make sure all the arguments were read

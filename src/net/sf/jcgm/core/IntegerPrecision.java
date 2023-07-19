@@ -37,10 +37,10 @@ public class IntegerPrecision extends Command {
     	reset();
     }
     
-    public IntegerPrecision(int ec, int eid, int l, DataInput in)
+    public IntegerPrecision(int ec, int eid, int l, DataInput in, CGM cgm)
             throws IOException {
 
-        super(ec, eid, l, in);
+        super(ec, eid, l, in, cgm);
         IntegerPrecision.precision = makeInt();
         
         assert (IntegerPrecision.precision == 8 || IntegerPrecision.precision == 16 ||

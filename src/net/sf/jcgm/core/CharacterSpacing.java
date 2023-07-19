@@ -34,13 +34,13 @@ import java.io.*;
 public class CharacterSpacing extends Command {
     private double additionalInterCharacterSpace;
 
-	public CharacterSpacing(int ec, int eid, int l, DataInput in)
+	public CharacterSpacing(int ec, int eid, int l, DataInput in, CGM cgm)
             throws IOException {
-        super(ec, eid, l, in);
+        super(ec, eid, l, in, cgm);
         
         this.additionalInterCharacterSpace = makeFixedPoint();
         
-        unimplemented("CharacterSpacing");
+        unimplemented("CharacterSpacing", this.cgm);
     }
 
     @Override

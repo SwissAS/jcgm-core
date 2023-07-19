@@ -35,12 +35,12 @@ public class CharacterSetIndex extends Command {
 
 	private int index;
 
-	public CharacterSetIndex(int ec, int eid, int l, DataInput in) throws IOException {
-		super(ec, eid, l, in);
+	public CharacterSetIndex(int ec, int eid, int l, DataInput in, CGM cgm) throws IOException {
+		super(ec, eid, l, in, cgm);
 		
 		this.index = makeIndex();
 		
-		unimplemented("");
+		unimplemented("", this.cgm);
 	}
 
 	@Override

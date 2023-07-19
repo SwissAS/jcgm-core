@@ -37,9 +37,9 @@ public class ColourModel extends Command {
 		reset();
 	}
 	
-    public ColourModel(int ec, int eid, int l, DataInput in)
+    public ColourModel(int ec, int eid, int l, DataInput in, CGM cgm)
             throws IOException {
-        super(ec, eid, l, in);
+        super(ec, eid, l, in, cgm);
         
         int index = makeIndex();
         switch (index) {
@@ -59,7 +59,7 @@ public class ColourModel extends Command {
         	model = Model.RGB_RELATED;
         	break;
         default:
-        	unsupported("unsupported color mode "+index);
+        	unsupported("unsupported color mode "+index, this.cgm);
         	model = Model.RGB;
         }
         

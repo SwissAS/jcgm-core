@@ -37,8 +37,8 @@ public class NamePrecision extends Command {
 		reset();
 	}
 
-	NamePrecision(int ec, int eid, int l, DataInput in) throws IOException {
-		super(ec, eid, l, in);
+	NamePrecision(int ec, int eid, int l, DataInput in, CGM cgm) throws IOException {
+		super(ec, eid, l, in, cgm);
 		NamePrecision.precision = makeInt();
 
 		assert (NamePrecision.precision == 8 || NamePrecision.precision == 16 ||

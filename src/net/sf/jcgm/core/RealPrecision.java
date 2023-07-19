@@ -44,10 +44,10 @@ public class RealPrecision extends Command {
 		reset();
 	}
     
-    public RealPrecision(int ec, int eid, int l, DataInput in)
+    public RealPrecision(int ec, int eid, int l, DataInput in, CGM cgm)
             throws IOException {
 
-        super(ec, eid, l, in);
+        super(ec, eid, l, in, cgm);
         int representation = makeEnum();
         int p2 = makeInt();
         int p3 = makeInt();

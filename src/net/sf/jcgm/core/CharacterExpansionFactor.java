@@ -33,13 +33,13 @@ import java.io.*;
 public class CharacterExpansionFactor extends Command {
     private double factor;
 
-	public CharacterExpansionFactor(int ec, int eid, int l, DataInput in)
+	public CharacterExpansionFactor(int ec, int eid, int l, DataInput in, CGM cgm)
             throws IOException {
-        super(ec, eid, l, in);
+        super(ec, eid, l, in, cgm);
         
         this.factor = makeReal();
         
-        unimplemented("CharacterExpansionFactor");
+        unimplemented("CharacterExpansionFactor", this.cgm);
     }
 
     @Override

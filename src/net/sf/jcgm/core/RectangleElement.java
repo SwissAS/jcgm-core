@@ -38,9 +38,9 @@ public class RectangleElement extends Command {
 	private Point2D.Double firstCorner;
 	private Point2D.Double secondCorner;
 
-    public RectangleElement(int ec, int eid, int l, DataInput in)
+    public RectangleElement(int ec, int eid, int l, DataInput in, CGM cgm)
             throws IOException {
-        super(ec, eid, l, in);
+        super(ec, eid, l, in, cgm);
         
         this.firstCorner = makePoint();
         this.secondCorner = makePoint();

@@ -50,8 +50,8 @@ public class DeviceViewportSpecificationMode extends Command {
 		reset();
 	}
 
-	DeviceViewportSpecificationMode(int ec, int eid, int l, DataInput in) throws IOException {
-		super(ec, eid, l, in);
+	DeviceViewportSpecificationMode(int ec, int eid, int l, DataInput in, CGM cgm) throws IOException {
+		super(ec, eid, l, in, cgm);
 
 		int e = makeEnum();
 		switch (e) {
@@ -65,7 +65,7 @@ public class DeviceViewportSpecificationMode extends Command {
 			specifier = Mode.PhysicalDeviceCoordinates;
 			break;
 		default:
-			unsupported("unsupported mode " + e);
+			unsupported("unsupported mode " + e, this.cgm);
 		}
 
 		if (RealPrecision.hasRealPrecisionBeenProcessed()) {

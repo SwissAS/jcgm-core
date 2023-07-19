@@ -37,9 +37,9 @@ public class LineWidthSpecificationMode extends Command {
     	reset();
     }
 
-	public LineWidthSpecificationMode(int ec, int eid, int l, DataInput in)
+	public LineWidthSpecificationMode(int ec, int eid, int l, DataInput in, CGM cgm)
             throws IOException {
-        super(ec, eid, l, in);
+        super(ec, eid, l, in, cgm);
         
         int mode = makeEnum();
         LineWidthSpecificationMode.mode = SpecificationMode.getMode(mode);

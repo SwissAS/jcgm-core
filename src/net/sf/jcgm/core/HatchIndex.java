@@ -39,8 +39,8 @@ public class HatchIndex extends Command {
 	
 	HatchType type = HatchType.HORIZONTAL_LINES;
 
-	public HatchIndex(int ec, int eid, int l, DataInput in) throws IOException {
-		super(ec, eid, l, in);
+	public HatchIndex(int ec, int eid, int l, DataInput in, CGM cgm) throws IOException {
+		super(ec, eid, l, in, cgm);
 		
 		int index = makeIndex();
 		switch (index) {
@@ -63,7 +63,7 @@ public class HatchIndex extends Command {
 			this.type = HatchType.POSITIVE_NEGATIVE_CROSSHATCH;
 			break;
 		default:
-			unsupported("hatch style: " + index);
+			unsupported("hatch style: " + index, this.cgm);
 		}
 	}
 
