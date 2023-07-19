@@ -751,7 +751,7 @@ public class CGMDisplay {
 	}
 
 	public void setLineWidth(double width) {
-		SpecificationMode mode = LineWidthSpecificationMode.getMode();
+		SpecificationMode mode = this.Cgm.getLineWidthSpecificationMode();
 		this.lineStroke = new BasicStroke((float) scaleWidth(width, mode),
 				this.lineStroke.getEndCap(),
 				this.lineStroke.getLineJoin(),

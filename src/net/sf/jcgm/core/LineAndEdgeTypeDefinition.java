@@ -43,7 +43,7 @@ public class LineAndEdgeTypeDefinition extends Command {
         this.lineType = makeIndex();
         assert(this.lineType <= 0);
         
-        this.dashCycleRepeatLength = Math.abs(makeSizeSpecification(LineWidthSpecificationMode.getMode()));
+        this.dashCycleRepeatLength = Math.abs(makeSizeSpecification(cgm.getLineWidthSpecificationMode()));
         this.dashElements = new int[(this.args.length-this.currentArg)/sizeOfInt()];
         
         for (int i = 0; i < this.dashElements.length; i++) {

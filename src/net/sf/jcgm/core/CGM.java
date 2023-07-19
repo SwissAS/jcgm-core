@@ -40,6 +40,7 @@ import java.nio.channels.FileChannel;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.PrimitiveIterator;
 import java.util.zip.GZIPInputStream;
 
 import net.sf.jcgm.core.ScalingMode.Mode;
@@ -61,6 +62,7 @@ public class CGM implements Cloneable {
 	private int[] minimumColorValueRGB = new int[] { 0, 0, 0 };
 	private int[] maximumColorValueRGB = new int[] { 255, 255, 255 };
 	private SpecificationMode edgeWidthSpecificationMode = SpecificationMode.ABSOLUTE;
+	private SpecificationMode lineWidthSpecificationMode = SpecificationMode.ABSOLUTE;
 	private int indexPrecision = 16;
 	private int integerPrecision = 16;
 	
@@ -301,7 +303,7 @@ public class CGM implements Cloneable {
 		resetEdgeWidthSpecificationMode();
 		resetIndexPrecision();
 		resetIntegerPrecision();
-		LineWidthSpecificationMode.reset();
+		resetLineWidthSpecificationMode();
 		MarkerSizeSpecificationMode.reset();
 		RealPrecision.reset();
 		RestrictedTextType.reset();
@@ -419,6 +421,20 @@ public class CGM implements Cloneable {
 	}
 	// endregion
 	
+	// region LINE WIDTH SPECIFICATION MODE
+	SpecificationMode getLineWidthSpecificationMode() {
+		return this.lineWidthSpecificationMode;
+	}
+	
+	void setLineWidthSpecificationMode(SpecificationMode lineWidthSpecificationMode) {
+		this.lineWidthSpecificationMode = lineWidthSpecificationMode;
+	}
+	
+	private void resetLineWidthSpecificationMode() {
+		setLineWidthSpecificationMode(SpecificationMode.ABSOLUTE);
+	}
+	// endregion
+	
 	// region INDEX PRECISION
 	int getIndexPrecision() {
 		return this.indexPrecision;
@@ -434,11 +450,11 @@ public class CGM implements Cloneable {
 	// endregion
 	
 	// region INTEGER PRECISION
-	public int getIntegerPrecision() {
+	int getIntegerPrecision() {
 		return this.integerPrecision;
 	}
 	
-	public void setIntegerPrecision(int integerPrecision) {
+	void setIntegerPrecision(int integerPrecision) {
 		this.integerPrecision = integerPrecision;
 	}
 	

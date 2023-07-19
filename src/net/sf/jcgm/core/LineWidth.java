@@ -37,7 +37,7 @@ public class LineWidth extends Command {
     public LineWidth(int ec, int eid, int l, DataInput in, CGM cgm)
             throws IOException {
         super(ec, eid, l, in, cgm);
-        SpecificationMode mode = LineWidthSpecificationMode.getMode();
+        SpecificationMode mode = cgm.getLineWidthSpecificationMode();
 		this.width = makeSizeSpecification(mode);
         
 		if (!SpecificationMode.ABSOLUTE.equals(mode) && !SpecificationMode.SCALED.equals(mode)) {
