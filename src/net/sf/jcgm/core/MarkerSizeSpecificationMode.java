@@ -31,31 +31,18 @@ import java.io.*;
  * @version $Id$
  */
 public class MarkerSizeSpecificationMode extends Command {
-    static private SpecificationMode mode;
-    
-    static {
-    	reset();
-    }
 
-	public MarkerSizeSpecificationMode(int ec, int eid, int l, DataInput in)
+	public MarkerSizeSpecificationMode(int ec, int eid, int l, DataInput in, CGM cgm)
             throws IOException {
-        super(ec, eid, l, in);
+        super(ec, eid, l, in, cgm);
         
         int mode = makeEnum();
-        MarkerSizeSpecificationMode.mode = SpecificationMode.getMode(mode);
+        cgm.setMarkerSizeSpecificationMode(SpecificationMode.getMode(mode));
     }
 	
-	public static void reset() {
-	    mode = SpecificationMode.ABSOLUTE;
-	}
-
-	public static SpecificationMode getMode() {
-		return mode;
-	}
-
     @Override
 	public String toString() {
-        return "MarkerSizeSpecificationMode " + mode;
+        return "MarkerSizeSpecificationMode " + this.cgm.getMarkerSizeSpecificationMode();
     }
 }
 

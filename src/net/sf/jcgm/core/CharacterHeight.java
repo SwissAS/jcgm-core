@@ -34,9 +34,9 @@ import java.io.*;
 public class CharacterHeight extends Command {
     double characterHeight;
 
-    public CharacterHeight(int ec, int eid, int l, DataInput in)
+    public CharacterHeight(int ec, int eid, int l, DataInput in, CGM cgm)
             throws IOException {
-        super(ec, eid, l, in);
+        super(ec, eid, l, in, cgm);
         this.characterHeight = makeVdc();
 
         // make sure all the arguments were read

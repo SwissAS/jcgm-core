@@ -33,9 +33,9 @@ import java.io.*;
 public class MetafileDescription extends Command {
     String S;
 
-    public MetafileDescription(int ec, int eid, int l, DataInput in)
+    public MetafileDescription(int ec, int eid, int l, DataInput in, CGM cgm)
             throws IOException {
-        super(ec, eid, l, in);
+        super(ec, eid, l, in, cgm);
         this.S = makeString();
     }
 
@@ -45,7 +45,7 @@ public class MetafileDescription extends Command {
     }
 
     public String getDescription() {
-        return S;
+        return this.S;
     }
 }
 

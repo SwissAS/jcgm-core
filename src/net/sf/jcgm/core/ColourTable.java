@@ -39,9 +39,9 @@ public class ColourTable extends Command {
     private final int startIndex;
 	private final Color[] colors;
 
-	public ColourTable(int ec, int eid, int l, DataInput in)
+	public ColourTable(int ec, int eid, int l, DataInput in, CGM cgm)
             throws IOException {
-        super(ec, eid, l, in);
+        super(ec, eid, l, in, cgm);
 
         this.startIndex = makeColorIndex();
         

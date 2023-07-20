@@ -35,16 +35,11 @@ public class RestrictedTextType extends Command {
 		BASIC, BOXED_CAP, BOXED_ALL, ISOTROPIC_CAP, ISOTROPIC_ALL, JUSTIFIED
 	}
 
-	static private Type type;
-	
-	static {
-		reset();
-	}
-
-	public RestrictedTextType(int ec, int eid, int l, DataInput in) throws IOException {
-		super(ec, eid, l, in);
+	public RestrictedTextType(int ec, int eid, int l, DataInput in, CGM cgm) throws IOException {
+		super(ec, eid, l, in, cgm);
 
 		int typ = makeIndex();
+		Type type;
 		switch (typ) {
 		case 1:
 			type = Type.BASIC;
@@ -66,24 +61,17 @@ public class RestrictedTextType extends Command {
 			break;
 		default:
 			type = Type.BASIC;
-			unsupported("unsupported text type "+typ);
+			unsupported("unsupported text type "+typ, this.cgm);
 		}
+		cgm.setRestrictedTextType(type);
 		
         // make sure all the arguments were read
         assert (this.currentArg == this.args.length);
 	}
 
-	public static void reset() {
-		type = Type.BASIC;
-	}
-
-	public static Type getType() {
-		return type;
-	}
-
 	@Override
 	public String toString() {
-		return "RestrictedTextType " + type;
+		return "RestrictedTextType " + this.cgm.getRestrictedTextType();
 	}
 }
 

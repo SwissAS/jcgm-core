@@ -43,9 +43,9 @@ public class InteriorStyle extends Command {
 	
 	private Style style;
 
-    public InteriorStyle(int ec, int eid, int l, DataInput in)
+    public InteriorStyle(int ec, int eid, int l, DataInput in, CGM cgm)
             throws IOException {
-        super(ec, eid, l, in);
+        super(ec, eid, l, in, cgm);
         switch (makeEnum()) {
         case 0:
         	this.style = Style.HOLLOW;
@@ -74,7 +74,7 @@ public class InteriorStyle extends Command {
         
         if (!Style.HOLLOW.equals(this.style) || !Style.SOLID.equals(this.style) ||
 			!Style.HATCH.equals(this.style) || !Style.EMPTY.equals(this.style)) {
-			unimplemented(this.style.toString());
+			unimplemented(this.style.toString(), this.cgm);
 		}
     }
 

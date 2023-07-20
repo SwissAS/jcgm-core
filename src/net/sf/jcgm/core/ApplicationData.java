@@ -34,25 +34,25 @@ public class ApplicationData extends Command {
     int identifier;
     String data;
 
-    public ApplicationData(int ec, int eid, int l, DataInput in)
+    public ApplicationData(int ec, int eid, int l, DataInput in, CGM cgm)
             throws IOException {
-        super(ec, eid, l, in);
-
-        identifier = makeInt();
-        data = makeString();
+        super(ec, eid, l, in, cgm);
+        
+        this.identifier = makeInt();
+        this.data = makeString();
     }
 
     @Override
 	public String toString() {
-        return "ApplicationData: " + identifier + " " + this.data;
+        return "ApplicationData: " + this.identifier + " " + this.data;
     }
 
     public int getIdentifier() {
-        return identifier;
+        return this.identifier;
     }
 
     public String getData() {
-        return data;
+        return this.data;
     }
 }
 

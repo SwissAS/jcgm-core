@@ -31,31 +31,18 @@ import java.io.*;
  * @version $Id$
  */
 public class LineWidthSpecificationMode extends Command {
-    static private SpecificationMode mode;
-    
-    static {
-    	reset();
-    }
 
-	public LineWidthSpecificationMode(int ec, int eid, int l, DataInput in)
+	public LineWidthSpecificationMode(int ec, int eid, int l, DataInput in, CGM cgm)
             throws IOException {
-        super(ec, eid, l, in);
+        super(ec, eid, l, in, cgm);
         
         int mode = makeEnum();
-        LineWidthSpecificationMode.mode = SpecificationMode.getMode(mode);
+        cgm.setLineWidthSpecificationMode(SpecificationMode.getMode(mode));
     }
 	
-	public static void reset() {
-	    mode = SpecificationMode.ABSOLUTE;
-	}
-
-	public static SpecificationMode getMode() {
-		return mode;
-	}
-
     @Override
 	public String toString() {
-        return "LineWidthSpecificationMode " + mode;
+        return "LineWidthSpecificationMode " + this.cgm.getLineWidthSpecificationMode();
     }
 }
 

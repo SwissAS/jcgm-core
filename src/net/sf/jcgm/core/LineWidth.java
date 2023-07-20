@@ -34,14 +34,14 @@ import java.io.IOException;
 public class LineWidth extends Command {
     double width;
 
-    public LineWidth(int ec, int eid, int l, DataInput in)
+    public LineWidth(int ec, int eid, int l, DataInput in, CGM cgm)
             throws IOException {
-        super(ec, eid, l, in);
-        SpecificationMode mode = LineWidthSpecificationMode.getMode();
+        super(ec, eid, l, in, cgm);
+        SpecificationMode mode = cgm.getLineWidthSpecificationMode();
 		this.width = makeSizeSpecification(mode);
         
 		if (!SpecificationMode.ABSOLUTE.equals(mode) && !SpecificationMode.SCALED.equals(mode)) {
-			unimplemented("LineWidth specification mode "+mode+" not implemented");
+			unimplemented("LineWidth specification mode "+mode+" not implemented", this.cgm);
 		}
     }
 

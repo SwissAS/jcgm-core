@@ -31,33 +31,20 @@ import java.io.*;
  * @version $Id$
  */
 public class VDCIntegerPrecision extends Command {
-	private static int precision;
-	
-	static {
-		reset();
-	}
     
-    public VDCIntegerPrecision(int ec, int eid, int l, DataInput in)
+    public VDCIntegerPrecision(int ec, int eid, int l, DataInput in, CGM cgm)
             throws IOException {
 
-        super(ec, eid, l, in);
-        VDCIntegerPrecision.precision = makeInt();
-        
-        assert (precision == 16 || precision == 24 || precision == 32);
-    }
-    
-    public static void reset() {
-    	precision = 16;
-	}
-
-	public static int getPrecision() {
-    	return VDCIntegerPrecision.precision;
+        super(ec, eid, l, in, cgm);
+        int precision = makeInt();
+        cgm.setVdcIntegerPrecision(precision);
+		
+        assert precision == 16 || precision == 24 || precision == 32;
     }
 
     @Override
 	public String toString() {
-        String s = "VDCIntegerPrecision " + String.valueOf(VDCIntegerPrecision.precision);
-        return s;
+	    return "VDCIntegerPrecision " + this.cgm.getVdcIntegerPrecision();
     }
 }
 

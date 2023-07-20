@@ -45,10 +45,10 @@ public class PolygonSet extends Command {
     /** Polygon used to draw the filling */
     private Path2D.Double fillPolygon;
 
-    public PolygonSet(int ec, int eid, int l, DataInput in)
+    public PolygonSet(int ec, int eid, int l, DataInput in, CGM cgm)
             throws IOException {
 
-        super(ec, eid, l, in);
+        super(ec, eid, l, in, cgm);
         
         assert (this.args.length % (sizeOfPoint() + sizeOfEnum()) == 0);
         int n = this.args.length / (sizeOfPoint() + sizeOfEnum());

@@ -36,14 +36,14 @@ public class LineAndEdgeTypeDefinition extends Command {
 	private final double dashCycleRepeatLength;
 	private final int[] dashElements;
 
-	public LineAndEdgeTypeDefinition(int ec, int eid, int l, DataInput in)
+	public LineAndEdgeTypeDefinition(int ec, int eid, int l, DataInput in, CGM cgm)
             throws IOException {
-        super(ec, eid, l, in);
+        super(ec, eid, l, in, cgm);
         
         this.lineType = makeIndex();
         assert(this.lineType <= 0);
         
-        this.dashCycleRepeatLength = Math.abs(makeSizeSpecification(LineWidthSpecificationMode.getMode()));
+        this.dashCycleRepeatLength = Math.abs(makeSizeSpecification(cgm.getLineWidthSpecificationMode()));
         this.dashElements = new int[(this.args.length-this.currentArg)/sizeOfInt()];
         
         for (int i = 0; i < this.dashElements.length; i++) {

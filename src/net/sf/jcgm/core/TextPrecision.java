@@ -39,9 +39,9 @@ public class TextPrecision extends Command {
 	
 	private Precision precision;
 	
-    public TextPrecision(int ec, int eid, int l, DataInput in)
+    public TextPrecision(int ec, int eid, int l, DataInput in, CGM cgm)
             throws IOException {
-        super(ec, eid, l, in);
+        super(ec, eid, l, in, cgm);
         
         int e = makeEnum();
         switch (e) {
@@ -56,10 +56,10 @@ public class TextPrecision extends Command {
         	break;
         default:
         	this.precision = Precision.STRING;
-        	unsupported("unsupported text precision "+e);
+        	unsupported("unsupported text precision "+e, this.cgm);
         }
         
-        unimplemented("TextPrecision");
+        unimplemented("TextPrecision", this.cgm);
     }
 
     @Override

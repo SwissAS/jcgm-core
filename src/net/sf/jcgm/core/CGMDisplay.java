@@ -171,11 +171,12 @@ public class CGMDisplay {
 		this.lineDashes.put(DashType.DOT,			new float[] { 13, 13 }); // dot
 		this.lineDashes.put(DashType.DASH_DOT,		new float[] { 55, 20, 13, 20  }); // dash-dot
 		this.lineDashes.put(DashType.DASH_DOT_DOT,	new float[] { 55, 20, 13, 20, 13, 20  }); // dash-dot-dot
-
-		if (VDCType.getType().equals(VDCType.Type.INTEGER)) {
+		
+		final VDCType.Type vdcType = cgm.getVdcType();
+		if (vdcType.equals(VDCType.Type.INTEGER)) {
 			this.extent = new Point2D.Double[] { new Point2D.Double(0, 0), new Point2D.Double(32767, 32767) };
 		}
-		else if (VDCType.getType().equals(VDCType.Type.REAL)) {
+		else if (vdcType.equals(VDCType.Type.REAL)) {
 			this.extent = new Point2D.Double[] { new Point2D.Double(0, 0), new Point2D.Double(1.0, 1.0) };
 		}
 		else
@@ -543,16 +544,19 @@ public class CGMDisplay {
 		this.textColor = null;
 		this.textColorIndex = 1;
 		this.markerType = MarkerType.Type.ASTERISK;
-		if (SpecificationMode.ABSOLUTE.equals(MarkerSizeSpecificationMode.getMode())) {
-			this.markerSize = 32767 / 100;
+		final SpecificationMode markerSizeSpecificationMode = this.Cgm != null
+						? this.Cgm.getMarkerSizeSpecificationMode()
+						: SpecificationMode.ABSOLUTE;
+		if (SpecificationMode.ABSOLUTE.equals(markerSizeSpecificationMode)) {
+			this.markerSize = (double) 32767 / 100;
 		}
-		else if (SpecificationMode.SCALED.equals(MarkerSizeSpecificationMode.getMode())) {
+		else if (SpecificationMode.SCALED.equals(markerSizeSpecificationMode)) {
 			this.markerSize = 1.0;
 		}
-		else if (SpecificationMode.FRACTIONAL.equals(MarkerSizeSpecificationMode.getMode())) {
+		else if (SpecificationMode.FRACTIONAL.equals(markerSizeSpecificationMode)) {
 			this.markerSize = 0.01;
 		}
-		else if (SpecificationMode.MM.equals(MarkerSizeSpecificationMode.getMode())) {
+		else if (SpecificationMode.MM.equals(markerSizeSpecificationMode)) {
 			this.markerSize = 2.50;
 		}
 
@@ -751,7 +755,7 @@ public class CGMDisplay {
 	}
 
 	public void setLineWidth(double width) {
-		SpecificationMode mode = LineWidthSpecificationMode.getMode();
+		SpecificationMode mode = this.Cgm.getLineWidthSpecificationMode();
 		this.lineStroke = new BasicStroke((float) scaleWidth(width, mode),
 				this.lineStroke.getEndCap(),
 				this.lineStroke.getLineJoin(),
@@ -761,7 +765,7 @@ public class CGMDisplay {
 	}
 
 	public void setEdgeWidth(double width) {
-		SpecificationMode mode = EdgeWidthSpecificationMode.getMode();
+		SpecificationMode mode = this.Cgm.getEdgeWidthSpecificationMode();
 		this.edgeStroke = new BasicStroke((float) scaleWidth(width, mode),
 				this.edgeStroke.getEndCap(),
 				this.edgeStroke.getLineJoin(),
@@ -815,7 +819,7 @@ public class CGMDisplay {
 	}
 
 	public void setMarkerSize(double width) {
-		this.markerSize = scaleWidth(width, MarkerSizeSpecificationMode.getMode());
+		this.markerSize = scaleWidth(width, this.Cgm.getMarkerSizeSpecificationMode());
 	}
 
 	public double getMarkerSize() {

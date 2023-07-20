@@ -66,6 +66,22 @@ public class Message {
 		return this.elementId;
 	}
 
+	public static Message info(Command cmd, String message) {
+		return new Message(Message.Severity.INFO, cmd.getElementClass(), cmd.getElementCode(), message, cmd.toString());
+	}
+	
+	public static Message cmdUnsupported(int elementClass, int elementCode, String cmdDescription) {
+		return cmdUnsupported(elementClass, elementCode, "unsupported", cmdDescription);
+	}
+	
+	public static Message cmdUnsupported(int elementClass, int elementCode, String message, String cmdDescription) {
+		return new Message(Severity.UNSUPPORTED, elementClass, elementCode, message, cmdDescription);
+	}
+	
+	public static Message unimplemented(Command cmd, String message) {
+		return new Message(Severity.UNIMPLEMENTED, cmd.getElementClass(), cmd.getElementCode(), message, cmd.toString());
+	}
+	
 	@Override
 	public String toString() {
 		StringBuilder sb = new StringBuilder();

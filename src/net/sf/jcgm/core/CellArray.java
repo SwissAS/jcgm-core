@@ -51,9 +51,9 @@ public class CellArray extends Command {
 	private int[] colorIndexes;
 	private BufferedImage bufferedImage = null;
 
-	public CellArray(int ec, int eid, int l, DataInput in)
+	public CellArray(int ec, int eid, int l, DataInput in, CGM cgm)
 			throws IOException {
-		super(ec, eid, l, in);
+		super(ec, eid, l, in, cgm);
 
 		// 3P, 3I, E, CLIST
 		this.p = makePoint();
@@ -63,19 +63,20 @@ public class CellArray extends Command {
 		this.ny = makeInt(); // number of rows
 
 		int localColorPrecision = makeInt();
+		final ColourSelectionMode.Type colourSelectionMode = cgm.getColourSelectionMode();
 		if (localColorPrecision == 0) {
-			if (ColourSelectionMode.getType() == ColourSelectionMode.Type.INDEXED) {
-				localColorPrecision = ColourIndexPrecision.getPrecision();
+			if (colourSelectionMode == ColourSelectionMode.Type.INDEXED) {
+				localColorPrecision = cgm.getColourIndexPrecision();
 			}
 			else {
-				localColorPrecision = ColourPrecision.getPrecision();
+				localColorPrecision = this.cgm.getColourPrecision();
 			}
 		}
 
 		this.representationFlag = makeEnum();
 
 		int nColor = this.nx * this.ny;
-		if (ColourSelectionMode.getType().equals(ColourSelectionMode.Type.DIRECT)) {
+		if (colourSelectionMode.equals(ColourSelectionMode.Type.DIRECT)) {
 			this.colors = new Color[nColor];
 
 			if (this.representationFlag == 0) {
@@ -111,10 +112,10 @@ public class CellArray extends Command {
 				}
 			}
 			else {
-				unsupported("unsupported representation flag "+this.representationFlag);
+				unsupported("unsupported representation flag "+this.representationFlag, this.cgm);
 			}
 		}
-		else if (ColourSelectionMode.getType().equals(ColourSelectionMode.Type.INDEXED)) {
+		else if (colourSelectionMode.equals(ColourSelectionMode.Type.INDEXED)) {
 			this.colorIndexes = new int[nColor];
 
 			if (this.representationFlag == 0) {
@@ -150,11 +151,11 @@ public class CellArray extends Command {
 				}
 			}
 			else {
-				unsupported("unsupported representation flag "+this.representationFlag);
+				unsupported("unsupported representation flag "+this.representationFlag, this.cgm);
 			}
 		}
 		else {
-			unsupported("unsupported color selection mode "+ColourSelectionMode.getType());
+			unsupported("unsupported color selection mode "+ colourSelectionMode, this.cgm);
 		}
 
 		// make sure all the arguments were read

@@ -34,9 +34,9 @@ import java.io.IOException;
 public class EdgeVisibility extends Command {
 	boolean isVisible;
 
-	public EdgeVisibility(int ec, int eid, int l, DataInput in)
+	public EdgeVisibility(int ec, int eid, int l, DataInput in, CGM cgm)
 			throws IOException {
-		super(ec, eid, l, in);
+		super(ec, eid, l, in, cgm);
 		this.isVisible = (makeEnum() != 0);
 
 		// make sure all the arguments were read

@@ -43,17 +43,13 @@ public class DeviceViewportSpecificationMode extends Command {
 		PhysicalDeviceCoordinates
 	}
 
-	private static Mode specifier;
 	private final double metricScaleFactor;
 
-	static {
-		reset();
-	}
-
-	DeviceViewportSpecificationMode(int ec, int eid, int l, DataInput in) throws IOException {
-		super(ec, eid, l, in);
+	DeviceViewportSpecificationMode(int ec, int eid, int l, DataInput in, CGM cgm) throws IOException {
+		super(ec, eid, l, in, cgm);
 
 		int e = makeEnum();
+		Mode specifier = Mode.FractionOfDrawingSurface; 
 		switch (e) {
 		case 0:
 			specifier = Mode.FractionOfDrawingSurface;
@@ -65,10 +61,12 @@ public class DeviceViewportSpecificationMode extends Command {
 			specifier = Mode.PhysicalDeviceCoordinates;
 			break;
 		default:
-			unsupported("unsupported mode " + e);
+			unsupported("unsupported mode " + e, this.cgm);
 		}
+		
+		cgm.setDeviceViewportSpecificationMode(specifier);
 
-		if (RealPrecision.hasRealPrecisionBeenProcessed()) {
+		if (cgm.hasRealPrecisionBeenProcessed()) {
 			this.metricScaleFactor = makeReal();
 		}
 		else {
@@ -79,19 +77,11 @@ public class DeviceViewportSpecificationMode extends Command {
 		assert (this.currentArg == this.args.length);
 	}
 
-	private static void reset() {
-		specifier = Mode.FractionOfDrawingSurface;
-	}
-
-	static Mode getMode() {
-		return specifier;
-	}
-
 	@Override
 	public String toString() {
 		StringBuilder builder = new StringBuilder();
 		builder.append("DeviceViewportSpecificationMode [specifier=");
-		builder.append(specifier);
+		builder.append(this.cgm.getDeviceViewportSpecificationMode());
 		builder.append(", metricScaleFactor=");
 		builder.append(this.metricScaleFactor);
 		builder.append("]");

@@ -31,33 +31,20 @@ import java.io.*;
  * @version $Id$
  */
 public class IndexPrecision extends Command {
-    static int precision;
     
-    static {
-    	reset();
-    }
-    
-    public IndexPrecision(int ec, int eid, int l, DataInput in)
+    public IndexPrecision(int ec, int eid, int l, DataInput in, CGM cgm)
             throws IOException {
 
-        super(ec, eid, l, in);
-        IndexPrecision.precision = makeInt();
+        super(ec, eid, l, in, cgm);
+	    final int precision = makeInt();
+	    cgm.setIndexPrecision(precision);
         
         assert (precision == 8 || precision == 16 || precision == 24 || precision == 32);
     }
     
-    public static void reset() {
-		precision = 16;
-	}
-
-	public static int getPrecision() {
-    	return precision;
-    }
-
     @Override
 	public String toString() {
-        String s = "IndexPrecision " + String.valueOf(IndexPrecision.precision);
-        return s;
+	    return "IndexPrecision " + this.cgm.getIndexPrecision();
     }
 }
 

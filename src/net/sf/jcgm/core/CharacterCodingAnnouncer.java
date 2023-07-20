@@ -40,9 +40,9 @@ public class CharacterCodingAnnouncer extends Command {
 	
 	Type type;
 	
-    public CharacterCodingAnnouncer(int ec, int eid, int l, DataInput in)
+    public CharacterCodingAnnouncer(int ec, int eid, int l, DataInput in, CGM cgm)
             throws IOException {
-        super(ec, eid, l, in);
+        super(ec, eid, l, in, cgm);
         
         int typ = makeEnum();
         switch (typ) {
@@ -59,11 +59,11 @@ public class CharacterCodingAnnouncer extends Command {
         	this.type = Type.EXTENDED_8_BIT;
         	break;
         default:
-        	unsupported("unsupported character coding type "+typ);
+        	unsupported("unsupported character coding type "+typ, this.cgm);
         	this.type = Type.BASIC_7_BIT;
         }
         
-        unimplemented("CharacterCodingAnnouncer");
+        unimplemented("CharacterCodingAnnouncer", this.cgm);
     }
 
     @Override

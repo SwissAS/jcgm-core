@@ -43,9 +43,9 @@ public class EllipseElement extends Command {
 	protected Point2D.Double secondConjugateDiameterEndPoint;
 	protected Shape ellipse;
 
-    public EllipseElement(int ec, int eid, int l, DataInput in)
+    public EllipseElement(int ec, int eid, int l, DataInput in, CGM cgm)
             throws IOException {
-        super(ec, eid, l, in);
+        super(ec, eid, l, in, cgm);
         
         this.center = makePoint();
         this.firstConjugateDiameterEndPoint = makePoint();
@@ -110,7 +110,7 @@ public class EllipseElement extends Command {
 		}
 		catch (NoninvertibleTransformException e) {
 			// the matrix cannot be inverted, don't apply the arcs then
-			info("cannot invert matrix");
+			info("cannot invert matrix", d.getCGM());
 		}
 
 		translateInstance.concatenate(rotationTransform);

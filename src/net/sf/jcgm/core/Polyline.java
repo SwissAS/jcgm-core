@@ -37,9 +37,9 @@ import java.io.IOException;
 public class Polyline extends Command {
 	private final Path2D.Double path;
 
-    public Polyline(int ec, int eid, int l, DataInput in)
+    public Polyline(int ec, int eid, int l, DataInput in, CGM cgm)
             throws IOException {
-        super(ec, eid, l, in);
+        super(ec, eid, l, in, cgm);
 
         int n = this.args.length / sizeOfPoint();
 

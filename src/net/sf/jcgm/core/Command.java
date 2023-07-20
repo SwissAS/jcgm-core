@@ -62,20 +62,26 @@ public class Command implements Cloneable {
 
 	private final int elementClass;
 	private final int elementCode;
+	
+	/** A reference to the main CGM object. */
+	protected CGM cgm;
 
 	/**
 	 * The base class for all commands.
-	 * @param ec The element class
+	 *
+	 * @param ec  The element class
 	 * @param eid The element ID
-	 * @param l The number of arguments for the command
-	 * @param in The input stream used to read the command
+	 * @param l   The number of arguments for the command
+	 * @param in  The input stream used to read the command
+	 * @param cgm
 	 * @throws IOException
 	 */
-	public Command(int ec, int eid, int l, DataInput in)
+	public Command(int ec, int eid, int l, DataInput in, CGM cgm)
 			throws IOException {
 
 		this.elementClass = ec;
 		this.elementCode = eid;
+		this.cgm = cgm;
 		if (l != 31) {
 			this.args = new int[l];
 			for (int i = 0; i < l; i++)
@@ -216,22 +222,22 @@ public class Command implements Cloneable {
 	}
 
 	final protected int makeInt() {
-		int precision = IntegerPrecision.getPrecision();
+		int precision = this.cgm.getIntegerPrecision();
 		return makeInt(precision);
 	}
 
 	final protected int sizeOfInt() {
-		int precision = IntegerPrecision.getPrecision();
+		int precision = this.cgm.getIntegerPrecision();
 		return precision / 8;
 	}
 
 	final protected int makeIndex() {
-		int precision = IndexPrecision.getPrecision();
+		final int precision = this.cgm.getIndexPrecision();
 		return makeInt(precision);
 	}
 
 	final protected int makeName() {
-		int precision = NamePrecision.getPrecision();
+		int precision = this.cgm.getNamePrecision();
 		return makeInt(precision);
 	}
 
@@ -250,7 +256,7 @@ public class Command implements Cloneable {
 			return makeSignedInt32();
 		}
 
-		unsupported("unsupported integer precision "+precision);
+		unsupported("unsupported integer precision "+ precision, this.cgm);
 		// return default
 		return makeSignedInt16();
 	}
@@ -278,7 +284,7 @@ public class Command implements Cloneable {
 			return makeUInt32();
 		}
 
-		unsupported("unsupported uint precision "+precision);
+		unsupported("unsupported uint precision "+precision, this.cgm);
 		// return default
 		return makeUInt8();
 	}
@@ -355,8 +361,8 @@ public class Command implements Cloneable {
 	}
 
 	final protected double makeVdc() {
-		if (VDCType.getType().equals(VDCType.Type.REAL)) {
-			Type precision = VDCRealPrecision.getPrecision();
+		if (this.cgm.getVdcType().equals(VDCType.Type.REAL)) {
+			Type precision = this.cgm.getVdcRealPrecision();
 			if (precision.equals(Type.FIXED_POINT_32BIT)) {
 				return makeFixedPoint32();
 			}
@@ -370,13 +376,13 @@ public class Command implements Cloneable {
 				return makeFloatingPoint64();
 			}
 
-			unsupported("unsupported precision "+precision);
+			unsupported("unsupported precision "+ precision, this.cgm);
 			return makeFixedPoint32();
 		}
 
 		// defaults to integer
 		// if (VDCType.getType().equals(VDCType.Type.INTEGER)) {
-		int precision = VDCIntegerPrecision.getPrecision();
+		int precision = this.cgm.getVdcIntegerPrecision();
 		if (precision == 16) {
 			return makeSignedInt16();
 		}
@@ -387,19 +393,20 @@ public class Command implements Cloneable {
 			return makeSignedInt32();
 		}
 
-		unsupported("unsupported precision "+precision);
+		unsupported("unsupported precision "+ precision, this.cgm);
 		return makeSignedInt16();
 		// }
 	}
 
 	final protected int sizeOfVdc() {
-		if (VDCType.getType().equals(VDCType.Type.INTEGER)) {
-			int precision = VDCIntegerPrecision.getPrecision();
+		final VDCType.Type vdcType = this.cgm.getVdcType();
+		if (vdcType.equals(VDCType.Type.INTEGER)) {
+			int precision = this.cgm.getVdcIntegerPrecision();
 			return (precision / 8);
 		}
 
-		if (VDCType.getType().equals(VDCType.Type.REAL)) {
-			Type precision = VDCRealPrecision.getPrecision();
+		if (vdcType.equals(VDCType.Type.REAL)) {
+			Type precision = this.cgm.getVdcRealPrecision();
 			if (precision.equals(Type.FIXED_POINT_32BIT)) {
 				return sizeOfFixedPoint32();
 			}
@@ -417,7 +424,7 @@ public class Command implements Cloneable {
 	}
 
 	final protected double makeVc() {
-		switch (DeviceViewportSpecificationMode.getMode()) {
+		switch (this.cgm.getDeviceViewportSpecificationMode()) {
 		case MillimetersWithScaleFactor:
 		case PhysicalDeviceCoordinates:
 			return makeInt();
@@ -428,7 +435,7 @@ public class Command implements Cloneable {
 	}
 
 	final protected double makeReal() {
-		Precision precision = RealPrecision.getPrecision();
+		Precision precision = this.cgm.getRealPrecision();
 		if (precision.equals(RealPrecision.Precision.FIXED_32)) {
 			return makeFixedPoint32();
 		}
@@ -442,26 +449,26 @@ public class Command implements Cloneable {
 			return makeFloatingPoint64();
 		}
 
-		unsupported("unsupported real precision "+precision);
+		unsupported("unsupported real precision "+ precision, this.cgm);
 		// return default
 		return makeFixedPoint32();
 	}
 
 	final protected double makeFixedPoint() {
-		Precision precision = RealPrecision.getPrecision();
+		Precision precision = this.cgm.getRealPrecision();
 		if (precision.equals(RealPrecision.Precision.FIXED_32)) {
 			return makeFixedPoint32();
 		}
 		if (precision.equals(RealPrecision.Precision.FIXED_64)) {
 			return makeFixedPoint64();
 		}
-		unsupported("unsupported real precision "+precision);
+		unsupported("unsupported real precision "+ precision, this.cgm);
 		// return default
 		return makeFixedPoint32();
 	}
 
 	final protected double makeFloatingPoint() {
-		Precision precision = RealPrecision.getPrecision();
+		Precision precision = this.cgm.getRealPrecision();
 		if (precision.equals(RealPrecision.Precision.FLOATING_32)) {
 			return makeFloatingPoint32();
 		}
@@ -536,8 +543,7 @@ public class Command implements Cloneable {
 	}
 
 	final protected int makeColorIndex() {
-		int precision = ColourIndexPrecision.getPrecision();
-		return makeUInt(precision);
+		return makeUInt(this.cgm.getColourIndexPrecision());
 	}
 
 	final protected int makeColorIndex(int precision) {
@@ -545,8 +551,8 @@ public class Command implements Cloneable {
 	}
 
 	final protected Color makeDirectColor() {
-		int precision = ColourPrecision.getPrecision();
-		Model model = ColourModel.getModel();
+		int precision = this.cgm.getColourPrecision();
+		Model model = this.cgm.getColourModel();
 
 		if (model.equals(Model.RGB)) {
 			int[] scaled = scaleColorValueRGB(makeUInt(precision), makeUInt(precision), makeUInt(precision));
@@ -554,7 +560,7 @@ public class Command implements Cloneable {
 		}
 
 		if (model.equals(Model.CIELAB)) {
-			unimplemented("CIELAB");
+			unimplemented("CIELAB", this.cgm);
 			makeUInt(precision);
 			makeUInt(precision);
 			makeUInt(precision);
@@ -562,7 +568,7 @@ public class Command implements Cloneable {
 		}
 
 		if (model.equals(Model.CIELUV)) {
-			unimplemented("CIELUV");
+			unimplemented("CIELUV", this.cgm);
 			makeUInt(precision);
 			makeUInt(precision);
 			makeUInt(precision);
@@ -580,7 +586,7 @@ public class Command implements Cloneable {
 		}
 
 		if (model.equals(Model.RGB_RELATED)) {
-			unimplemented("CIELUV");
+			unimplemented("CIELUV", this.cgm);
 			makeUInt(precision);
 			makeUInt(precision);
 			makeUInt(precision);
@@ -592,8 +598,8 @@ public class Command implements Cloneable {
 	}
 
 	final protected int sizeOfDirectColor() {
-		int precision = ColourPrecision.getPrecision();
-		Model model = ColourModel.getModel();
+		int precision = this.cgm.getColourPrecision();
+		Model model = this.cgm.getColourModel();
 
 		if (model.equals(Model.RGB)) {
 			return 3 * precision / 8;
@@ -604,8 +610,8 @@ public class Command implements Cloneable {
 	}
 
 	private int[] scaleColorValueRGB(int r, int g, int b) {
-		int[] min = ColourValueExtent.getMinimumColorValueRGB();
-		int[] max = ColourValueExtent.getMaximumColorValueRGB();
+		int[] min = this.cgm.getMinimumColorValueRGB();
+		int[] max = this.cgm.getMaximumColorValueRGB();
 
 		r = clamp(r, min[0], max[0]);
 		g = clamp(g, min[0], max[0]);
@@ -726,7 +732,7 @@ public class Command implements Cloneable {
 					break;
 				default:
 					unsupported("makeSDR()-unsupported dataTypeIndex "
-							+ dataType);
+							+ dataType, this.cgm);
 				}
 			}
 			ret.add(dataType, dataCount, data);
@@ -756,14 +762,20 @@ public class Command implements Cloneable {
 	public void paint(@SuppressWarnings("unused") CGMDisplay d) {
 		// default empty implementation
 	}
-
+	
+	public static Command read(DataInput in) throws IOException {
+		return read(in, null);
+	}
+	
 	/**
 	 * Reads one command from the given input stream.
-	 * @param in Where to read the command from
+	 *
+	 * @param in  Where to read the command from
+	 * @param cgm a reference to the current CGM instance
 	 * @return The command or {@code null} if the end of stream was found
 	 * @throws IOException On I/O error
 	 */
-	public static Command read(DataInput in) throws IOException {
+	public static Command read(DataInput in, CGM cgm) throws IOException {
 		int k;
 		try {
 			k = in.readUnsignedByte();
@@ -777,79 +789,79 @@ public class Command implements Cloneable {
 		int ec = k >> 12;
 			int eid = (k >> 5) & 127;
 			int l = k & 31;
-			return readCommand(in, ec, eid, l);
+			return readCommand(in, ec, eid, l, cgm);
 	}
 
-	protected static Command readCommand(DataInput in, int ec, int eid, int l) throws IOException {
+	protected static Command readCommand(DataInput in, int ec, int eid, int l, CGM cgm) throws IOException {
 		switch (ElementClass.getElementClass(ec)) {
 
 		case DELIMITER_ELEMENTS: // 0
-			return readDelimiterElements(in, ec, eid, l);
+			return readDelimiterElements(in, ec, eid, l, cgm);
 
 		case METAFILE_DESCRIPTOR_ELEMENTS: // 1
-			return readMetaFileDescriptorElements(in, ec, eid, l);
+			return readMetaFileDescriptorElements(in, ec, eid, l, cgm);
 
 		case PICTURE_DESCRIPTOR_ELEMENTS: // 2
-			return readPictureDescriptorElements(in, ec, eid, l);
+			return readPictureDescriptorElements(in, ec, eid, l, cgm);
 
 		case CONTROL_ELEMENTS: // 3
-			return readControlElements(in, ec, eid, l);
+			return readControlElements(in, ec, eid, l, cgm);
 
 		case GRAPHICAL_PRIMITIVE_ELEMENTS: // 4
-			return readGraphicalPrimitiveElements(in, ec, eid, l);
+			return readGraphicalPrimitiveElements(in, ec, eid, l, cgm);
 
 		case ATTRIBUTE_ELEMENTS: // 5
-			return readAttributeElements(in, ec, eid, l);
+			return readAttributeElements(in, ec, eid, l, cgm);
 
 		case ESCAPE_ELEMENTS: // 6
-			return new Escape(ec, eid, l, in);
+			return new Escape(ec, eid, l, in, cgm);
 
 		case EXTERNAL_ELEMENTS: // 7
-			return readExternalElements(in, ec, eid, l);
+			return readExternalElements(in, ec, eid, l, cgm);
 
 		case SEGMENT_ELEMENTS: // 8
-			unsupported(ec, eid);
-			return new Command(ec, eid, l, in);
+			unsupported(ec, eid, cgm);
+			return new Command(ec, eid, l, in, cgm);
 
 		case APPLICATION_STRUCTURE_ELEMENTS: // 9
-			return readApplicationStructureDescriptorElements(in, ec, eid, l);
+			return readApplicationStructureDescriptorElements(in, ec, eid, l, cgm);
 
 		default:
 			assert (10 <= ec && ec <= 15) : "unsupported element class";
-			unsupported(ec, eid);
-			return new Command(ec, eid, l, in);
+			unsupported(ec, eid, cgm);
+			return new Command(ec, eid, l, in, cgm);
 		}
 	}
 
 	// Class: 0
-	private static Command readDelimiterElements(DataInput in, int ec, int eid, int l)
+	private static Command readDelimiterElements(DataInput in, int ec, int eid, int l, CGM cgm)
 			throws IOException {
 		// Delimiter elements
 		switch (DelimiterElement.getElement(eid)) {
 
 		// 0, 0
 		case NO_OP:
-			return new NoOp(ec, eid, l, in);
+			return new NoOp(ec, eid, l, in, cgm);
 
 			// 0, 1
 		case BEGIN_METAFILE:
-			return new BeginMetafile(ec, eid, l, in);
+			return new BeginMetafile(ec, eid, l, in, cgm);
 
 			// 0, 2
 		case END_METAFILE:
-			return new EndMetafile(ec, eid, l, in);
+			return new EndMetafile(ec, eid, l, in, cgm);
 
 			// 0, 3
 		case BEGIN_PICTURE:
-			return new BeginPicture(ec, eid, l, in);
+			return new BeginPicture(ec, eid, l, in, cgm);
 
 			// 0, 4
 		case BEGIN_PICTURE_BODY:
-			return new BeginPictureBody(ec, eid, l, in);
+			return new BeginPictureBody(ec, eid, l, in, cgm);
 
 			// 0, 5
 		case END_PICTURE:
-			return new EndPicture(ec, eid, l, in);
+			return new EndPicture(ec, eid, l, in, cgm);
 
 			// 0, 6
 		case BEGIN_SEGMENT:
@@ -871,151 +883,151 @@ public class Command implements Cloneable {
 		case BEGIN_COMPOUND_TEXT_PATH:
 			// 0, 18
 		case END_COMPOUND_TEXT_PATH:
-			unsupported(ec, eid);
-			return new Command(ec, eid, l, in);
+			unsupported(ec, eid, cgm);
+			return new Command(ec, eid, l, in, cgm);
 
 			// 0, 19
 		case BEGIN_TILE_ARRAY:
-			return new BeginTileArray(ec, eid, l, in);
+			return new BeginTileArray(ec, eid, l, in, cgm);
 
 			// 0, 20
 		case END_TILE_ARRAY:
-			return new EndTileArray(ec, eid, l, in);
+			return new EndTileArray(ec, eid, l, in, cgm);
 
 			// 0, 21
 		case BEGIN_APPLICATION_STRUCTURE:
-			unsupported(ec, eid);
-			return new BeginApplicationStructure(ec, eid, l, in);
+			unsupported(ec, eid, cgm);
+			return new BeginApplicationStructure(ec, eid, l, in, cgm);
 
 			// 0, 22
 		case BEGIN_APPLICATION_STRUCTURE_BODY:
-			return new BeginApplicationStructureBody(ec, eid, l, in);
+			return new BeginApplicationStructureBody(ec, eid, l, in, cgm);
 
 			// 0, 23
 		case END_APPLICATION_STRUCTURE:
-			return new EndApplicationStructure(ec, eid, l, in);
+			return new EndApplicationStructure(ec, eid, l, in, cgm);
 
 		default:
 			assert false : "unsupported element ID=" + eid;
-		return new Command(ec, eid, l, in);
+		return new Command(ec, eid, l, in, cgm);
 		}
 	}
 
 	// Class: 1
-	private static Command readMetaFileDescriptorElements(DataInput in, int ec, int eid, int l) throws IOException {
+	private static Command readMetaFileDescriptorElements(DataInput in, int ec, int eid, int l, CGM cgm) throws IOException {
 		switch (MetafileDescriptorElement.getElement(eid)) {
 
 		case METAFILE_VERSION: // 1
-			return new MetafileVersion(ec, eid, l, in);
+			return new MetafileVersion(ec, eid, l, in, cgm);
 
 		case METAFILE_DESCRIPTION: // 2
-			return new MetafileDescription(ec, eid, l, in);
+			return new MetafileDescription(ec, eid, l, in, cgm);
 
 		case VDC_TYPE: // 3
-			return new VDCType(ec, eid, l, in);
+			return new VDCType(ec, eid, l, in, cgm);
 
 		case INTEGER_PRECISION: // 4
-			return new IntegerPrecision(ec, eid, l, in);
+			return new IntegerPrecision(ec, eid, l, in, cgm);
 
 		case REAL_PRECISION: // 5
-			return new RealPrecision(ec, eid, l, in);
+			return new RealPrecision(ec, eid, l, in, cgm);
 
 		case INDEX_PRECISION: // 6
-			return new IndexPrecision(ec, eid, l, in);
+			return new IndexPrecision(ec, eid, l, in, cgm);
 
 		case COLOUR_PRECISION: // 7
-			return new ColourPrecision(ec, eid, l, in);
+			return new ColourPrecision(ec, eid, l, in, cgm);
 
 		case COLOUR_INDEX_PRECISION: // 8
-			return new ColourIndexPrecision(ec, eid, l, in);
+			return new ColourIndexPrecision(ec, eid, l, in, cgm);
 
 		case MAXIMUM_COLOUR_INDEX: // 9
-			return new MaximumColourIndex(ec, eid, l, in);
+			return new MaximumColourIndex(ec, eid, l, in, cgm);
 
 		case COLOUR_VALUE_EXTENT: // 10
-			return new ColourValueExtent(ec, eid, l, in);
+			return new ColourValueExtent(ec, eid, l, in, cgm);
 
 		case METAFILE_ELEMENT_LIST: // 11
-			return new MetafileElementList(ec, eid, l, in);
+			return new MetafileElementList(ec, eid, l, in, cgm);
 
 		case METAFILE_DEFAULTS_REPLACEMENT: // 12
-			return new MetafileDefaultsReplacement(ec, eid, l, in);
+			return new MetafileDefaultsReplacement(ec, eid, l, in, cgm);
 
 		case FONT_LIST: // 13
-			return new FontList(ec, eid, l, in);
+			return new FontList(ec, eid, l, in, cgm);
 
 		case CHARACTER_SET_LIST: // 14
-			return new CharacterSetList(ec, eid, l, in);
+			return new CharacterSetList(ec, eid, l, in, cgm);
 
 		case CHARACTER_CODING_ANNOUNCER: // 15
-			return new CharacterCodingAnnouncer(ec, eid, l, in);
+			return new CharacterCodingAnnouncer(ec, eid, l, in, cgm);
 
 		case NAME_PRECISION: // 16
-			return new NamePrecision(ec, eid, l, in);
+			return new NamePrecision(ec, eid, l, in, cgm);
 
 		case MAXIMUM_VDC_EXTENT: // 17
-			return new MaximumVDCExtent(ec, eid, l, in);
+			return new MaximumVDCExtent(ec, eid, l, in, cgm);
 
 		case SEGMENT_PRIORITY_EXTENT: // 18
-			unsupported(ec, eid);
-			return new Command(ec, eid, l, in);
+			unsupported(ec, eid, cgm);
+			return new Command(ec, eid, l, in, cgm);
 
 		case COLOUR_MODEL: // 19
-			return new ColourModel(ec, eid, l, in);
+			return new ColourModel(ec, eid, l, in, cgm);
 
 		case COLOUR_CALIBRATION: // 20
 		case FONT_PROPERTIES: // 21
 		case GLYPH_MAPPING: // 22
 		case SYMBOL_LIBRARY_LIST: // 23
 		case PICTURE_DIRECTORY: // 24
-			unsupported(ec, eid);
-			return new Command(ec, eid, l, in);
+			unsupported(ec, eid, cgm);
+			return new Command(ec, eid, l, in, cgm);
 
 		default:
 			assert false : "unsupported element ID="+eid;
-		return new Command(ec, eid, l, in);
+		return new Command(ec, eid, l, in, cgm);
 		}
 	}
 
 	// Class: 2
-	private static Command readPictureDescriptorElements(DataInput in, int ec, int eid, int l) throws IOException {
+	private static Command readPictureDescriptorElements(DataInput in, int ec, int eid, int l, CGM cgm) throws IOException {
 		switch (PictureDescriptorElement.getElement(eid)) {
 		// 2, 1
 		case SCALING_MODE:
-			return new ScalingMode(ec, eid, l, in);
+			return new ScalingMode(ec, eid, l, in, cgm);
 
 			// 2, 2
 		case COLOUR_SELECTION_MODE:
-			return new ColourSelectionMode(ec, eid, l, in);
+			return new ColourSelectionMode(ec, eid, l, in, cgm);
 
 			// 2, 3
 		case LINE_WIDTH_SPECIFICATION_MODE:
-			return new LineWidthSpecificationMode(ec, eid, l, in);
+			return new LineWidthSpecificationMode(ec, eid, l, in, cgm);
 
 			// 2, 4
 		case MARKER_SIZE_SPECIFICATION_MODE:
-			return new MarkerSizeSpecificationMode(ec, eid, l, in);
+			return new MarkerSizeSpecificationMode(ec, eid, l, in, cgm);
 
 			// 2, 5
 		case EDGE_WIDTH_SPECIFICATION_MODE:
-			return new EdgeWidthSpecificationMode(ec, eid, l, in);
+			return new EdgeWidthSpecificationMode(ec, eid, l, in, cgm);
 
 			// 2, 6
 		case VDC_EXTENT:
-			return new VDCExtent(ec, eid, l, in);
+			return new VDCExtent(ec, eid, l, in, cgm);
 
 			// 2, 7
 		case BACKGROUND_COLOUR:
-			return new BackgroundColour(ec, eid, l, in);
+			return new BackgroundColour(ec, eid, l, in, cgm);
 
 			// 2, 8
 		case DEVICE_VIEWPORT:
-			unsupported(ec, eid);
-			return new Command(ec, eid, l, in);
+			unsupported(ec, eid, cgm);
+			return new Command(ec, eid, l, in, cgm);
 
 			// 2, 9
 		case DEVICE_VIEWPORT_SPECIFICATION_MODE:
-			return new DeviceViewportSpecificationMode(ec, eid, l, in);
+			return new DeviceViewportSpecificationMode(ec, eid, l, in, cgm);
 
 			// 2, 10
 		case DEVICE_VIEWPORT_MAPPING:
@@ -1029,16 +1041,16 @@ public class Command implements Cloneable {
 		case FILL_REPRESENTATION:
 			// 2, 15:
 		case EDGE_REPRESENTATION:
-			unsupported(ec, eid);
-			return new Command(ec, eid, l, in);
+			unsupported(ec, eid, cgm);
+			return new Command(ec, eid, l, in, cgm);
 
 			// 2, 16
 		case INTERIOR_STYLE_SPECIFICATION_MODE:
-			return new InteriorStyleSpecificationMode(ec, eid, l, in);
+			return new InteriorStyleSpecificationMode(ec, eid, l, in, cgm);
 
 			// 2, 17
 		case LINE_AND_EDGE_TYPE_DEFINITION:
-			return new LineAndEdgeTypeDefinition(ec, eid, l, in);
+			return new LineAndEdgeTypeDefinition(ec, eid, l, in, cgm);
 
 			// 2, 18
 		case HATCH_STYLE_DEFINITION:
@@ -1046,93 +1058,93 @@ public class Command implements Cloneable {
 		case GEOMETRIC_PATTERN_DEFINITION:
 			// 2, 20
 		case APPLICATION_STRUCTURE_DIRECTORY:
-			unsupported(ec, eid);
-			return new Command(ec, eid, l, in);
+			unsupported(ec, eid, cgm);
+			return new Command(ec, eid, l, in, cgm);
 
 		default:
-			unsupported(ec, eid);
-			return new Command(ec, eid, l, in);
+			unsupported(ec, eid, cgm);
+			return new Command(ec, eid, l, in, cgm);
 		}
 	}
 
 	// Class: 3
-	private static Command readControlElements(DataInput in, int ec, int eid, int l) throws IOException {
+	private static Command readControlElements(DataInput in, int ec, int eid, int l, CGM cgm) throws IOException {
 		switch (ControlElement.getElement(eid)) {
 		case VDC_INTEGER_PRECISION:
-			return new VDCIntegerPrecision(ec, eid, l, in);
+			return new VDCIntegerPrecision(ec, eid, l, in, cgm);
 		case VDC_REAL_PRECISION:
-			return new VDCRealPrecision(ec, eid, l, in);
+			return new VDCRealPrecision(ec, eid, l, in, cgm);
 		case CLIP_RECTANGLE:
-			return new ClipRectangle(ec, eid, l, in);
+			return new ClipRectangle(ec, eid, l, in, cgm);
 		case CLIP_INDICATOR:
-			return new ClipIndicator(ec, eid, l, in);
+			return new ClipIndicator(ec, eid, l, in, cgm);
 		default:
-			unsupported(ec, eid);
-			return new Command(ec, eid, l, in);
+			unsupported(ec, eid, cgm);
+			return new Command(ec, eid, l, in, cgm);
 		}
 	}
 
 	// Class: 4
-	private static Command readGraphicalPrimitiveElements(DataInput in, int ec, int eid, int l) throws IOException {
+	private static Command readGraphicalPrimitiveElements(DataInput in, int ec, int eid, int l, CGM cgm) throws IOException {
 		switch (GraphicalPrimitiveElements.getElement(eid)) {
 
 		case POLYLINE: // 1
-			return new Polyline(ec, eid, l, in);
+			return new Polyline(ec, eid, l, in, cgm);
 
 		case DISJOINT_POLYLINE: // 2
-			return new DisjointPolyline(ec, eid, l, in);
+			return new DisjointPolyline(ec, eid, l, in, cgm);
 
 		case POLYMARKER: // 3
-			return new PolyMarker(ec, eid, l, in);
+			return new PolyMarker(ec, eid, l, in, cgm);
 
 		case TEXT: // 4
-			return new Text(ec, eid, l, in);
+			return new Text(ec, eid, l, in, cgm);
 
 		case RESTRICTED_TEXT: // 5
-			return new RestrictedText(ec, eid, l, in);
+			return new RestrictedText(ec, eid, l, in, cgm);
 
 		case APPEND_TEXT: // 6
-			return new AppendText(ec, eid, l, in);
+			return new AppendText(ec, eid, l, in, cgm);
 
 		case POLYGON: // 7
-			return new PolygonElement(ec, eid, l, in);
+			return new PolygonElement(ec, eid, l, in, cgm);
 
 		case POLYGON_SET: // 8
-			return new PolygonSet(ec, eid, l, in);
+			return new PolygonSet(ec, eid, l, in, cgm);
 
 		case CELL_ARRAY: // 9
-			return new CellArray(ec, eid, l, in);
+			return new CellArray(ec, eid, l, in, cgm);
 
 		case GENERALIZED_DRAWING_PRIMITIVE: // 10
-			unsupported(ec, eid);
-			return new Command(ec, eid, l, in);
+			unsupported(ec, eid, cgm);
+			return new Command(ec, eid, l, in, cgm);
 
 		case RECTANGLE: // 11
-			return new RectangleElement(ec, eid, l, in);
+			return new RectangleElement(ec, eid, l, in, cgm);
 
 		case CIRCLE: // 12
-			return new CircleElement(ec, eid, l, in);
+			return new CircleElement(ec, eid, l, in, cgm);
 
 		case CIRCULAR_ARC_3_POINT: // 13
-			return new CircularArc3Point(ec, eid, l, in);
+			return new CircularArc3Point(ec, eid, l, in, cgm);
 
 		case CIRCULAR_ARC_3_POINT_CLOSE: // 14
-			return new CircularArc3PointClose(ec, eid, l, in);
+			return new CircularArc3PointClose(ec, eid, l, in, cgm);
 
 		case CIRCULAR_ARC_CENTRE: // 15
-			return new CircularArcCentre(ec, eid, l, in);
+			return new CircularArcCentre(ec, eid, l, in, cgm);
 
 		case CIRCULAR_ARC_CENTRE_CLOSE: // 16
-			return new CircularArcCentreClose(ec, eid, l, in);
+			return new CircularArcCentreClose(ec, eid, l, in, cgm);
 
 		case ELLIPSE: // 17
-			return new EllipseElement(ec, eid, l, in);
+			return new EllipseElement(ec, eid, l, in, cgm);
 
 		case ELLIPTICAL_ARC: // 18
-			return new EllipticalArc(ec, eid, l, in);
+			return new EllipticalArc(ec, eid, l, in, cgm);
 
 		case ELLIPTICAL_ARC_CLOSE: // 19
-			return new EllipticalArcClose(ec, eid, l, in);
+			return new EllipticalArcClose(ec, eid, l, in, cgm);
 
 		case CIRCULAR_ARC_CENTRE_REVERSED: // 20
 		case CONNECTING_EDGE: // 21
@@ -1140,162 +1152,162 @@ public class Command implements Cloneable {
 		case PARABOLIC_ARC: // 23
 		case NON_UNIFORM_B_SPLINE: // 24
 		case NON_UNIFORM_RATIONAL_B_SPLINE: // 25
-			unsupported(ec, eid);
-			return new Command(ec, eid, l, in);
+			unsupported(ec, eid, cgm);
+			return new Command(ec, eid, l, in, cgm);
 
 		case POLYBEZIER: // 26
-			return new PolyBezier(ec, eid, l, in);
+			return new PolyBezier(ec, eid, l, in, cgm);
 
 		case POLYSYMBOL: // 27
-			unsupported(ec, eid);
-			return new Command(ec, eid, l, in);
+			unsupported(ec, eid, cgm);
+			return new Command(ec, eid, l, in, cgm);
 
 		case BITONAL_TILE: // 28
-			return new BitonalTile(ec, eid, l, in);
+			return new BitonalTile(ec, eid, l, in, cgm);
 
 		case TILE: // 29
-			return new Tile(ec, eid, l, in);
+			return new Tile(ec, eid, l, in, cgm);
 
 		default:
-			unsupported(ec, eid);
-			return new Command(ec, eid, l, in);
+			unsupported(ec, eid, cgm);
+			return new Command(ec, eid, l, in, cgm);
 		}
 	}
 
 	// Class: 5
-	private static Command readAttributeElements(DataInput in, int ec, int eid, int l) throws IOException {
+	private static Command readAttributeElements(DataInput in, int ec, int eid, int l, CGM cgm) throws IOException {
 		switch (AttributeElement.getElement(eid)) {
 		case LINE_BUNDLE_INDEX: // 1
-			unsupported(ec, eid);
-			return new Command(ec, eid, l, in);
+			unsupported(ec, eid, cgm);
+			return new Command(ec, eid, l, in, cgm);
 
 		case LINE_TYPE: // 2
-			return new LineType(ec, eid, l, in);
+			return new LineType(ec, eid, l, in, cgm);
 
 		case LINE_WIDTH: // 3
-			return new LineWidth(ec, eid, l, in);
+			return new LineWidth(ec, eid, l, in, cgm);
 
 		case LINE_COLOUR: // 4
-			return new LineColour(ec, eid, l, in);
+			return new LineColour(ec, eid, l, in, cgm);
 
 		case MARKER_BUNDLE_INDEX: // 5
-			unsupported(ec, eid);
-			return new Command(ec, eid, l, in);
+			unsupported(ec, eid, cgm);
+			return new Command(ec, eid, l, in, cgm);
 
 		case MARKER_TYPE: // 6
-			return new MarkerType(ec, eid, l, in);
+			return new MarkerType(ec, eid, l, in, cgm);
 
 		case MARKER_SIZE: // 7
-			return new MarkerSize(ec, eid, l, in);
+			return new MarkerSize(ec, eid, l, in, cgm);
 
 		case MARKER_COLOUR: // 8
-			return new MarkerColour(ec, eid, l, in);
+			return new MarkerColour(ec, eid, l, in, cgm);
 
 		case TEXT_BUNDLE_INDEX: // 9:
-			unsupported(ec, eid);
-			return new Command(ec, eid, l, in);
+			unsupported(ec, eid, cgm);
+			return new Command(ec, eid, l, in, cgm);
 
 		case TEXT_FONT_INDEX: // 10
-			return new TextFontIndex(ec, eid, l, in);
+			return new TextFontIndex(ec, eid, l, in, cgm);
 
 		case TEXT_PRECISION: // 11
-			return new TextPrecision(ec, eid, l, in);
+			return new TextPrecision(ec, eid, l, in, cgm);
 
 		case CHARACTER_EXPANSION_FACTOR: // 12
-			return new CharacterExpansionFactor(ec, eid, l, in);
+			return new CharacterExpansionFactor(ec, eid, l, in, cgm);
 
 		case CHARACTER_SPACING: // 13
-			return new CharacterSpacing(ec, eid, l, in);
+			return new CharacterSpacing(ec, eid, l, in, cgm);
 
 		case TEXT_COLOUR: // 14
-			return new TextColour(ec, eid, l, in);
+			return new TextColour(ec, eid, l, in, cgm);
 
 		case CHARACTER_HEIGHT: // 15
-			return new CharacterHeight(ec, eid, l, in);
+			return new CharacterHeight(ec, eid, l, in, cgm);
 
 		case CHARACTER_ORIENTATION: // 16
-			return new CharacterOrientation(ec, eid, l, in);
+			return new CharacterOrientation(ec, eid, l, in, cgm);
 
 		case TEXT_PATH: // 17
-			return new TextPath(ec, eid, l, in);
+			return new TextPath(ec, eid, l, in, cgm);
 
 		case TEXT_ALIGNMENT: // 18
-			return new TextAlignment(ec, eid, l, in);
+			return new TextAlignment(ec, eid, l, in, cgm);
 
 		case CHARACTER_SET_INDEX: // 19
-			return new CharacterSetIndex(ec, eid, l, in);
+			return new CharacterSetIndex(ec, eid, l, in, cgm);
 
 		case ALTERNATE_CHARACTER_SET_INDEX: // 20
-			return new AlternateCharacterSetIndex(ec, eid, l, in);
+			return new AlternateCharacterSetIndex(ec, eid, l, in, cgm);
 
 		case FILL_BUNDLE_INDEX: // 21
-			unsupported(ec, eid);
-			return new Command(ec, eid, l, in);
+			unsupported(ec, eid, cgm);
+			return new Command(ec, eid, l, in, cgm);
 
 		case INTERIOR_STYLE: // 22
-			return new InteriorStyle(ec, eid, l, in);
+			return new InteriorStyle(ec, eid, l, in, cgm);
 
 		case FILL_COLOUR: // 23
-			return new FillColour(ec, eid, l, in);
+			return new FillColour(ec, eid, l, in, cgm);
 
 		case HATCH_INDEX: // 24
-			return new HatchIndex(ec, eid, l, in);
+			return new HatchIndex(ec, eid, l, in, cgm);
 
 		case PATTERN_INDEX: // 25
 		case EDGE_BUNDLE_INDEX: // 26
-			unsupported(ec, eid);
-			return new Command(ec, eid, l, in);
+			unsupported(ec, eid, cgm);
+			return new Command(ec, eid, l, in, cgm);
 
 		case EDGE_TYPE: // 27
-			return new EdgeType(ec, eid, l, in);
+			return new EdgeType(ec, eid, l, in, cgm);
 
 		case EDGE_WIDTH: // 28
-			return new EdgeWidth(ec, eid, l, in);
+			return new EdgeWidth(ec, eid, l, in, cgm);
 
 		case EDGE_COLOUR: // 29
-			return new EdgeColour(ec, eid, l, in);
+			return new EdgeColour(ec, eid, l, in, cgm);
 
 		case EDGE_VISIBILITY: // 30
-			return new EdgeVisibility(ec, eid, l, in);
+			return new EdgeVisibility(ec, eid, l, in, cgm);
 
 		case FILL_REFERENCE_POINT: // 31
 		case PATTERN_TABLE: // 32
 		case PATTERN_SIZE: // 33
-			unsupported(ec, eid);
-			return new Command(ec, eid, l, in);
+			unsupported(ec, eid, cgm);
+			return new Command(ec, eid, l, in, cgm);
 
 		case COLOUR_TABLE: // 34
-			return new ColourTable(ec, eid, l, in);
+			return new ColourTable(ec, eid, l, in, cgm);
 
 		case ASPECT_SOURCE_FLAGS: // 35
 		case PICK_IDENTIFIER: // 36
-			unsupported(ec, eid);
-			return new Command(ec, eid, l, in);
+			unsupported(ec, eid, cgm);
+			return new Command(ec, eid, l, in, cgm);
 
 		case LINE_CAP: // 37
-			return new LineCap(ec, eid, l, in);
+			return new LineCap(ec, eid, l, in, cgm);
 
 		case LINE_JOIN: // 38
-			return new LineJoin(ec, eid, l, in);
+			return new LineJoin(ec, eid, l, in, cgm);
 
 		case LINE_TYPE_CONTINUATION: // 39
 		case LINE_TYPE_INITIAL_OFFSET: // 40
 		case TEXT_SCORE_TYPE: // 41
-			unsupported(ec, eid);
-			return new Command(ec, eid, l, in);
+			unsupported(ec, eid, cgm);
+			return new Command(ec, eid, l, in, cgm);
 
 		case RESTRICTED_TEXT_TYPE: // 42
-			return new RestrictedTextType(ec, eid, l, in);
+			return new RestrictedTextType(ec, eid, l, in, cgm);
 
 		case INTERPOLATED_INTERIOR: // 43
-			unsupported(ec, eid);
-			return new Command(ec, eid, l, in);
+			unsupported(ec, eid, cgm);
+			return new Command(ec, eid, l, in, cgm);
 
 		case EDGE_CAP: // 44
-			return new EdgeCap(ec, eid, l, in);
+			return new EdgeCap(ec, eid, l, in, cgm);
 
 		case EDGE_JOIN: // 45
-			return new EdgeJoin(ec, eid, l, in);
+			return new EdgeJoin(ec, eid, l, in, cgm);
 
 		case EDGE_TYPE_CONTINUATION: // 46
 		case EDGE_TYPE_INITIAL_OFFSET: // 47
@@ -1304,61 +1316,69 @@ public class Command implements Cloneable {
 		case SYMBOL_SIZE: // 50
 		case SYMBOL_ORIENTATION: // 51
 		default:
-			unsupported(ec, eid);
-			return new Command(ec, eid, l, in);
+			unsupported(ec, eid, cgm);
+			return new Command(ec, eid, l, in, cgm);
 		}
 	}
 
 	// Class: 7
-	private static Command readExternalElements(DataInput in, int ec, int eid, int l) throws IOException {
+	private static Command readExternalElements(DataInput in, int ec, int eid, int l, CGM cgm) throws IOException {
 		switch (ExternalElements.getElement(eid)) {
 		case MESSAGE: // 1
-			return new MessageCommand(ec, eid, l, in);
+			return new MessageCommand(ec, eid, l, in, cgm);
 
 		case APPLICATION_DATA: // 2
-			return new ApplicationData(ec, eid, l, in);
+			return new ApplicationData(ec, eid, l, in, cgm);
 		default:
-			unsupported(ec, eid);
-			return new Command(ec, eid, l, in);
+			unsupported(ec, eid, cgm);
+			return new Command(ec, eid, l, in, cgm);
 		}
 	}
 	
 	// Class: 9
-	private static Command readApplicationStructureDescriptorElements(DataInput in, int ec, int eid, int l) throws IOException {
+	private static Command readApplicationStructureDescriptorElements(DataInput in, int ec, int eid, int l, CGM cgm) throws IOException {
 		switch (ApplicationStructureDescriptorElement.getElement(eid)) {
 			case APPLICATION_STRUCTURE_ATTRIBUTE:
-				return new ApplicationStructureAttribute(ec, eid, l, in);
+				return new ApplicationStructureAttribute(ec, eid, l, in, cgm);
 			default:
-				unsupported(ec, eid);
-				return new Command(ec, eid, l, in);
+				unsupported(ec, eid, cgm);
+				return new Command(ec, eid, l, in, cgm);
 		}
 	}
 
-	private static void unsupported(int ec, int eid) {
-		if (ec == 0 && eid == 0)
+	private static void unsupported(int ec, int eid, CGM cgm) {
+		if (cgm == null) {
+			return;
+		}
+		if (ec == 0 && eid == 0) {
 			// 0, 0 is NO-OP
 			return;
-
-		Messages.getInstance().add(
-				new Message(Message.Severity.UNIMPLEMENTED, ec, eid, "unsupported", null));
+		}
+		cgm.addMessage(new Message(Message.Severity.UNIMPLEMENTED, ec, eid, "unsupported", null));
 	}
 
-	protected final void info(String message) {
-		Messages.getInstance().add(
-				new Message(Message.Severity.INFO, this.elementClass, this.elementCode,
-						message, toString()));
+	protected final void info(String message, CGM cgm) {
+		if (cgm == null) {
+			return;
+		}
+		cgm.addMessage(new Message(Message.Severity.INFO, this.elementClass, this.elementCode,
+				message, toString()));
 	}
 
-	protected final void unsupported(String message) {
-		Messages.getInstance().add(
-				new Message(Message.Severity.UNSUPPORTED, this.elementClass, this.elementCode,
-						message, toString()));
+	protected final void unsupported(String message, CGM cgm) {
+		if (cgm == null) {
+			return;
+		}
+		cgm.addMessage(new Message(Message.Severity.UNSUPPORTED, this.elementClass, this.elementCode,
+				message, toString()));
 	}
 
-	protected final void unimplemented(String message) {
-		Messages.getInstance().add(
-				new Message(Message.Severity.UNIMPLEMENTED, this.elementClass, this.elementCode,
-						message, toString()));
+	protected final void unimplemented(String message, CGM cgm) {
+		if (cgm == null) {
+			return;
+		}
+		cgm.addMessage(new Message(Message.Severity.UNIMPLEMENTED, this.elementClass, this.elementCode,
+				message, toString()));
 	}
 
 	@Override

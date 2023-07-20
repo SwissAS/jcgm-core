@@ -43,8 +43,8 @@ public class CircularArcCentre extends Command {
 	protected double radius;
 	protected Arc2D.Double shape;
 
-	public CircularArcCentre(int ec, int eid, int l, DataInput in) throws IOException {
-		super(ec, eid, l, in);
+	public CircularArcCentre(int ec, int eid, int l, DataInput in, CGM cgm) throws IOException {
+		super(ec, eid, l, in, cgm);
 
 		this.center = makePoint();
 		this.startDeltaX = makeVdc();

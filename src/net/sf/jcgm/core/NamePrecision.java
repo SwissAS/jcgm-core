@@ -31,32 +31,19 @@ import java.io.IOException;
  * @version $Id: IntegerPrecision.java 3 2009-10-16 08:51:15Z phica $
  */
 public class NamePrecision extends Command {
-	private static int precision;
 
-	static {
-		reset();
-	}
+	NamePrecision(int ec, int eid, int l, DataInput in, CGM cgm) throws IOException {
+		super(ec, eid, l, in, cgm);
+		int precision = makeInt();
+		cgm.setNamePrecision(precision);
 
-	NamePrecision(int ec, int eid, int l, DataInput in) throws IOException {
-		super(ec, eid, l, in);
-		NamePrecision.precision = makeInt();
-
-		assert (NamePrecision.precision == 8 || NamePrecision.precision == 16 ||
-				NamePrecision.precision == 24 || NamePrecision.precision == 32) : "unsupported NAME PRECISION";
-	}
-
-	static void reset() {
-		precision = 16;
-	}
-
-	static int getPrecision() {
-		return NamePrecision.precision;
+		assert precision == 8 || precision == 16 ||
+				precision == 24 || precision == 32 : "unsupported NAME PRECISION";
 	}
 
 	@Override
 	public String toString() {
-		String s = "NamePrecision " + String.valueOf(NamePrecision.precision);
-		return s;
+		return "NamePrecision " + this.cgm.getNamePrecision();
 	}
 }
 

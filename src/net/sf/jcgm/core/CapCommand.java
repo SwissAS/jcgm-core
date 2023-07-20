@@ -35,8 +35,8 @@ public abstract class CapCommand extends Command {
 	protected LineCapIndicator lineIndicator;
 	protected DashCapIndicator dashIndicator;
 
-	public CapCommand(int ec, int eid, int l, DataInput in) throws IOException {
-		super(ec, eid, l, in);
+	public CapCommand(int ec, int eid, int l, DataInput in, CGM cgm) throws IOException {
+		super(ec, eid, l, in, cgm);
         int lineIndic = makeIndex();
 		switch (lineIndic) {
         
@@ -51,14 +51,14 @@ public abstract class CapCommand extends Command {
         	break;
         case 4:
         	this.lineIndicator = LineCapIndicator.PROJECTED_SQUARE;
-        	unsupported("unsupported line cap indicator "+lineIndic);
+        	unsupported("unsupported line cap indicator "+lineIndic, this.cgm);
         	break;
         case 5:
         	this.lineIndicator = LineCapIndicator.TRIANGLE;
-        	unsupported("unsupported line cap indicator "+lineIndic);
+        	unsupported("unsupported line cap indicator "+lineIndic, this.cgm);
         	break;
         default:
-        	unsupported("unsupported line cap indicator "+lineIndic);
+        	unsupported("unsupported line cap indicator "+lineIndic, this.cgm);
         	this.lineIndicator = LineCapIndicator.UNSPECIFIED;
         }
         
@@ -74,7 +74,7 @@ public abstract class CapCommand extends Command {
         	this.dashIndicator = DashCapIndicator.MATCH;
         	break;
         default:
-        	unsupported("unsupported dash cap indicator "+dashIndic);
+        	unsupported("unsupported dash cap indicator "+dashIndic, this.cgm);
         	this.dashIndicator = DashCapIndicator.UNSPECIFIED;
         }
 	}

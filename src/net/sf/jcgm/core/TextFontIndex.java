@@ -33,9 +33,9 @@ import java.io.*;
 public class TextFontIndex extends Command {
 	int fontIndex;
 
-    public TextFontIndex(int ec, int eid, int l, DataInput in)
+    public TextFontIndex(int ec, int eid, int l, DataInput in, CGM cgm)
             throws IOException {
-        super(ec, eid, l, in);
+        super(ec, eid, l, in, cgm);
         this.fontIndex = makeIndex();
     }
 

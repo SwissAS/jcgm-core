@@ -33,10 +33,10 @@ import java.io.*;
 public class EdgeWidth extends Command {
     double width;
 
-    public EdgeWidth(int ec, int eid, int l, DataInput in)
+    public EdgeWidth(int ec, int eid, int l, DataInput in, CGM cgm)
             throws IOException {
-        super(ec, eid, l, in);
-        this.width = makeSizeSpecification(EdgeWidthSpecificationMode.getMode());
+        super(ec, eid, l, in, cgm);
+        this.width = makeSizeSpecification(cgm.getEdgeWidthSpecificationMode());
     }
 
     @Override

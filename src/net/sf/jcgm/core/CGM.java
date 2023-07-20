@@ -52,7 +52,29 @@ import net.sf.jcgm.core.ScalingMode.Mode;
  */
 public class CGM implements Cloneable {
 	private List<Command> commands;
-
+	
+	private final ArrayList<Message> messages = new ArrayList<>();
+	private int colourIndexPrecision = 8;
+	private int colourPrecision = 8;
+	private ColourModel.Model colourModel = ColourModel.Model.RGB;
+	private ColourSelectionMode.Type colourSelectionMode = ColourSelectionMode.Type.INDEXED;
+	private int[] minimumColorValueRGB = new int[] { 0, 0, 0 };
+	private int[] maximumColorValueRGB = new int[] { 255, 255, 255 };
+	private SpecificationMode edgeWidthSpecificationMode = SpecificationMode.ABSOLUTE;
+	private SpecificationMode lineWidthSpecificationMode = SpecificationMode.ABSOLUTE;
+	private SpecificationMode markerSizeSpecificationMode = SpecificationMode.ABSOLUTE;
+	private int indexPrecision = 16;
+	private int integerPrecision = 16;
+	private int namePrecision = 16;
+	private int vdcIntegerPrecision = 16;
+	private VDCRealPrecision.Type vdcRealPrecision = VDCRealPrecision.Type.FIXED_POINT_32BIT;
+	private VDCType.Type vdcType = VDCType.Type.INTEGER;
+	private RealPrecision.Precision realPrecision = RealPrecision.Precision.FIXED_32;
+	/** Flag to tell us whether a real precision command has already been processed or not. */
+	private boolean realPrecisionProcessed = false;
+	private RestrictedTextType.Type restrictedTextType = RestrictedTextType.Type.BASIC;
+	private DeviceViewportSpecificationMode.Mode deviceViewportSpecificationMode = DeviceViewportSpecificationMode.Mode.FractionOfDrawingSurface;
+	
 	private final List<ICommandListener> commandListeners = new ArrayList<ICommandListener>();
 
 	private final static int INITIAL_NUM_COMMANDS = 500;
@@ -82,7 +104,7 @@ public class CGM implements Cloneable {
 		reset();
 		this.commands = new ArrayList<Command>(INITIAL_NUM_COMMANDS);
 		while (true) {
-			Command c = Command.read(in);
+			Command c = Command.read(in, this);
 			if (c == null)
 				break;
 
@@ -168,9 +190,6 @@ public class CGM implements Cloneable {
 				currentPosition - startPosition);
 		writeFile(byteBuffer, outputDir, extractor
 				.extractFileName(currentFileName));
-		// don't forget to regularly clear the messages that
-		// we're not really using here
-		Messages.getInstance().reset();
 	}
 
 	/**
@@ -241,9 +260,6 @@ public class CGM implements Cloneable {
 		byteBuffer.get(byteArray);
 		extractor.handleExtracted(extractor.extractFileName(currentFileName),
 				new ByteArrayInputStream(byteArray), byteArray.length);
-		// don't forget to regularly clear the messages that
-		// we're not really using here
-		Messages.getInstance().reset();
 	}
 
 	/**
@@ -288,29 +304,297 @@ public class CGM implements Cloneable {
 	 * All the command classes with static data need to be reset here
 	 */
 	private void reset() {
-		ColourIndexPrecision.reset();
-		ColourModel.reset();
-		ColourPrecision.reset();
-		ColourSelectionMode.reset();
-		ColourValueExtent.reset();
-		EdgeWidthSpecificationMode.reset();
-		IndexPrecision.reset();
-		IntegerPrecision.reset();
-		LineWidthSpecificationMode.reset();
-		MarkerSizeSpecificationMode.reset();
-		RealPrecision.reset();
-		RestrictedTextType.reset();
-		VDCIntegerPrecision.reset();
-		VDCRealPrecision.reset();
-		VDCType.reset();
-
-		Messages.getInstance().reset();
+		resetColourIndexPrecision();
+		resetColourModel();
+		resetColourPrecision();
+		resetColourSelectionMode();
+		resetColourValueExtents();
+		resetEdgeWidthSpecificationMode();
+		resetIndexPrecision();
+		resetIntegerPrecision();
+		resetLineWidthSpecificationMode();
+		resetMarkerSizeSpecificationMode();
+		resetRealPrecision();
+		resetRestrictedTextType();
+		resetVdcIntegerPrecision();
+		resetVdcRealPrecision();
+		resetVdcType();
+		resetNamePrecision();
+		resetDeviceViewportSpecificationMode();
+	
+		resetMessages();
 	}
 
+	// region MESSAGES
 	public List<Message> getMessages() {
-		return Messages.getInstance();
+		return Collections.unmodifiableList(this.messages);
 	}
+	
+	void addMessage(Message m) {
+		this.messages.add(m);
+	}
+	
+	public void resetMessages() {
+		this.messages.clear();
+	}
+	// endregion
 
+	// region COLOUR INDEX PRECISION
+	int getColourIndexPrecision() {
+		return this.colourIndexPrecision;
+	}
+	
+	void setColourIndexPrecision(int colourIndexPrecision) {
+		this.colourIndexPrecision = colourIndexPrecision;
+	}
+	
+	private void resetColourIndexPrecision() {
+		setColourIndexPrecision(8);
+	}
+	// endregion
+	
+	// region COLOUR MODEL
+	ColourModel.Model getColourModel() {
+		return this.colourModel;
+	}
+	
+	void setColourModel(ColourModel.Model colourModel) {
+		this.colourModel = colourModel;
+	}
+	
+	private void resetColourModel() {
+		this.colourModel = ColourModel.Model.RGB;
+	}
+	// endregion
+	
+	// region COLOUR PRECISION
+	int getColourPrecision() {
+		return this.colourPrecision;
+	}
+	
+	void setColourPrecision(int colourPrecision) {
+		this.colourPrecision = colourPrecision;
+	}
+	
+	private void resetColourPrecision() {
+		setColourPrecision(8);
+	}
+	// endregion
+	
+	// region COLOUR SELECTION MODE
+	ColourSelectionMode.Type getColourSelectionMode() {
+		return this.colourSelectionMode;
+	}
+	
+	void setColourSelectionMode(ColourSelectionMode.Type colourSelectionMode) {
+		this.colourSelectionMode = colourSelectionMode;
+	}
+	
+	private void resetColourSelectionMode() {
+		setColourSelectionMode(ColourSelectionMode.Type.INDEXED);
+	}
+	// endregion
+	
+	// region COLOUR VALUE EXTENT
+	int[] getMinimumColorValueRGB() {
+		return this.minimumColorValueRGB;
+	}
+	
+	void setMinimumColorValueRGB(int[] minimumColorValueRGB) {
+		this.minimumColorValueRGB = minimumColorValueRGB;
+	}
+	
+	int[] getMaximumColorValueRGB() {
+		return this.maximumColorValueRGB;
+	}
+	
+	void setMaximumColorValueRGB(int[] maximumColorValueRGB) {
+		this.maximumColorValueRGB = maximumColorValueRGB;
+	}
+	
+	private void resetColourValueExtents() {
+		setMinimumColorValueRGB(new int[]{0, 0, 0});
+		setMaximumColorValueRGB(new int[]{255, 255, 255});
+	}
+	// endregion
+	
+	// region EDGE WIDTH SPECIFICATION MODE
+	SpecificationMode getEdgeWidthSpecificationMode() {
+		return this.edgeWidthSpecificationMode;
+	}
+	
+	void setEdgeWidthSpecificationMode(SpecificationMode edgeWidthSpecificationMode) {
+		this.edgeWidthSpecificationMode = edgeWidthSpecificationMode;
+	}
+	
+	private void resetEdgeWidthSpecificationMode() {
+		setEdgeWidthSpecificationMode(SpecificationMode.ABSOLUTE);
+	}
+	// endregion
+	
+	// region LINE WIDTH SPECIFICATION MODE
+	SpecificationMode getLineWidthSpecificationMode() {
+		return this.lineWidthSpecificationMode;
+	}
+	
+	void setLineWidthSpecificationMode(SpecificationMode lineWidthSpecificationMode) {
+		this.lineWidthSpecificationMode = lineWidthSpecificationMode;
+	}
+	
+	private void resetLineWidthSpecificationMode() {
+		setLineWidthSpecificationMode(SpecificationMode.ABSOLUTE);
+	}
+	// endregion
+	
+	// region MARKER SIZE SPECIFICATION MODE
+	SpecificationMode getMarkerSizeSpecificationMode() {
+		return this.markerSizeSpecificationMode;
+	}
+	
+	void setMarkerSizeSpecificationMode(SpecificationMode markerSizeSpecificationMode) {
+		this.markerSizeSpecificationMode = markerSizeSpecificationMode;
+	}
+	
+	private void resetMarkerSizeSpecificationMode() {
+		setMarkerSizeSpecificationMode(SpecificationMode.ABSOLUTE);
+	}
+	// endregion
+	
+	// region INDEX PRECISION
+	int getIndexPrecision() {
+		return this.indexPrecision;
+	}
+	
+	void setIndexPrecision(int indexPrecision) {
+		this.indexPrecision = indexPrecision;
+	}
+	
+	private void resetIndexPrecision() {
+		setIndexPrecision(16);
+	}
+	// endregion
+	
+	// region INTEGER PRECISION
+	int getIntegerPrecision() {
+		return this.integerPrecision;
+	}
+	
+	void setIntegerPrecision(int integerPrecision) {
+		this.integerPrecision = integerPrecision;
+	}
+	
+	private void resetIntegerPrecision() {
+		setIntegerPrecision(16);
+	}
+	// endregion
+	
+	// region NAME PRECISION
+	int getNamePrecision() {
+		return this.namePrecision;
+	}
+	
+	void setNamePrecision(int namePrecision) {
+		this.namePrecision = namePrecision;
+	}
+	
+	private void resetNamePrecision() {
+		setNamePrecision(16);
+	}
+	// endregion
+	
+	// region INTEGER PRECISION
+	int getVdcIntegerPrecision() {
+		return this.vdcIntegerPrecision;
+	}
+	
+	void setVdcIntegerPrecision(int vdcIntegerPrecision) {
+		this.vdcIntegerPrecision = vdcIntegerPrecision;
+	}
+	
+	private void resetVdcIntegerPrecision() {
+		setVdcIntegerPrecision(16);
+	}
+	// endregion
+	
+	// region VDC REAL PRECISION
+	public VDCRealPrecision.Type getVdcRealPrecision() {
+		return this.vdcRealPrecision;
+	}
+	
+	public void setVdcRealPrecision(VDCRealPrecision.Type vdcRealPrecision) {
+		this.vdcRealPrecision = vdcRealPrecision;
+	}
+	
+	private void resetVdcRealPrecision() {
+		setVdcRealPrecision(VDCRealPrecision.Type.FIXED_POINT_32BIT);
+	}
+	// endregion
+	
+	// region VDC TYPE
+	VDCType.Type getVdcType() {
+		return this.vdcType;
+	}
+	
+	void setVdcType(VDCType.Type vdcType) {
+		this.vdcType = vdcType;
+	}
+	
+	private void resetVdcType() {
+		setVdcType(VDCType.Type.INTEGER);
+	}
+	// endregion
+	
+	// region REAL PRECISION
+	RealPrecision.Precision getRealPrecision() {
+		return this.realPrecision;
+	}
+	
+	void setRealPrecision(RealPrecision.Precision realPrecision) {
+		this.realPrecision = realPrecision;
+	}
+	
+	boolean hasRealPrecisionBeenProcessed() {
+		return this.realPrecisionProcessed;
+	}
+	
+	void setRealPrecisionProcessed(boolean realPrecisionProcessed) {
+		this.realPrecisionProcessed = realPrecisionProcessed;
+	}
+	
+	private void resetRealPrecision() {
+		setRealPrecision(RealPrecision.Precision.FIXED_32);
+		setRealPrecisionProcessed(false);
+	}
+	// endregion
+	
+	// region RESTRICTED TEXT TYPE
+	RestrictedTextType.Type getRestrictedTextType() {
+		return this.restrictedTextType;
+	}
+	
+	void setRestrictedTextType(RestrictedTextType.Type restrictedTextType) {
+		this.restrictedTextType = restrictedTextType;
+	}
+	
+	private void resetRestrictedTextType() {
+		setRestrictedTextType(RestrictedTextType.Type.BASIC);	
+	}
+	// endregion
+	
+	// region DEVICE VIEWPORT SPECIFICATION MODE
+	DeviceViewportSpecificationMode.Mode getDeviceViewportSpecificationMode() {
+		return this.deviceViewportSpecificationMode;
+	}
+	
+	void setDeviceViewportSpecificationMode(DeviceViewportSpecificationMode.Mode deviceViewportSpecificationMode) {
+		this.deviceViewportSpecificationMode = deviceViewportSpecificationMode;
+	}
+	
+	private void resetDeviceViewportSpecificationMode() {
+		setDeviceViewportSpecificationMode(DeviceViewportSpecificationMode.Mode.FractionOfDrawingSurface);
+	}
+	// endregion
+	
 	public void paint(CGMDisplay d) {
 		for (Command c : this.commands) {
 			if (filter(c)) {

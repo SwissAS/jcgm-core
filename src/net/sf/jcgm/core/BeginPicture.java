@@ -33,9 +33,9 @@ import java.io.*;
 public class BeginPicture extends Command {
     String S;
 
-    public BeginPicture(int ec, int eid, int l, DataInput in)
+    public BeginPicture(int ec, int eid, int l, DataInput in, CGM cgm)
             throws IOException {
-        super(ec, eid, l, in);
+        super(ec, eid, l, in, cgm);
         this.S = l > 0 ? makeString() : "";
         
         // make sure all the arguments were read
@@ -48,7 +48,7 @@ public class BeginPicture extends Command {
     }
 
     public String getPictureName() {
-        return S;
+        return this.S;
     }
 }
 

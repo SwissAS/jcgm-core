@@ -48,9 +48,9 @@ public class CircularArc3Point extends Command {
 	private Point2D.Double p2;
 	private Point2D.Double p3;
 
-	public CircularArc3Point(int ec, int eid, int l, DataInput in)
+	public CircularArc3Point(int ec, int eid, int l, DataInput in, CGM cgm)
             throws IOException {
-        super(ec, eid, l, in);
+        super(ec, eid, l, in, cgm);
         
         this.p1 = makePoint();
         this.p2 = makePoint();

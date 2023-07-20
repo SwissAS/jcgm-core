@@ -38,9 +38,9 @@ public class ScalingMode extends Command {
 	private Mode mode;
 	private double metricScalingFactor;
 	
-    public ScalingMode(int ec, int eid, int l, DataInput in)
+    public ScalingMode(int ec, int eid, int l, DataInput in, CGM cgm)
             throws IOException {
-        super(ec, eid, l, in);
+        super(ec, eid, l, in, cgm);
         
         int mod = l > 0 ? makeEnum() : 0;
         if (mod == 0) {

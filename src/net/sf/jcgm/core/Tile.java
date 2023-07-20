@@ -38,19 +38,19 @@ import java.io.IOException;
  * @since Oct 5, 2010
  */
 public class Tile extends TileElement {
-	Tile(int ec, int eid, int l, DataInput in) throws IOException {
-		super(ec, eid, l, in);
+	Tile(int ec, int eid, int l, DataInput in, CGM cgm) throws IOException {
+		super(ec, eid, l, in, cgm);
 
 		this.compressionType = CompressionType.get(makeIndex());
 		this.rowPaddingIndicator = makeInt();
 
 		int cellColorPrecision = makeInt();
 		if (cellColorPrecision == 0) {
-			if (ColourSelectionMode.getType() == ColourSelectionMode.Type.INDEXED) {
-				cellColorPrecision = ColourIndexPrecision.getPrecision();
+			if (this.cgm.getColourSelectionMode() == ColourSelectionMode.Type.INDEXED) {
+				cellColorPrecision = cgm.getColourIndexPrecision();
 			}
 			else {
-				cellColorPrecision = ColourPrecision.getPrecision();
+				cellColorPrecision = this.cgm.getColourPrecision();
 			}
 		}
 
@@ -59,7 +59,7 @@ public class Tile extends TileElement {
 
 	@Override
 	protected void readBitmap() {
-		unsupported("BITMAP for Tile");
+		unsupported("BITMAP for Tile", this.cgm);
 	}
 
 	@Override

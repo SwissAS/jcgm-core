@@ -39,9 +39,9 @@ public class CircleElement extends Command {
 	private double radius;
 	private Ellipse2D.Double shape;
 
-    public CircleElement(int ec, int eid, int l, DataInput in)
+    public CircleElement(int ec, int eid, int l, DataInput in, CGM cgm)
             throws IOException {
-        super(ec, eid, l, in);
+        super(ec, eid, l, in, cgm);
         
         this.center = makePoint();
         this.radius = makeVdc();

@@ -38,8 +38,8 @@ import java.io.IOException;
  * @since Oct 5, 2010
  */
 public class EndTileArray extends Command {
-	EndTileArray(int ec, int eid, int l, DataInput in) throws IOException {
-		super(ec, eid, l, in);
+	EndTileArray(int ec, int eid, int l, DataInput in, CGM cgm) throws IOException {
+		super(ec, eid, l, in, cgm);
 		// no parameters
 		assert (this.currentArg == this.args.length);
 	}

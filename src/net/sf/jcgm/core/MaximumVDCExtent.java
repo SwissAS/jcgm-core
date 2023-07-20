@@ -35,9 +35,9 @@ public class MaximumVDCExtent extends Command {
     Point2D.Double firstCorner;
 	Point2D.Double secondCorner;
 
-    public MaximumVDCExtent(int ec, int eid, int l, DataInput in)
+    public MaximumVDCExtent(int ec, int eid, int l, DataInput in, CGM cgm)
             throws IOException {
-        super(ec, eid, l, in);
+        super(ec, eid, l, in, cgm);
         this.firstCorner = makePoint();
         this.secondCorner = makePoint();
     }

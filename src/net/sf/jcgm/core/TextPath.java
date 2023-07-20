@@ -35,9 +35,9 @@ public class TextPath extends Command {
 	
     private Type path;
 
-	public TextPath(int ec, int eid, int l, DataInput in)
+	public TextPath(int ec, int eid, int l, DataInput in, CGM cgm)
             throws IOException {
-        super(ec, eid, l, in);
+        super(ec, eid, l, in, cgm);
         
         int typ = makeEnum();
         switch (typ) {
@@ -57,7 +57,7 @@ public class TextPath extends Command {
         	this.path = Type.RIGHT;
         }
         
-        unimplemented("TextPath");
+        unimplemented("TextPath", this.cgm);
     }
 
     @Override

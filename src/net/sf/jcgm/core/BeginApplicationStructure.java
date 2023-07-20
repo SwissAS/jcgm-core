@@ -15,8 +15,8 @@ public class BeginApplicationStructure extends Command {
     private final String applicationStructureType;
     private final boolean inheritanceFlag;
     
-    public BeginApplicationStructure(int ec, int eid, int l, DataInput in) throws IOException {
-        super(ec, eid, l, in);
+    public BeginApplicationStructure(int ec, int eid, int l, DataInput in, CGM cgm) throws IOException {
+        super(ec, eid, l, in, cgm);
 
         // application structure identifier (SF)
         this.applicationStructureIdentifier = makeString();

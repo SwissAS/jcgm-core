@@ -38,9 +38,9 @@ import java.io.IOException;
 public class BackgroundColour extends Command {
 	private final Color backgroundColor;
 
-	public BackgroundColour(int ec, int eid, int l, DataInput in)
+	public BackgroundColour(int ec, int eid, int l, DataInput in, CGM cgm)
 			throws IOException {
-		super(ec, eid, l, in);
+		super(ec, eid, l, in, cgm);
 
 		this.backgroundColor = makeDirectColor();
 

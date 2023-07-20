@@ -32,9 +32,9 @@ import java.io.IOException;
  * @version $Id$
  */
 public class BeginApplicationStructureBody extends Command {
-	BeginApplicationStructureBody(int ec, int eid, int l, DataInput in)
+	BeginApplicationStructureBody(int ec, int eid, int l, DataInput in, CGM cgm)
 	throws IOException {
-		super(ec, eid, l, in);
+		super(ec, eid, l, in, cgm);
 		// no arguments
 
 		// make sure all the arguments were read

@@ -43,9 +43,9 @@ public class CharacterSetList extends Command {
 	
 	private Map<Type, String> characterSets;
 	
-	public CharacterSetList(int ec, int eid, int l, DataInput in)
+	public CharacterSetList(int ec, int eid, int l, DataInput in, CGM cgm)
             throws IOException {
-        super(ec, eid, l, in);
+        super(ec, eid, l, in, cgm);
         
         this.characterSets = new HashMap<Type, String>();
         
@@ -71,7 +71,7 @@ public class CharacterSetList extends Command {
         	default:
         		// XXX: which default to use?
         		type = Type.COMPLETE_CODE;
-        		unsupported("unsupported character set type "+typ);
+        		unsupported("unsupported character set type "+typ, this.cgm);
         	}
 
         	String characterSetDesignation = makeFixedString();
@@ -89,7 +89,7 @@ public class CharacterSetList extends Command {
         	}
         }
         
-        unimplemented("CharacterSetList");
+        unimplemented("CharacterSetList", this.cgm);
         
         // make sure all the arguments were read
         assert (this.currentArg == this.args.length);

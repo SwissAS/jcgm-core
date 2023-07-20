@@ -33,9 +33,9 @@ import java.io.*;
 public class MetafileVersion extends Command {
     int X;
 
-    public MetafileVersion(int ec, int eid, int l, DataInput in)
+    public MetafileVersion(int ec, int eid, int l, DataInput in, CGM cgm)
             throws IOException {
-        super(ec, eid, l, in);
+        super(ec, eid, l, in, cgm);
         this.X = makeInt();
     }
 
@@ -45,7 +45,7 @@ public class MetafileVersion extends Command {
     }
 
     public int getVersion() {
-        return X;
+        return this.X;
     }
 }
 

@@ -32,8 +32,8 @@ import java.io.IOException;
 public class DashTypeCommand extends Command {
     protected int type = DashType.SOLID;
     
-    public DashTypeCommand(int ec, int eid, int l, DataInput in) throws IOException {
-        super(ec, eid, l, in);
+    public DashTypeCommand(int ec, int eid, int l, DataInput in, CGM cgm) throws IOException {
+        super(ec, eid, l, in, cgm);
         this.type = makeIndex();
     }
 }

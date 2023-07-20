@@ -54,8 +54,8 @@ public class BeginTileArray extends Command {
 	private final int nCellsInPathDirection;
 	private final int nCellsInLineDirection;
 
-	BeginTileArray(int ec, int eid, int l, DataInput in) throws IOException {
-		super(ec, eid, l, in);
+	BeginTileArray(int ec, int eid, int l, DataInput in, CGM cgm) throws IOException {
+		super(ec, eid, l, in, cgm);
 
 		this.position = makePoint();
 		this.cellPathDirection = makeEnum();
@@ -99,7 +99,7 @@ public class BeginTileArray extends Command {
 						- (this.nTilesInLineDirection - 1) * this.nCellsPerTileInLineDirection;
 
 		if (amountOfLastLineCellsInLineDirection != this.nCellsPerTileInLineDirection) {
-			Messages.getInstance().add(new Message(Message.Severity.INFO, getElementClass(), getElementCode(), 
+			d.getCGM().addMessage(new Message(Message.Severity.INFO, getElementClass(), getElementCode(),
 					"the amount of cells of the last line is different than the given amount of cells per line", toString()));
 		}
 		
