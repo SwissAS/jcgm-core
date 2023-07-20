@@ -763,10 +763,6 @@ public class Command implements Cloneable {
 		// default empty implementation
 	}
 	
-	public static Command read(DataInput in) throws IOException {
-		return read(in, null);
-	}
-	
 	/**
 	 * Reads one command from the given input stream.
 	 *

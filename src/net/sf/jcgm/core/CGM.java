@@ -154,7 +154,8 @@ public class CGM implements Cloneable {
 			long currentPosition = 0;
 			String currentFileName = null;
 
-			while ((c = Command.read(randomAccessFile)) != null) {
+			CGM dummyCgm = new CGM();
+			while ((c = Command.read(randomAccessFile, dummyCgm)) != null) {
 				if (c instanceof BeginMetafile) {
 					// the CGM files will be cut at the begin meta file command
 					if (currentFileName != null) {
@@ -220,8 +221,9 @@ public class CGM implements Cloneable {
 			long startPosition = 0;
 			long currentPosition = 0;
 			String currentFileName = null;
-
-			while ((c = Command.read(randomAccessFile)) != null) {
+			
+			CGM dummyCgm = new CGM();
+			while ((c = Command.read(randomAccessFile, dummyCgm)) != null) {
 				if (c instanceof BeginMetafile) {
 					// the CGM files will be cut at the begin meta file command
 					if (currentFileName != null) {
