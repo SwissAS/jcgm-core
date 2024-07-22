@@ -43,4 +43,8 @@ public class BeginApplicationStructure extends Command {
                 ", inheritanceFlag=" + this.inheritanceFlag +
                 ']';
     }
+    
+    public String getIdentifier() {
+        return this.applicationStructureIdentifier;
+    }
 }

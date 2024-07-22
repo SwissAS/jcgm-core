@@ -26,6 +26,14 @@ public class ApplicationStructureAttribute extends Command {
         
         assert this.currentArg == this.args.length;
     }
+    
+    public String getApplicationStructureAttributeType() {
+        return this.applicationStructureAttributeType;
+    }
+    
+    public StructuredDataRecord getSdr() {
+        return this.sdr;
+    }
 
     @Override
     public String toString() {

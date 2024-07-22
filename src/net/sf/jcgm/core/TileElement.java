@@ -193,5 +193,8 @@ abstract class TileElement extends Command {
 			this.bytes = null;
 		}
 	}
-
+	
+	public CompressionType getCompressionType() {
+		return this.compressionType;
+	}
 }

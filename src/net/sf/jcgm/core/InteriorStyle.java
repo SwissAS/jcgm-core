@@ -31,7 +31,7 @@ import java.io.*;
  * @version $Id$
  */
 public class InteriorStyle extends Command {
-	enum Style {
+	public enum Style {
 		HOLLOW,
 		SOLID,
 		PATTERN,

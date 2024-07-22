@@ -100,7 +100,7 @@ public class CGMDisplay {
 
 	private VerticalAlignment verticalTextAlignment = VerticalAlignment.NORMAL_VERTICAL;
 
-	private final Map<Integer, float[]> lineDashes;
+	protected final Map<Integer, float[]> lineDashes;
 
 	/** The color table */
 	private Color[] colorTable;
@@ -893,20 +893,20 @@ public class CGMDisplay {
 		this.g2d.setClip(previousClippingArea);
 		this.g2d.setStroke(previousStroke);
 	}
-
-	private void drawVerticalLines(Rectangle2D bounds, final double stepX) {
+	
+	public void drawVerticalLines(Rectangle2D bounds, final double stepX) {
 		for (double x = bounds.getX(); x < bounds.getX() + bounds.getWidth(); x += stepX) {
 			this.g2d.draw(new Line2D.Double(x, bounds.getY(), x, bounds.getY() + bounds.getHeight()));
 		}
 	}
 
-	private void drawHorizontalLines(Rectangle2D bounds, final double stepY) {
+	public void drawHorizontalLines(Rectangle2D bounds, final double stepY) {
 		for (double y = bounds.getY(); y < bounds.getY() + bounds.getHeight(); y += stepY) {
 			this.g2d.draw(new Line2D.Double(bounds.getX(), y, bounds.getX() + bounds.getWidth(), y));
 		}
 	}
-
-	private void drawPositiveSlopeLines(Rectangle2D bounds, final double slopeStep) {
+	
+	public void drawPositiveSlopeLines(Rectangle2D bounds, final double slopeStep) {
 		Point2D.Double currentBegin = new Point2D.Double(bounds.getX(), bounds.getY() + bounds.getHeight());
 		Point2D.Double currentEnd = currentBegin;
 
@@ -940,7 +940,7 @@ public class CGMDisplay {
 		}
 	}
 
-	private void drawNegativeSlopeLines(Rectangle2D bounds, final double slopeStep) {
+	public void drawNegativeSlopeLines(Rectangle2D bounds, final double slopeStep) {
 		Point2D.Double currentBegin = new Point2D.Double(bounds.getX(), bounds.getY());
 		Point2D.Double currentEnd = currentBegin;
 
@@ -973,7 +973,11 @@ public class CGMDisplay {
 			}
 		}
 	}
-
+	
+	public HatchType getHatchType() {
+		return this.hatchType;
+	}
+	
 	/**
 	 * @param type
 	 */
@@ -1050,6 +1054,11 @@ public class CGMDisplay {
 	public void setWithinApplicationStructureBody(boolean withinApplicationStructureBody) {
 		this.isWithinApplicationStructureBody = withinApplicationStructureBody;
 	}
+	
+	public Graphics2D getG2d() {
+		return this.g2d;
+	}
+	
 }
 
 /*

@@ -76,38 +76,7 @@ public class StructuredDataRecord {
 			throw new IllegalArgumentException("unknown index "+index);
 		}
 	}
-
-	/**
-	 * One entry in the structured data record
-	 * @version $Id:  $ 
-	 * @author  xphc
-	 * @since Oct 5, 2010
-	 */
-	class Member {
-		private final StructuredDataType type;
-		private final int count;
-		private final List<Object> data;
-
-		Member(StructuredDataType type, int count, List<Object> data) {
-			this.type = type;
-			this.count = count;
-			this.data = data;
-		}
-
-		@Override
-		public String toString() {
-			StringBuilder builder = new StringBuilder();
-			builder.append("[type=");
-			builder.append(this.type);
-			builder.append(", count=");
-			builder.append(this.count);
-			builder.append(", data=");
-			builder.append(this.data);
-			builder.append("]");
-			return builder.toString();
-		}
-	}
-
+	
 	private final List<Member> members = new ArrayList<Member>();
 
 	void add(StructuredDataType type, int count, List<Object> data) {
@@ -121,6 +90,10 @@ public class StructuredDataRecord {
 		builder.append(this.members);
 		builder.append("]");
 		return builder.toString();
+	}
+	
+	public List<Member> getMembers() {
+		return this.members;
 	}
 
 }

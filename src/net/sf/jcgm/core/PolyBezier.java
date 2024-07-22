@@ -148,6 +148,26 @@ public class PolyBezier extends Command {
     		g2d.draw(this.curves[i]);
     	}
     }
+	
+	public int getContinuityIndicator() {
+		return this.continuityIndicator;
+	}
+	
+	public Point2D.Double[] getP1() {
+		return this.p1.clone();
+	}
+	
+	public Point2D.Double[] getP2() {
+		return this.p2.clone();
+	}
+	
+	public Point2D.Double[] getP3() {
+		return this.p3.clone();
+	}
+	
+	public Point2D.Double[] getP4() {
+		return this.p4.clone();
+	}
 }
 
 /*

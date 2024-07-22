@@ -140,5 +140,12 @@ public class BeginTileArray extends Command {
 		builder.append("]");
 		return builder.toString();
 	}
-
+	
+	public int getnTilesInPathDirection() {
+		return this.nTilesInPathDirection;
+	}
+	
+	public int getnTilesInLineDirection() {
+		return this.nTilesInLineDirection;
+	}
 }
