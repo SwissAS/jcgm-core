@@ -21,13 +21,7 @@
  */
 package net.sf.jcgm.core;
 
-import java.awt.BasicStroke;
-import java.awt.Color;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
-import java.awt.RenderingHints;
-import java.awt.Shape;
-import java.awt.Stroke;
+import java.awt.*;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Line2D;
 import java.awt.geom.Point2D;
@@ -41,6 +35,7 @@ import net.sf.jcgm.core.InteriorStyle.Style;
 import net.sf.jcgm.core.TextAlignment.HorizontalAlignment;
 import net.sf.jcgm.core.TextAlignment.VerticalAlignment;
 
+import static java.lang.Math.max;
 
 
 /**
@@ -194,11 +189,17 @@ public class CGMDisplay {
 
 	public void paint(Graphics g) {
 		this.g2d = (Graphics2D)g;
-
+		
+		final Dimension size = this.Cgm.getSize();
+		
 		if (!this.isTransparent) {
 			// start with a white background color
 			this.g2d.setColor(getIndexedColor(0));
-			this.g2d.fillRect(0, 0, this.canvasWidth, this.canvasHeight);
+			// since the CGM#getSize is also used for raster conversion and uses a Math#ceil, ensure 
+			// that the biggest value between the canvas and the computed #getSize is used for 
+			// filling the background; this prevents to have unexpected 1px black lines either on 
+			// the left or bottom in the raster image
+			this.g2d.fillRect(0, 0, max(size.width, this.canvasWidth), max(size.height, this.canvasHeight));
 		}
 
 		// force anti aliasing
