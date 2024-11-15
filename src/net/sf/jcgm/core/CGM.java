@@ -53,6 +53,12 @@ import net.sf.jcgm.core.ScalingMode.Mode;
 public class CGM implements Cloneable {
 	private List<Command> commands;
 	
+	/**
+	 * Acc. to ISO/IEC 8632-1:19999(E) §6.1:<br> 
+	 * "The [...] END METAFILE elements [...] occur exactly once in a complete metafile [...]".
+	 */
+	private boolean endMetafileReached = false;
+	
 	private final ArrayList<Message> messages = new ArrayList<>();
 	private int colourIndexPrecision = 8;
 	private int colourPrecision = 8;
@@ -103,7 +109,7 @@ public class CGM implements Cloneable {
 	public void read(DataInput in) throws IOException {
 		reset();
 		this.commands = new ArrayList<Command>(INITIAL_NUM_COMMANDS);
-		while (true) {
+		while (!this.endMetafileReached) {
 			Command c = Command.read(in, this);
 			if (c == null)
 				break;
@@ -116,6 +122,23 @@ public class CGM implements Cloneable {
 			c.cleanUpArguments();
 			this.commands.add(c);
 		}
+		
+		// ignore trailing data for now: it only happened once with an A320 ASM sample;
+		// TODO: integrate proper logger and log whenever there is unexpected trailing data
+		// StringBuilder trailingData = new StringBuilder();
+		// try {
+		// 	String line = in.readLine();
+		// 	while (line != null) {
+		// 		trailingData.append(line);
+		// 		line = in.readLine();
+		// 	}
+		// } catch (Exception e) {
+		// 	 throw new CgmException("Failed to read the trailing data of the CGM.");
+		// } 
+		// // most of (all?) CGM samples can have a trailing character that can be ignored
+		// if (trailingData.length() > 1) {
+		// 	 throw new CgmException("The CGM contains additional data that was not processed: [" + trailingData + "].");
+		// }
 	}
 
 	/**
@@ -691,7 +714,10 @@ public class CGM implements Cloneable {
 	public List<Command> getCommands() {
 		return Collections.unmodifiableList(this.commands);
 	}
-
+	
+	public void setEndMetafileReached() {
+		this.endMetafileReached = true;
+	}
 }
 
 /*

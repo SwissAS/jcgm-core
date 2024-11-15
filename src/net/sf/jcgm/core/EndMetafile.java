@@ -34,6 +34,8 @@ public class EndMetafile extends Command {
     public EndMetafile(int ec, int eid, int l, DataInput in, CGM cgm)
             throws IOException {
         super(ec, eid, l, in, cgm);
+        
+        cgm.setEndMetafileReached();
     }
 
     @Override
