@@ -12,17 +12,20 @@ import java.io.IOException;
  */
 public class ApplicationStructureAttribute extends Command {
 
-    private final String applicationStructureAttributeType;
-    private final StructuredDataRecord sdr;
+    private String applicationStructureAttributeType;
+    private StructuredDataRecord sdr;
     
     public ApplicationStructureAttribute(int ec, int eid, int l, DataInput in, CGM cgm) throws IOException {
         super(ec, eid, l, in, cgm);
-        
-        // application structure attribute type (SF)
-        this.applicationStructureAttributeType = makeString();
-        
-        // data record (SDR)
-        this.sdr = makeSDR();
+        try {
+            // application structure attribute type (SF)
+            this.applicationStructureAttributeType = makeString();
+            
+            // data record (SDR)
+            this.sdr = makeSDR();
+        } catch (Exception e) {
+            // do nothing
+        }
         
         assert this.currentArg == this.args.length;
     }
