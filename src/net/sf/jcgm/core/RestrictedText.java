@@ -26,6 +26,7 @@ import java.awt.FontMetrics;
 import java.awt.Graphics2D;
 import java.awt.font.GlyphVector;
 import java.awt.geom.Point2D;
+import java.awt.geom.Rectangle2D;
 import java.io.DataInput;
 import java.io.IOException;
 
@@ -65,6 +66,14 @@ public class RestrictedText extends TextCommand {
 		// make sure all the arguments were read
 		assert (this.currentArg == this.args.length);
 	}
+
+	public String getText() {
+		return this.string;
+	}
+
+	public Rectangle2D.Double getTextBox(){
+		return new Rectangle2D.Double(this.position.x,this.position.y,this.deltaWidth,this.deltaHeight);
+	}		
 
 	@Override
 	public String toString() {
