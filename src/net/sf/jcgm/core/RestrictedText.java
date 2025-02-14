@@ -84,7 +84,7 @@ public class RestrictedText extends TextCommand {
 	}
 
 	@Override
-	protected Point2D.Double getTextOffset(CGMDisplay d) {
+	public Point2D.Double getTextOffset(CGMDisplay d) {
 		// the location of the bounding box depends on the alignment and the text path
 		TextPath.Type textPath = d.getTextPath();
 
