@@ -34,6 +34,7 @@ import net.sf.jcgm.core.HatchIndex.HatchType;
 import net.sf.jcgm.core.InteriorStyle.Style;
 import net.sf.jcgm.core.TextAlignment.HorizontalAlignment;
 import net.sf.jcgm.core.TextAlignment.VerticalAlignment;
+import net.sf.jcgm.core.workaround.Graphics2DDecorator;
 
 import static java.lang.Math.max;
 
@@ -47,7 +48,7 @@ import static java.lang.Math.max;
  * @version $Id$
  */
 public class CGMDisplay {
-	private Graphics2D g2d;
+	private Graphics2DDecorator g2d;
 
 	/** Size of the canvas */
 	private int canvasWidth, canvasHeight;
@@ -188,7 +189,7 @@ public class CGMDisplay {
 	}
 
 	public void paint(Graphics g) {
-		this.g2d = (Graphics2D)g;
+		this.g2d = new Graphics2DDecorator((Graphics2D) g, getCGM().shouldFlattenCurve());
 		
 		final Dimension size = this.Cgm.getSize();
 		
@@ -371,7 +372,8 @@ public class CGMDisplay {
 	}
 
 	public void scale(Graphics g, int w, int h) {
-		this.g2d = (Graphics2D)g;
+		
+		this.g2d = new Graphics2DDecorator((Graphics2D) g, getCGM().shouldFlattenCurve());
 		if (this.extent == null)
 			return;
 
