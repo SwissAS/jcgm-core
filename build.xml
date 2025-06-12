@@ -7,7 +7,7 @@
 <project name="jcgm" default="jar">
 	
 	<!-- The core package -->
-	<property name="version-core" 			value="2.0.3"/>
+	<property name="version-core" 			value="2.0.5"/>
 	<property name="package-name-core" 		value="jcgm-core-${version-core}"/>
 	<property name="jar-name-core" 			value="${package-name-core}.jar"/>
 	<property name="jar-name-core-sources" 	value="${package-name-core}-sources.jar"/>
