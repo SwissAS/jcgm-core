@@ -74,7 +74,11 @@ public class BezierFlattener {
     private static boolean isFlatEnough(Point p0, Point p1, Point p2, Point p3, double epsilon) {
         double d1 = distanceFromLine(p1, p0, p3);
         double d2 = distanceFromLine(p2, p0, p3);
-        return Math.max(d1, d2) < epsilon;
+        final double max = Math.max(d1, d2);
+        if (Double.isNaN(max)) {
+            return true;
+        }
+        return max < epsilon;
     }
 
     private static double distanceFromLine(Point p, Point a, Point b) {
