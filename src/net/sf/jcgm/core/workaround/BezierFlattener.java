@@ -30,45 +30,45 @@ public class BezierFlattener {
     }
 
     static List<Point> flattenCurve(CubicCurve2D.Double curve, double epsilon) {
-        Point P0 = new Point(curve.x1, curve.y1);
-        Point P1 = new Point(curve.ctrlx1, curve.ctrly1);
-        Point P2 = new Point(curve.ctrlx2, curve.ctrly2);
-        Point P3 = new Point(curve.x2, curve.y2);
+        Point p0 = new Point(curve.x1, curve.y1);
+        Point p1 = new Point(curve.ctrlx1, curve.ctrly1);
+        Point p2 = new Point(curve.ctrlx2, curve.ctrly2);
+        Point p3 = new Point(curve.x2, curve.y2);
 
         List<Point> result = new ArrayList<>();
-        flattenRecursive(P0, P1, P2, P3, epsilon, result);
-        result.add(P3); // Ensure the last point is included
+        flattenRecursive(p0, p1, p2, p3, epsilon, result);
+        result.add(p3); // Ensure the last point is included
         return result;
     }
 
-    private static void flattenRecursive(Point P0, Point P1, Point P2, Point P3, double epsilon, List<Point> result) {
-        if (isFlatEnough(P0, P1, P2, P3, epsilon)) {
-            result.add(P0); // Add start point of the segment
+    private static void flattenRecursive(Point p0, Point p1, Point p2, Point p3, double epsilon, List<Point> result) {
+        if (isFlatEnough(p0, p1, p2, p3, epsilon)) {
+            result.add(p0); // Add start point of the segment
         } else {
             // Subdivide the curve
-            Point A = P0.midpoint(P1);
-            Point B = P1.midpoint(P2);
-            Point C = P2.midpoint(P3);
-            Point D = A.midpoint(B);
-            Point E = B.midpoint(C);
-            Point F = D.midpoint(E); // Midpoint on the curve at t=0.5
+            Point a = p0.midpoint(p1);
+            Point b = p1.midpoint(p2);
+            Point c = p2.midpoint(p3);
+            Point d = a.midpoint(b);
+            Point e = b.midpoint(c);
+            Point f = d.midpoint(e); // Midpoint on the curve at t=0.5
 
             // Recurse on both halves
-            flattenRecursive(P0, A, D, F, epsilon, result);
-            flattenRecursive(F, E, C, P3, epsilon, result);
+            flattenRecursive(p0, a, d, f, epsilon, result);
+            flattenRecursive(f, e, c, p3, epsilon, result);
         }
     }
 
-    private static boolean isFlatEnough(Point P0, Point P1, Point P2, Point P3, double epsilon) {
-        double d1 = distanceFromLine(P1, P0, P3);
-        double d2 = distanceFromLine(P2, P0, P3);
+    private static boolean isFlatEnough(Point p0, Point p1, Point p2, Point p3, double epsilon) {
+        double d1 = distanceFromLine(p1, p0, p3);
+        double d2 = distanceFromLine(p2, p0, p3);
         return Math.max(d1, d2) < epsilon;
     }
 
-    private static double distanceFromLine(Point P, Point A, Point B) {
-        double dx = B.x - A.x;
-        double dy = B.y - A.y;
-        double numerator = Math.abs(dy * P.x - dx * P.y + B.x * A.y - B.y * A.x);
+    private static double distanceFromLine(Point p, Point a, Point b) {
+        double dx = b.x - a.x;
+        double dy = b.y - a.y;
+        double numerator = Math.abs(dy * p.x - dx * p.y + b.x * a.y - b.y * a.x);
         double denominator = Math.sqrt(dx * dx + dy * dy);
         return numerator / denominator;
     }
