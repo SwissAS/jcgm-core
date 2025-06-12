@@ -29,11 +29,23 @@ public class BezierFlattener {
         }
     }
 
-    static List<Point> flattenCurve(CubicCurve2D.Double curve, double epsilon) {
-        Point p0 = new Point(curve.x1, curve.y1);
-        Point p1 = new Point(curve.ctrlx1, curve.ctrly1);
-        Point p2 = new Point(curve.ctrlx2, curve.ctrly2);
-        Point p3 = new Point(curve.x2, curve.y2);
+    static List<Point> flattenCurve(CubicCurve2D curve, double epsilon) {
+        Point p0, p1, p2, p3; 
+        if (curve instanceof CubicCurve2D.Float) {
+            CubicCurve2D.Float floatCurve = (CubicCurve2D.Float) curve;
+            p0 = new Point(floatCurve.x1, floatCurve.y1);
+            p1 = new Point(floatCurve.ctrlx1, floatCurve.ctrly1);
+            p2 = new Point(floatCurve.ctrlx2, floatCurve.ctrly2);
+            p3 = new Point(floatCurve.x2, floatCurve.y2);
+        } else if (curve instanceof CubicCurve2D.Double) {
+            CubicCurve2D.Double doubleCurve = (CubicCurve2D.Double) curve;
+            p0 = new Point(doubleCurve.x1, doubleCurve.y1);
+            p1 = new Point(doubleCurve.ctrlx1, doubleCurve.ctrly1);
+            p2 = new Point(doubleCurve.ctrlx2, doubleCurve.ctrly2);
+            p3 = new Point(doubleCurve.x2, doubleCurve.y2);
+        } else {
+            throw new IllegalArgumentException("unimplemented CubicCurve2D [" + curve.getClass() + "]");
+        }
 
         List<Point> result = new ArrayList<>();
         flattenRecursive(p0, p1, p2, p3, epsilon, result);

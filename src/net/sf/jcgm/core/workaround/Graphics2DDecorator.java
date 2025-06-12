@@ -52,10 +52,10 @@ public class Graphics2DDecorator extends Graphics2D {
      */
     @Override
     public void draw(Shape s) {
-        if (s instanceof CubicCurve2D.Double) {
+        if (s instanceof CubicCurve2D) {
             try {
                 // split curves into segments
-                List<BezierFlattener.Point> segments = BezierFlattener.flattenCurve((CubicCurve2D.Double) s, 0.1);
+                List<BezierFlattener.Point> segments = BezierFlattener.flattenCurve((CubicCurve2D) s, 0.1);
                 for (int i = 0; i < segments.size() - 1; i++) {
                     BezierFlattener.Point p1 = segments.get(i);
                     BezierFlattener.Point p2 = segments.get(i + 1);
