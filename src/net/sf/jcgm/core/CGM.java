@@ -85,8 +85,10 @@ public class CGM implements Cloneable {
 
 	private final static int INITIAL_NUM_COMMANDS = 500;
 
+	private boolean shouldFlattenCurve = false;
+
 	public CGM() {
-		// empty constructor. XXX: Remove?
+		loadSystemProperties();
 	}
 
 	public CGM(File cgmFile) throws IOException {
@@ -102,10 +104,17 @@ public class CGM implements Cloneable {
 			inputStream = new FileInputStream(cgmFile);
 		}
 		DataInputStream in = new DataInputStream(new BufferedInputStream(inputStream));
+
+		loadSystemProperties();
+		
 		read(in);
 		in.close();
 	}
 
+	private void loadSystemProperties() {
+		this.shouldFlattenCurve =  Boolean.getBoolean("jcgm.core.flattencurve");
+	}
+	
 	public void read(DataInput in) throws IOException {
 		reset();
 		this.commands = new ArrayList<Command>(INITIAL_NUM_COMMANDS);
@@ -717,6 +726,10 @@ public class CGM implements Cloneable {
 	
 	public void setEndMetafileReached() {
 		this.endMetafileReached = true;
+	}
+
+	public boolean shouldFlattenCurve() {
+		return this.shouldFlattenCurve;
 	}
 }
 

@@ -189,7 +189,7 @@ public class CGMDisplay {
 	}
 
 	public void paint(Graphics g) {
-		this.g2d = new Graphics2DDecorator((Graphics2D) g);
+		this.g2d = new Graphics2DDecorator((Graphics2D) g, getCGM().shouldFlattenCurve());
 		
 		final Dimension size = this.Cgm.getSize();
 		
@@ -372,7 +372,8 @@ public class CGMDisplay {
 	}
 
 	public void scale(Graphics g, int w, int h) {
-		this.g2d = new Graphics2DDecorator((Graphics2D) g);
+		
+		this.g2d = new Graphics2DDecorator((Graphics2D) g, getCGM().shouldFlattenCurve());
 		if (this.extent == null)
 			return;
 
