@@ -41,11 +41,13 @@ public class Graphics2DDecorator extends Graphics2D {
 
     private final Graphics2D delegate;
     private final boolean shouldFlattenCurve;
+    private final boolean isDisposable;
 
 
-    public Graphics2DDecorator(Graphics2D delegate, boolean shouldFlattenCurve) {
+    public Graphics2DDecorator(Graphics2D delegate, boolean shouldFlattenCurve, boolean isDisposable) {
         this.delegate = delegate;
         this.shouldFlattenCurve = shouldFlattenCurve;
+        this.isDisposable = isDisposable;
     }
 
     /**
@@ -104,6 +106,9 @@ public class Graphics2DDecorator extends Graphics2D {
 
     @Override
     public void dispose() {
+        if (!this.isDisposable) {
+            return;
+        }
         if (this.delegate != null) {
             this.delegate.dispose();
         }

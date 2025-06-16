@@ -48,7 +48,7 @@ import static java.lang.Math.max;
  * @version $Id$
  */
 public class CGMDisplay {
-	private Graphics2DDecorator g2d;
+	private Graphics2D g2d;
 
 	/** Size of the canvas */
 	private int canvasWidth, canvasHeight;
@@ -189,7 +189,7 @@ public class CGMDisplay {
 	}
 
 	public void paint(Graphics g) {
-		this.g2d = new Graphics2DDecorator((Graphics2D) g, getCGM().shouldFlattenCurve());
+		this.g2d = new Graphics2DDecorator((Graphics2D) g, getCGM().shouldFlattenCurve(), true);
 		
 		final Dimension size = this.Cgm.getSize();
 		
@@ -372,8 +372,7 @@ public class CGMDisplay {
 	}
 
 	public void scale(Graphics g, int w, int h) {
-		
-		this.g2d = new Graphics2DDecorator((Graphics2D) g, getCGM().shouldFlattenCurve());
+		this.g2d = new Graphics2DDecorator((Graphics2D) g, getCGM().shouldFlattenCurve(), false);
 		if (this.extent == null)
 			return;
 
