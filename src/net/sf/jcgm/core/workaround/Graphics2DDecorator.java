@@ -578,5 +578,14 @@ public class Graphics2DDecorator extends Graphics2D {
         return this.delegate.getFontRenderContext();
     }
 
+    /**
+     * Exposed for external libraries decorating jcgm like jcgm-to-svg.
+     * 
+     * @return the original Graphics2D instance
+     */
+    public Graphics2D getDelegate() {
+        return this.delegate;
+    }
+    
 }
 
