@@ -80,6 +80,8 @@ public class CGM implements Cloneable {
 	private boolean realPrecisionProcessed = false;
 	private RestrictedTextType.Type restrictedTextType = RestrictedTextType.Type.BASIC;
 	private DeviceViewportSpecificationMode.Mode deviceViewportSpecificationMode = DeviceViewportSpecificationMode.Mode.FractionOfDrawingSurface;
+	/** ISO/IEC 8632-1 §6.3.4.5: the default encoding is ISO 8859-1. */
+	private String currentCharSet = "ISO8859-1";
 	
 	private final List<ICommandListener> commandListeners = new ArrayList<ICommandListener>();
 
@@ -730,6 +732,14 @@ public class CGM implements Cloneable {
 
 	public boolean shouldFlattenCurve() {
 		return this.shouldFlattenCurve;
+	}
+
+	public void setCurrentCharSet(String charSet) {
+		this.currentCharSet = charSet;
+	}
+
+	public String getCurrentCharSet() {
+		return this.currentCharSet;
 	}
 }
 
