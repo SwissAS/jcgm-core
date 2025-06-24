@@ -31,6 +31,7 @@ import java.io.FilenameFilter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintWriter;
+import java.nio.charset.Charset;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
@@ -94,13 +95,15 @@ public class Analyzer implements ICommandListener {
 				this.messagesFile = new PrintWriter(new BufferedWriter(
 						new FileWriter(new File(this.outputPath
 								.getAbsolutePath()
-								+ File.separator + "messages.txt"))));
+								+ File.separator + "messages.txt"),
+								Charset.forName("UTF-8"))));
 
 				if (verbose) {
 					this.commandFile = new PrintWriter(new BufferedWriter(
 							new FileWriter(new File(this.outputPath
 									.getAbsolutePath()
-									+ File.separator + "commands.txt"))));
+									+ File.separator + "commands.txt"),
+									Charset.forName("UTF-8"))));
 				}
 			}
 
