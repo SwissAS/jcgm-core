@@ -87,11 +87,32 @@ public class CGM implements Cloneable {
 
 	private boolean shouldFlattenCurve = false;
 
+	/**
+	 * Creates an empty CGM instance.
+	 */
 	public CGM() {
 		loadSystemProperties();
 	}
 
+	/**
+	 * Creates a CGM instance and reads the full file.
+	 *
+	 * @param cgmFile the CGM file to read
+	 * @throws IOException if reading the file fails
+	 */
 	public CGM(File cgmFile) throws IOException {
+		this(cgmFile, false);
+	}
+
+	/**
+	 * Creates a CGM instance and reads either the full file or only the header.
+	 *
+	 * @param cgmFile the CGM file to read
+	 * @param readHeaderOnly if true, parsing stops when a {@link BeginPicture}
+	 *            command is encountered; if false, the full metafile is read
+	 * @throws IOException if reading the file fails
+	 */
+	public CGM(File cgmFile, boolean readHeaderOnly) throws IOException {
 		if (cgmFile == null)
 			throw new NullPointerException("unexpected null parameter");
 
@@ -107,7 +128,7 @@ public class CGM implements Cloneable {
 
 		loadSystemProperties();
 		
-		read(in);
+		read(in, readHeaderOnly);
 		in.close();
 	}
 
@@ -116,6 +137,21 @@ public class CGM implements Cloneable {
 	}
 	
 	public void read(DataInput in) throws IOException {
+		read(in, false);
+	}
+
+	/**
+	 * Reads only the CGM header.
+	 * Parsing stops as soon as a {@link BeginPicture} command is encountered.
+	 *
+	 * @param in the input to read from
+	 * @throws IOException if reading fails
+	 */
+	public void readHeader(DataInput in) throws IOException {
+		read(in, true);
+	}
+
+	private void read(DataInput in, boolean stopAtBeginPicture) throws IOException {
 		reset();
 		this.commands = new ArrayList<Command>(INITIAL_NUM_COMMANDS);
 		while (!this.endMetafileReached) {
@@ -130,6 +166,10 @@ public class CGM implements Cloneable {
 			// get rid of all arguments after we read them
 			c.cleanUpArguments();
 			this.commands.add(c);
+
+			if (stopAtBeginPicture && c instanceof BeginPicture) {
+				break;
+			}
 		}
 		
 		// ignore trailing data for now: it only happened once with an A320 ASM sample;
@@ -338,6 +378,8 @@ public class CGM implements Cloneable {
 	 * All the command classes with static data need to be reset here
 	 */
 	private void reset() {
+		this.endMetafileReached = false;
+
 		resetColourIndexPrecision();
 		resetColourModel();
 		resetColourPrecision();
