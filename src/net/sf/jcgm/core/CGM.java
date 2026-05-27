@@ -151,9 +151,12 @@ public class CGM implements Cloneable {
 		read(in, true);
 	}
 
-	private void read(DataInput in, boolean stopAtBeginPicture) throws IOException {
+	private void read(DataInput in, boolean stopEarly) throws IOException {
 		reset();
 		this.commands = new ArrayList<Command>(INITIAL_NUM_COMMANDS);
+		boolean foundVDCExtent = false;
+		boolean foundScalingMode = false;
+		
 		while (!this.endMetafileReached) {
 			Command c = Command.read(in, this);
 			if (c == null)
@@ -167,8 +170,16 @@ public class CGM implements Cloneable {
 			c.cleanUpArguments();
 			this.commands.add(c);
 
-			if (stopAtBeginPicture && c instanceof BeginPicture) {
-				break;
+			if (stopEarly) {
+				if (c instanceof VDCExtent) {
+					foundVDCExtent = true;
+				}
+				if (c instanceof ScalingMode) {
+					foundScalingMode = true;
+				}
+				if (foundVDCExtent && foundScalingMode) {
+					break;
+				}
 			}
 		}
 		
