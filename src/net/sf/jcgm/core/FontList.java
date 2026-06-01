@@ -81,10 +81,12 @@ public class FontList extends Command {
 		count = 0;
 		i = 0;
 		while (i < this.args.length) {
-			char a[] = new char[this.args[i]];
+			byte a[] = new byte[this.args[i]];
 			for (int j = 0; j < this.args[i]; j++)
-				a[j] = (char) this.args[i + j + 1];
-			this.fontNames[count] = new String(a);
+				a[j] = (byte) this.args[i + j + 1];
+			// NOTE: this should be a fixed string, but some metafile generators use a regular string (based on the current encoding).
+			//       with how makeString produces its result, this should be ok to use and be more forgiving.
+			this.fontNames[count] = makeString(a);
 			count++;
 			i += this.args[i] + 1;
 		}

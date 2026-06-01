@@ -166,11 +166,39 @@ public class Command implements Cloneable {
 			c[i] = makeByte();
 		}
 
+		return makeString(c);
+	}
+
+	final protected String makeString(byte[] characters) {
+		// attempt to detect an encoding switch using DOCS (DECIDE OTHER CODING SYSTEM). See ISO/IEC 2022 or ECMA-35.
+		// this specifically tests for the most common ones, UTF-8 and UTF-16 as described by
+		// "ISO-IR: Internation Register of Coded Character Sets to be used with Escape Sequences"
+		// in chapter 2.8.2 "Coding Systems without Standard return".
+		// they take the form of ESC 2/5 2/15 F ("<ESC> % / F") where F specifies the coding system.
+		if (characters.length >= 4 && characters[0] == 0x1B && characters[1] == 0x25 && characters[2] == 0x2F)
+		{
+			if (characters[3] >= 0x47 && characters[3] <= 0x49)
+			{
+				// ESC 2/5 2/15 4/7: UTF-8 Level 1
+				// ESC 2/5 2/15 4/8: UTF-8 Level 2
+				// ESC 2/5 2/15 4/9: UTF-8 Level 3
+				this.cgm.setCurrentCharSet("UTF-8");
+			}
+			else
+			{
+				// ESC 2/5 2/15 4/10: UTF-16 Level 1
+				// ESC 2/5 2/15 4/11: UTF-16 Level 2
+				// ESC 2/5 2/15 4/12: UTF-16 Level 3
+				this.cgm.setCurrentCharSet("UTF-16BE");
+			}
+			characters = Arrays.copyOfRange(characters, 4, characters.length);
+		}
+
 		try {
-			return new String(c, "ISO8859-1");
+			return new String(characters, this.cgm.getCurrentCharSet());
 		}
 		catch (UnsupportedEncodingException e) {
-			return new String(c);
+			return new String(characters);
 		}
 	}
 
