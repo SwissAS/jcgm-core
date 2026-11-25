@@ -38,9 +38,16 @@ public class Escape extends Command {
 
 	public Escape(int ec, int eid, int l, DataInput in, CGM cgm) throws IOException {
 		super(ec, eid, l, in, cgm);
-		
-		this.identifier = makeInt();
-		this.dataRecord = makeString();
+
+		try {
+			this.identifier = makeInt();
+			this.dataRecord = makeString();
+		}
+		catch (ArrayIndexOutOfBoundsException e) {
+			this.identifier = 0;
+			this.dataRecord = "";
+			unsupported("invalid payload", this.cgm);
+		}
 		
         // make sure all the arguments were read
         assert (this.currentArg == this.args.length);
