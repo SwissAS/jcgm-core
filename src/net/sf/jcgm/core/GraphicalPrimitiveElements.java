@@ -67,7 +67,7 @@ public enum GraphicalPrimitiveElements {
 
 	public static GraphicalPrimitiveElements getElement(int ec) {
 		if (ec < 0 || ec >= values().length)
-			throw new ArrayIndexOutOfBoundsException(ec);
+			throw new UnsupportedElementException(ec);
 
 		return values()[ec];
 	}

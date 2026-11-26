@@ -49,13 +49,18 @@ public class PolygonSet extends Command {
             throws IOException {
 
         super(ec, eid, l, in, cgm);
-        
-        assert (this.args.length % (sizeOfPoint() + sizeOfEnum()) == 0);
-        int n = this.args.length / (sizeOfPoint() + sizeOfEnum());
 
-        Point2D.Double p = makePoint();
         this.edgePolygon = new Path2D.Double();
         this.fillPolygon = new Path2D.Double(Path2D.WIND_EVEN_ODD);
+
+		int recordSize = sizeOfPoint() + sizeOfEnum();
+		if (this.args.length == 0 || this.args.length % recordSize != 0) {
+			unsupported("invalid payload length " + this.args.length, cgm);
+			return;
+		}
+
+		int n = this.args.length / recordSize;
+		Point2D.Double p = makePoint();
         
         Point2D.Double currentClosurePoint = p;
         this.edgePolygon.moveTo(p.x, p.y);

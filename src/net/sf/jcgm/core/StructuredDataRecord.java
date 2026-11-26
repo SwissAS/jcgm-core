@@ -73,7 +73,7 @@ public class StructuredDataRecord {
 				if (type.index == index)
 					return type;
 			}
-			throw new IllegalArgumentException("unknown index "+index);
+			throw new UnsupportedStructuredDataTypeException(index);
 		}
 	}
 	

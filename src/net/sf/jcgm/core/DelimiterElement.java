@@ -65,7 +65,7 @@ public enum DelimiterElement {
 
 	public static DelimiterElement getElement(int ec) {
 		if (ec < 0 || ec >= values().length)
-			throw new ArrayIndexOutOfBoundsException(ec);
+			throw new UnsupportedElementException(ec);
 		
 		return values()[ec];
 	}

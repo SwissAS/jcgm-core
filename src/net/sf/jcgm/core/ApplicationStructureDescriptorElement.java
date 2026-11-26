@@ -21,7 +21,7 @@ public enum ApplicationStructureDescriptorElement {
 
     public static ApplicationStructureDescriptorElement getElement(int ec) {
         if (ec < 0 || ec >= values().length)
-            throw new ArrayIndexOutOfBoundsException(ec);
+            throw new UnsupportedElementException(ec);
 
         return values()[ec];
     }

@@ -66,7 +66,14 @@ abstract class TileElement extends Command {
 	protected void readSdrAndBitStream() throws IOException {
 		// the kind of information contained in the structured data record will
 		// depend on the compression type
-		this.sdr = makeSDR();
+		try {
+			this.sdr = makeSDR();
+		}
+		catch (UnsupportedStructuredDataTypeException e) {
+			this.sdr = new StructuredDataRecord();
+			unsupported(e.getMessage(), this.cgm);
+			return;
+		}
 
 		if (this.compressionType.getFormatName() != null) {
 			// we'll try to read the image with ImageIO

@@ -789,42 +789,48 @@ public class Command implements Cloneable {
 	}
 
 	protected static Command readCommand(DataInput in, int ec, int eid, int l, CGM cgm) throws IOException {
-		switch (ElementClass.getElementClass(ec)) {
+		try {
+			switch (ElementClass.getElementClass(ec)) {
 
-		case DELIMITER_ELEMENTS: // 0
-			return readDelimiterElements(in, ec, eid, l, cgm);
+			case DELIMITER_ELEMENTS: // 0
+				return readDelimiterElements(in, ec, eid, l, cgm);
 
-		case METAFILE_DESCRIPTOR_ELEMENTS: // 1
-			return readMetaFileDescriptorElements(in, ec, eid, l, cgm);
+			case METAFILE_DESCRIPTOR_ELEMENTS: // 1
+				return readMetaFileDescriptorElements(in, ec, eid, l, cgm);
 
-		case PICTURE_DESCRIPTOR_ELEMENTS: // 2
-			return readPictureDescriptorElements(in, ec, eid, l, cgm);
+			case PICTURE_DESCRIPTOR_ELEMENTS: // 2
+				return readPictureDescriptorElements(in, ec, eid, l, cgm);
 
-		case CONTROL_ELEMENTS: // 3
-			return readControlElements(in, ec, eid, l, cgm);
+			case CONTROL_ELEMENTS: // 3
+				return readControlElements(in, ec, eid, l, cgm);
 
-		case GRAPHICAL_PRIMITIVE_ELEMENTS: // 4
-			return readGraphicalPrimitiveElements(in, ec, eid, l, cgm);
+			case GRAPHICAL_PRIMITIVE_ELEMENTS: // 4
+				return readGraphicalPrimitiveElements(in, ec, eid, l, cgm);
 
-		case ATTRIBUTE_ELEMENTS: // 5
-			return readAttributeElements(in, ec, eid, l, cgm);
+			case ATTRIBUTE_ELEMENTS: // 5
+				return readAttributeElements(in, ec, eid, l, cgm);
 
-		case ESCAPE_ELEMENTS: // 6
-			return new Escape(ec, eid, l, in, cgm);
+			case ESCAPE_ELEMENTS: // 6
+				return new Escape(ec, eid, l, in, cgm);
 
-		case EXTERNAL_ELEMENTS: // 7
-			return readExternalElements(in, ec, eid, l, cgm);
+			case EXTERNAL_ELEMENTS: // 7
+				return readExternalElements(in, ec, eid, l, cgm);
 
-		case SEGMENT_ELEMENTS: // 8
-			unsupported(ec, eid, cgm);
-			return new Command(ec, eid, l, in, cgm);
+			case SEGMENT_ELEMENTS: // 8
+				unsupported(ec, eid, cgm);
+				return new Command(ec, eid, l, in, cgm);
 
-		case APPLICATION_STRUCTURE_ELEMENTS: // 9
-			return readApplicationStructureDescriptorElements(in, ec, eid, l, cgm);
+			case APPLICATION_STRUCTURE_ELEMENTS: // 9
+				return readApplicationStructureDescriptorElements(in, ec, eid, l, cgm);
 
-		default:
-			assert (10 <= ec && ec <= 15) : "unsupported element class";
-			unsupported(ec, eid, cgm);
+			default:
+				assert (10 <= ec && ec <= 15) : "unsupported element class";
+				unsupported(ec, eid, cgm);
+				return new Command(ec, eid, l, in, cgm);
+			}
+		}
+		catch (UnsupportedElementException e) {
+			// Example: there are some class 2 customized elements, like ID 101 is outside the enum range (1-20) but used by Airbus
 			return new Command(ec, eid, l, in, cgm);
 		}
 	}
